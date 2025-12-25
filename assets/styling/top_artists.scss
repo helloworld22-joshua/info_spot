@@ -1,0 +1,57 @@
+.top-artists {
+    background: var(--bg1-alpha);
+    backdrop-filter: var(--blur);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.artist-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition);
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.artist-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.artist-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.artist-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: block;
+}
+
+.artist-genres {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: capitalize;
+}
+
+.artist-followers {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}

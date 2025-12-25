@@ -1,0 +1,15 @@
+[application]
+name = "info_spot"
+default_platform = "desktop"
+
+[application.desktop]
+title = "InfoSpot"
+width = 1200
+height = 800
+watch_files = ["assets/**/*.css"]
+
+[bundle]
+identifier = "com.infospot.app"
+publisher = "InfoSpot"
+icon = []
+resources = ["assets/"]
