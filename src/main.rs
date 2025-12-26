@@ -13,6 +13,7 @@ use std::rc::Rc;
 #[derive(Clone)]
 struct AppContext {
     spotify_client: Signal<Option<Rc<SpotifyClient>>>,
+    demo_mode: Signal<bool>,
 }
 
 fn main() {
@@ -27,6 +28,7 @@ fn App() -> Element {
     // Initialize global Spotify client context
     use_context_provider(|| AppContext {
         spotify_client: Signal::new(None),
+        demo_mode: Signal::new(false),
     });
 
     rsx! {
@@ -72,6 +74,11 @@ fn Home() -> Element {
 
     let mut error_msg = use_signal(|| None::<String>);
     let mut authenticating = use_signal(|| false);
+
+    let handle_demo_mode = move |_| {
+        context.demo_mode.set(true);
+        nav.push(Route::Dashboard {});
+    };
 
     let handle_login = move |_| {
         // Check credentials before attempting login
@@ -178,6 +185,12 @@ fn Home() -> Element {
                         style: if credentials_missing { "opacity: 0.5; cursor: not-allowed;" } else { "" },
                         "Login with Spotify"
                     }
+                    button {
+                        class: "demo-button",
+                        onclick: handle_demo_mode,
+                        style: "margin-top: 15px;",
+                        "🎭 Try Demo Mode"
+                    }
                 }
 
                 if let Some(error) = error_msg() {
@@ -225,11 +238,23 @@ fn Dashboard() -> Element {
     let mut loading = use_signal(|| true);
     let mut error = use_signal(|| None::<String>);
 
-    // Check if we have a Spotify client with token
+    // Import playlist modal state
+    let mut show_import_modal = use_signal(|| false);
+    let mut import_name = use_signal(|| String::new());
+    let mut import_description = use_signal(|| String::new());
+    let mut import_author = use_signal(|| String::new());
+    let mut import_track_uris = use_signal(|| Vec::<String>::new());
+    let mut import_tracks = use_signal(|| Vec::<Track>::new());
+    let mut importing = use_signal(|| false);
+    let mut loading_tracks = use_signal(|| false);
+
+    let is_demo_mode = context.demo_mode.read().clone();
+
+    // Check if we have a Spotify client with token or if we're in demo mode
     let spotify_client_option = context.spotify_client.read().clone();
 
-    if spotify_client_option.is_none() {
-        // No authenticated client, redirect to home
+    if !is_demo_mode && spotify_client_option.is_none() {
+        // No authenticated client and not in demo mode, redirect to home
         use_effect(move || {
             nav.push(Route::Home {});
         });
@@ -239,32 +264,43 @@ fn Dashboard() -> Element {
         };
     }
 
-    let client = spotify_client_option.unwrap();
-
-    // Initial data fetch
-    {
-        let client_clone = client.clone();
+    // Load data based on mode
+    if is_demo_mode {
+        // Demo mode - use mock data
         use_effect(move || {
-            let client_clone2 = client_clone.clone();
-            let current_time_range = time_range();
+            user.set(Some(get_mock_user()));
+            top_tracks.set(get_mock_top_tracks());
+            top_artists.set(get_mock_top_artists());
+            playlists.set(get_mock_playlists());
+            recently_played.set(get_mock_recently_played());
+            loading.set(false);
+        });
+    } else if let Some(ref client) = spotify_client_option {
+        // Real mode - fetch from Spotify API
+        // Initial data fetch
+        {
+            let client_clone = client.clone();
+            use_effect(move || {
+                let client_clone2 = client_clone.clone();
+                let current_time_range = time_range();
 
-            spawn(async move {
-                // Fetch user data
-                match client_clone2.get_current_user().await {
-                    Ok(user_data) => {
-                        user.set(Some(user_data));
+                spawn(async move {
+                    // Fetch user data
+                    match client_clone2.get_current_user().await {
+                        Ok(user_data) => {
+                            user.set(Some(user_data));
+                        }
+                        Err(e) => {
+                            eprintln!("Failed to fetch user: {}", e);
+                            error.set(Some(format!("Failed to fetch user data: {}", e)));
+                        }
                     }
-                    Err(e) => {
-                        eprintln!("Failed to fetch user: {}", e);
-                        error.set(Some(format!("Failed to fetch user data: {}", e)));
-                    }
-                }
 
-                // Fetch top tracks
-                match client_clone2.get_top_tracks(20, &current_time_range).await {
-                    Ok(tracks) => {
-                        top_tracks.set(tracks);
-                    }
+                    // Fetch top tracks
+                    match client_clone2.get_top_tracks(20, &current_time_range).await {
+                        Ok(tracks) => {
+                            top_tracks.set(tracks);
+                        }
                     Err(e) => {
                         eprintln!("Failed to fetch top tracks: {}", e);
                     }
@@ -306,78 +342,228 @@ fn Dashboard() -> Element {
             });
         });
     }
+    }
 
     // Create event handlers for time range buttons
-    let client_for_short = client.clone();
-    let on_short_term = move |_| {
-        let new_range = "short_term".to_string();
-        time_range.set(new_range.clone());
-        loading.set(true);
+    let on_short_term = {
+        let client_opt = spotify_client_option.clone();
+        let demo = is_demo_mode;
+        move |_| {
+            let new_range = "short_term".to_string();
+            time_range.set(new_range.clone());
 
-        let client_clone = client_for_short.clone();
-        spawn(async move {
-            if let Ok(tracks) = client_clone.get_top_tracks(20, &new_range).await {
-                top_tracks.set(tracks);
+            if demo {
+                return; // Just update UI state in demo mode
             }
 
-            if let Ok(artists) = client_clone.get_top_artists(20, &new_range).await {
-                top_artists.set(artists);
-            }
+            if let Some(client) = client_opt.clone() {
+                loading.set(true);
+                spawn(async move {
+                    if let Ok(tracks) = client.get_top_tracks(20, &new_range).await {
+                        top_tracks.set(tracks);
+                    }
 
-            loading.set(false);
-        });
+                    if let Ok(artists) = client.get_top_artists(20, &new_range).await {
+                        top_artists.set(artists);
+                    }
+
+                    loading.set(false);
+                });
+            }
+        }
     };
 
-    let client_for_medium = client.clone();
-    let on_medium_term = move |_| {
-        let new_range = "medium_term".to_string();
-        time_range.set(new_range.clone());
-        loading.set(true);
+    let on_medium_term = {
+        let client_opt = spotify_client_option.clone();
+        let demo = is_demo_mode;
+        move |_| {
+            let new_range = "medium_term".to_string();
+            time_range.set(new_range.clone());
 
-        let client_clone = client_for_medium.clone();
-        spawn(async move {
-            if let Ok(tracks) = client_clone.get_top_tracks(20, &new_range).await {
-                top_tracks.set(tracks);
+            if demo {
+                return;
             }
 
-            if let Ok(artists) = client_clone.get_top_artists(20, &new_range).await {
-                top_artists.set(artists);
-            }
+            if let Some(client) = client_opt.clone() {
+                loading.set(true);
+                spawn(async move {
+                    if let Ok(tracks) = client.get_top_tracks(20, &new_range).await {
+                        top_tracks.set(tracks);
+                    }
 
-            loading.set(false);
-        });
+                    if let Ok(artists) = client.get_top_artists(20, &new_range).await {
+                        top_artists.set(artists);
+                    }
+
+                    loading.set(false);
+                });
+            }
+        }
     };
 
-    let client_for_long = client.clone();
-    let on_long_term = move |_| {
-        let new_range = "long_term".to_string();
-        time_range.set(new_range.clone());
-        loading.set(true);
+    let on_long_term = {
+        let client_opt = spotify_client_option.clone();
+        let demo = is_demo_mode;
+        move |_| {
+            let new_range = "long_term".to_string();
+            time_range.set(new_range.clone());
 
-        let client_clone = client_for_long.clone();
-        spawn(async move {
-            if let Ok(tracks) = client_clone.get_top_tracks(20, &new_range).await {
-                top_tracks.set(tracks);
+            if demo {
+                return;
             }
 
-            if let Ok(artists) = client_clone.get_top_artists(20, &new_range).await {
-                top_artists.set(artists);
-            }
+            if let Some(client) = client_opt.clone() {
+                loading.set(true);
+                spawn(async move {
+                    if let Ok(tracks) = client.get_top_tracks(20, &new_range).await {
+                        top_tracks.set(tracks);
+                    }
 
-            loading.set(false);
-        });
+                    if let Ok(artists) = client.get_top_artists(20, &new_range).await {
+                        top_artists.set(artists);
+                    }
+
+                    loading.set(false);
+                });
+            }
+        }
     };
 
     // Import playlist handler
     let on_import_playlist = {
-        let client_for_import = client.clone();
+        let demo = is_demo_mode;
+        let client_opt = spotify_client_option.clone();
         move |_| {
-            let client_clone = client_for_import.clone();
+            if demo {
+                println!("Import not available in demo mode");
+                return;
+            }
+
+            let client_opt = client_opt.clone();
             spawn(async move {
                 if let Some(file_path) = pick_json_file() {
-                    import_playlist(client_clone, file_path).await;
+                    // Read and parse the JSON file
+                    match std::fs::read_to_string(&file_path) {
+                        Ok(file_content) => {
+                            match serde_json::from_str::<serde_json::Value>(&file_content) {
+                                Ok(json_data) => {
+                                    // Extract playlist info
+                                    let name = json_data["info"]["name"].as_str().unwrap_or("Imported Playlist").to_string();
+                                    let description = json_data["info"]["description"].as_str().unwrap_or("").to_string();
+                                    let author = json_data["info"]["author"].as_str().unwrap_or("Unknown").to_string();
+
+                                    // Extract track URIs
+                                    let track_uris: Vec<String> = json_data["tracks"]
+                                        .as_array()
+                                        .map(|arr| {
+                                            arr.iter()
+                                                .filter_map(|t| t.as_str().map(String::from))
+                                                .collect()
+                                        })
+                                        .unwrap_or_default();
+
+                                    if track_uris.is_empty() {
+                                        eprintln!("No tracks found in JSON file");
+                                        error.set(Some("No tracks found in the selected file".to_string()));
+                                        return;
+                                    }
+
+                                    // Set modal data
+                                    import_name.set(name);
+                                    import_description.set(description);
+                                    import_author.set(author);
+                                    import_track_uris.set(track_uris.clone());
+                                    show_import_modal.set(true);
+                                    loading_tracks.set(true);
+
+                                    // Fetch track details from Spotify
+                                    if let Some(client) = client_opt {
+                                        // Extract track IDs from URIs (spotify:track:ID)
+                                        let track_ids: Vec<String> = track_uris.iter()
+                                            .filter_map(|uri| {
+                                                uri.split(':').nth(2).map(String::from)
+                                            })
+                                            .collect();
+
+                                        match client.get_tracks(track_ids).await {
+                                            Ok(tracks) => {
+                                                import_tracks.set(tracks);
+                                                loading_tracks.set(false);
+                                            }
+                                            Err(e) => {
+                                                eprintln!("Failed to fetch track details: {}", e);
+                                                loading_tracks.set(false);
+                                            }
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    eprintln!("Failed to parse JSON: {}", e);
+                                    error.set(Some(format!("Failed to parse JSON file: {}", e)));
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            eprintln!("Failed to read file: {}", e);
+                            error.set(Some(format!("Failed to read file: {}", e)));
+                        }
+                    }
                 }
             });
+        }
+    };
+
+    // Confirm import handler
+    let confirm_import = {
+        let client_opt = spotify_client_option.clone();
+        move |_| {
+            if let Some(client) = client_opt.clone() {
+                importing.set(true);
+
+                let name = import_name();
+                let description = import_description();
+                let track_uris = import_track_uris();
+
+                spawn(async move {
+                    // Create the playlist
+                    match client.create_playlist(&name, &description, false).await {
+                        Ok(playlist) => {
+                            println!("✓ Created playlist: {}", playlist.name);
+
+                            // Add tracks to the playlist
+                            match client.add_tracks_to_playlist(&playlist.id, track_uris).await {
+                                Ok(_) => {
+                                    println!("✓ Successfully imported playlist!");
+
+                                    // Refresh playlists
+                                    match client.get_playlists(50).await {
+                                        Ok(updated_playlists) => {
+                                            println!("✓ Refreshed playlist list");
+                                            playlists.set(updated_playlists);
+                                            show_import_modal.set(false);
+                                            importing.set(false);
+                                        }
+                                        Err(e) => {
+                                            eprintln!("Failed to refresh playlists: {}", e);
+                                            importing.set(false);
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    eprintln!("Failed to add tracks to playlist: {}", e);
+                                    error.set(Some(format!("Failed to add tracks: {}", e)));
+                                    importing.set(false);
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            eprintln!("Failed to create playlist: {}", e);
+                            error.set(Some(format!("Failed to create playlist: {}", e)));
+                            importing.set(false);
+                        }
+                    }
+                });
+            }
         }
     };
 
@@ -389,6 +575,15 @@ fn Dashboard() -> Element {
                 mouse_pos.set((coords.x as i32, coords.y as i32));
             },
             style: "--mouse-x: {mouse_pos().0}px; --mouse-y: {mouse_pos().1}px;",
+
+            if is_demo_mode {
+                div { style: "background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); padding: 12px 20px; text-align: center; margin-bottom: 20px; border-radius: 8px;",
+                    p { style: "margin: 0; font-weight: 600; font-size: 0.95rem;",
+                        "🎭 Demo Mode - Using mock data (no Spotify connection required)"
+                    }
+                }
+            }
+
             header { class: "dashboard-header",
                 div { class: "header-row",
                     h1 { class: "dashboard-title", "Your Spotify Stats" }
@@ -432,6 +627,120 @@ fn Dashboard() -> Element {
                     RecentlyPlayed { recent_tracks: recently_played }
                 }
             }
+
+            // Import Playlist Preview Modal
+            if show_import_modal() {
+                div {
+                    class: "modal-overlay",
+                    onclick: move |_| show_import_modal.set(false),
+                    div {
+                        class: "modal-content import-modal",
+                        onclick: move |e| e.stop_propagation(),
+                        div { class: "modal-header",
+                            h2 { "Import Playlist" }
+                            button {
+                                class: "modal-close",
+                                onclick: move |_| show_import_modal.set(false),
+                                "×"
+                            }
+                        }
+
+                        div { class: "modal-body",
+                            div { class: "import-form",
+                                div { class: "form-group",
+                                    label { "Playlist Name" }
+                                    input {
+                                        r#type: "text",
+                                        class: "form-input",
+                                        value: "{import_name()}",
+                                        oninput: move |e| import_name.set(e.value().clone()),
+                                    }
+                                }
+
+                                div { class: "form-group",
+                                    label { "Description" }
+                                    textarea {
+                                        class: "form-textarea",
+                                        value: "{import_description()}",
+                                        oninput: move |e| import_description.set(e.value().clone()),
+                                        rows: "3"
+                                    }
+                                }
+
+                                div { class: "form-group",
+                                    label { "Original Author" }
+                                    p { class: "author-text", "{import_author()}" }
+                                }
+
+                                div { class: "form-group",
+                                    label { "Tracks ({import_track_uris().len()} songs)" }
+
+                                    if loading_tracks() {
+                                        div { class: "tracks-preview",
+                                            p { style: "text-align: center; padding: 20px; color: var(--text-secondary);",
+                                                "Loading track details..."
+                                            }
+                                        }
+                                    } else if import_tracks().is_empty() {
+                                        div { class: "tracks-preview",
+                                            for (index, track_uri) in import_track_uris().iter().enumerate() {
+                                                div { class: "track-preview-item",
+                                                    key: "{index}",
+                                                    span { class: "track-number", "{index + 1}." }
+                                                    span { class: "track-uri", "{track_uri}" }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        div { class: "tracks-preview",
+                                            for (index, track) in import_tracks().iter().enumerate() {
+                                                div { class: "track-preview-item",
+                                                    key: "{index}",
+                                                    span { class: "track-number", "{index + 1}." }
+                                                    if let Some(image) = track.album.images.first() {
+                                                        img {
+                                                            class: "track-preview-image",
+                                                            src: "{image.url}",
+                                                            alt: "{track.name}"
+                                                        }
+                                                    }
+                                                    div { class: "track-preview-info",
+                                                        div { class: "track-preview-name", "{track.name}" }
+                                                        div { class: "track-preview-artist",
+                                                            {track.artists.iter()
+                                                                .map(|a| a.name.clone())
+                                                                .collect::<Vec<_>>()
+                                                                .join(", ")}
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        div { class: "modal-footer",
+                            button {
+                                class: "modal-button cancel-button",
+                                onclick: move |_| show_import_modal.set(false),
+                                "Cancel"
+                            }
+                            button {
+                                class: "modal-button import-confirm-button",
+                                onclick: confirm_import,
+                                disabled: importing(),
+                                if importing() {
+                                    "Importing..."
+                                } else {
+                                    "Import Playlist"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -446,6 +755,9 @@ fn PlaylistDetail(id: String) -> Element {
     let mut loading = use_signal(|| true);
     let mut error = use_signal(|| None::<String>);
     let mut sort_order = use_signal(|| "default".to_string());
+    let mut show_duplicates_modal = use_signal(|| false);
+    let mut duplicates = use_signal(|| Vec::<(Track, Vec<usize>)>::new());
+    let mut removing_duplicates = use_signal(|| false);
 
     // Check if we have a Spotify client with token
     let spotify_client_option = context.spotify_client.read().clone();
@@ -522,33 +834,27 @@ fn PlaylistDetail(id: String) -> Element {
                     Ok(json_string) => {
                         // Sanitize filename
                         let filename = sanitize_filename(&pl.name);
-                        let filepath = format!("{}.json", filename);
+                        let default_filename = format!("{}.json", filename);
 
-                        // Write to file in Downloads or home directory
-                        let home_dir = std::env::var("HOME")
-                            .or_else(|_| std::env::var("USERPROFILE"))
-                            .unwrap_or_else(|_| ".".to_string());
+                        // Show save dialog to let user choose location
+                        if let Some(save_path) = save_json_file(&default_filename) {
+                            // Ensure the path ends with .json
+                            let final_path = if save_path.ends_with(".json") {
+                                save_path
+                            } else {
+                                format!("{}.json", save_path)
+                            };
 
-                        let downloads_path = format!("{}/Downloads/{}", home_dir, filepath);
-                        let home_path = format!("{}/{}", home_dir, filepath);
-
-                        // Try Downloads first, fall back to home directory
-                        let result = std::fs::write(&downloads_path, &json_string)
-                            .or_else(|_| std::fs::write(&home_path, &json_string));
-
-                        match result {
-                            Ok(_) => {
-                                println!("✓ Playlist exported to: {}",
-                                    if std::path::Path::new(&downloads_path).exists() {
-                                        downloads_path
-                                    } else {
-                                        home_path
-                                    }
-                                );
+                            match std::fs::write(&final_path, &json_string) {
+                                Ok(_) => {
+                                    println!("✓ Playlist exported to: {}", final_path);
+                                }
+                                Err(e) => {
+                                    eprintln!("Failed to save playlist: {}", e);
+                                }
                             }
-                            Err(e) => {
-                                eprintln!("Failed to save playlist: {}", e);
-                            }
+                        } else {
+                            println!("Save cancelled by user");
                         }
                     }
                     Err(e) => {
@@ -557,6 +863,91 @@ fn PlaylistDetail(id: String) -> Element {
                 }
             });
         }
+    };
+
+    // Find and show duplicates
+    let find_duplicates = move |_| {
+        let tracks_list = tracks();
+        let mut track_map: std::collections::HashMap<String, Vec<usize>> = std::collections::HashMap::new();
+
+        // Group tracks by ID
+        for (index, item) in tracks_list.iter().enumerate() {
+            track_map.entry(item.track.id.clone())
+                .or_insert_with(Vec::new)
+                .push(index);
+        }
+
+        // Find tracks that appear more than once
+        let duplicate_tracks: Vec<(Track, Vec<usize>)> = track_map
+            .into_iter()
+            .filter(|(_, indices)| indices.len() > 1)
+            .map(|(track_id, indices)| {
+                // Get the track from the first occurrence
+                let track = tracks_list[indices[0]].track.clone();
+                (track, indices)
+            })
+            .collect();
+
+        if duplicate_tracks.is_empty() {
+            // No duplicates found - could show a message
+            println!("No duplicates found");
+        } else {
+            duplicates.set(duplicate_tracks);
+            show_duplicates_modal.set(true);
+        }
+    };
+
+    // Remove duplicates from playlist
+    let remove_duplicates_handler = move |_| {
+        let client = client.clone();
+        let playlist_id = id.clone();
+        let duplicates_list = duplicates();
+
+        removing_duplicates.set(true);
+
+        spawn(async move {
+            let mut tracks_to_remove = Vec::new();
+
+            // For each duplicate track, keep the first occurrence and remove the rest
+            for (track, indices) in duplicates_list.iter() {
+                println!("DEBUG: Track '{}' appears at positions: {:?}", track.name, indices);
+                // Skip the first index (keep one copy), add the rest for removal with their positions
+                for &index in indices.iter().skip(1) {
+                    println!("DEBUG: Will remove '{}' at position {}", track.name, index);
+                    tracks_to_remove.push((format!("spotify:track:{}", track.id), index));
+                }
+            }
+
+            // Sort by position in descending order to avoid index shifting issues
+            tracks_to_remove.sort_by(|a, b| b.1.cmp(&a.1));
+
+            println!("DEBUG: Total tracks to remove: {}", tracks_to_remove.len());
+
+            if !tracks_to_remove.is_empty() {
+                match client.remove_tracks_from_playlist(&playlist_id, tracks_to_remove).await {
+                    Ok(_) => {
+                        println!("✓ Successfully removed duplicates");
+                        // Refresh the track list
+                        match client.get_playlist_tracks(&playlist_id).await {
+                            Ok(updated_tracks) => {
+                                tracks.set(updated_tracks);
+                                show_duplicates_modal.set(false);
+                                duplicates.set(Vec::new());
+                            }
+                            Err(e) => {
+                                eprintln!("Failed to refresh tracks: {}", e);
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to remove duplicates: {}", e);
+                        error.set(Some(format!("Failed to remove duplicates: {}", e)));
+                    }
+                }
+            }
+
+            removing_duplicates.set(false);
+        });
     };
 
     // Sort tracks based on selected order
@@ -598,6 +989,12 @@ fn PlaylistDetail(id: String) -> Element {
                             class: "download-button",
                             onclick: download_json,
                             "⬇ Download JSON"
+                        }
+                        button {
+                            class: "remove-duplicates-button",
+                            onclick: find_duplicates,
+                            style: "margin-left: 10px;",
+                            "🔍 Remove Duplicates"
                         }
                     }
                 }
@@ -688,6 +1085,84 @@ fn PlaylistDetail(id: String) -> Element {
                     }
                 }
             }
+
+            // Duplicates Modal
+            if show_duplicates_modal() {
+                div {
+                    class: "modal-overlay",
+                    onclick: move |_| show_duplicates_modal.set(false),
+                    div {
+                        class: "modal-content",
+                        onclick: move |e| e.stop_propagation(),
+                        div { class: "modal-header",
+                            h2 { "Duplicate Tracks Found" }
+                            button {
+                                class: "modal-close",
+                                onclick: move |_| show_duplicates_modal.set(false),
+                                "×"
+                            }
+                        }
+
+                        div { class: "modal-body",
+                            if duplicates().is_empty() {
+                                p { style: "text-align: center; padding: 20px;",
+                                    "No duplicate tracks found in this playlist!"
+                                }
+                            } else {
+                                p { style: "margin-bottom: 15px;",
+                                    "Found {duplicates().len()} duplicate track(s). The first occurrence will be kept."
+                                }
+
+                                div { class: "duplicates-list",
+                                    for (track, indices) in duplicates().iter() {
+                                        div { class: "duplicate-item",
+                                            if let Some(image) = track.album.images.first() {
+                                                img {
+                                                    class: "duplicate-image",
+                                                    src: "{image.url}",
+                                                    alt: "{track.name}"
+                                                }
+                                            }
+                                            div { class: "duplicate-info",
+                                                div { class: "duplicate-name", "{track.name}" }
+                                                div { class: "duplicate-artist",
+                                                    {track.artists.iter()
+                                                        .map(|a| a.name.clone())
+                                                        .collect::<Vec<_>>()
+                                                        .join(", ")}
+                                                }
+                                                div { class: "duplicate-count",
+                                                    "Appears {indices.len()} times (will remove {indices.len() - 1})"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        div { class: "modal-footer",
+                            button {
+                                class: "modal-button cancel-button",
+                                onclick: move |_| show_duplicates_modal.set(false),
+                                "Cancel"
+                            }
+                            if !duplicates().is_empty() {
+                                button {
+                                    class: "modal-button remove-button",
+                                    onclick: remove_duplicates_handler,
+                                    disabled: removing_duplicates(),
+                                    if removing_duplicates() {
+                                        "Removing..."
+                                    } else {
+                                        "Remove Duplicates"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -749,6 +1224,71 @@ fn pick_json_file() -> Option<String> {
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).ok()?;
         return Some(input.trim().to_string());
+    }
+
+    None
+}
+
+fn save_json_file(default_filename: &str) -> Option<String> {
+    use std::process::Command;
+
+    // Use native save dialog based on OS
+    #[cfg(target_os = "macos")]
+    {
+        let script = format!(
+            r#"POSIX path of (choose file name with prompt "Save playlist as" default name "{}")"#,
+            default_filename
+        );
+
+        let output = Command::new("osascript")
+            .arg("-e")
+            .arg(&script)
+            .output()
+            .ok()?;
+
+        if output.status.success() {
+            let path = String::from_utf8(output.stdout).ok()?;
+            let trimmed = path.trim().to_string();
+            if !trimmed.is_empty() {
+                return Some(trimmed);
+            }
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        let output = Command::new("zenity")
+            .args(&[
+                "--file-selection",
+                "--save",
+                "--confirm-overwrite",
+                &format!("--filename={}", default_filename),
+                "--file-filter=*.json"
+            ])
+            .output()
+            .ok()?;
+
+        if output.status.success() {
+            let path = String::from_utf8(output.stdout).ok()?;
+            return Some(path.trim().to_string());
+        }
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        // For Windows, we'll use a simple dialog
+        println!("Enter the full path where you want to save {} (or press Enter for default):", default_filename);
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).ok()?;
+        let path = input.trim();
+
+        if path.is_empty() {
+            // Use default Downloads location
+            let home_dir = std::env::var("USERPROFILE").ok()?;
+            return Some(format!("{}\\Downloads\\{}", home_dir, default_filename));
+        }
+
+        return Some(path.to_string());
     }
 
     None
@@ -828,4 +1368,155 @@ fn generate_random_string(length: usize) -> String {
             CHARSET[idx] as char
         })
         .collect()
+}
+
+// Mock data generation functions for demo mode
+fn get_mock_user() -> User {
+    User {
+        display_name: Some("Demo User".to_string()),
+        id: "demo_user_123".to_string(),
+        email: Some("demo@example.com".to_string()),
+        images: vec![],
+        followers: Followers { total: 42 },
+        country: Some("US".to_string()),
+    }
+}
+
+fn get_mock_top_tracks() -> Vec<Track> {
+    vec![
+        Track {
+            id: "track1".to_string(),
+            name: "Bohemian Rhapsody".to_string(),
+            artists: vec![Artist {
+                id: "artist1".to_string(),
+                name: "Queen".to_string(),
+                genres: None,
+                images: None,
+                external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+                followers: None,
+            }],
+            album: Album {
+                id: "album1".to_string(),
+                name: "A Night at the Opera".to_string(),
+                images: vec![],
+                release_date: "1975-11-21".to_string(),
+            },
+            duration_ms: 354000,
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+        },
+        Track {
+            id: "track2".to_string(),
+            name: "Stairway to Heaven".to_string(),
+            artists: vec![Artist {
+                id: "artist2".to_string(),
+                name: "Led Zeppelin".to_string(),
+                genres: None,
+                images: None,
+                external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+                followers: None,
+            }],
+            album: Album {
+                id: "album2".to_string(),
+                name: "Led Zeppelin IV".to_string(),
+                images: vec![],
+                release_date: "1971-11-08".to_string(),
+            },
+            duration_ms: 482000,
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+        },
+        Track {
+            id: "track3".to_string(),
+            name: "Hotel California".to_string(),
+            artists: vec![Artist {
+                id: "artist3".to_string(),
+                name: "Eagles".to_string(),
+                genres: None,
+                images: None,
+                external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+                followers: None,
+            }],
+            album: Album {
+                id: "album3".to_string(),
+                name: "Hotel California".to_string(),
+                images: vec![],
+                release_date: "1976-12-08".to_string(),
+            },
+            duration_ms: 391000,
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+        },
+    ]
+}
+
+fn get_mock_top_artists() -> Vec<Artist> {
+    vec![
+        Artist {
+            id: "artist1".to_string(),
+            name: "Queen".to_string(),
+            genres: Some(vec!["classic rock".to_string(), "glam rock".to_string()]),
+            images: Some(vec![]),
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+            followers: Some(Followers { total: 35000000 }),
+        },
+        Artist {
+            id: "artist2".to_string(),
+            name: "Led Zeppelin".to_string(),
+            genres: Some(vec!["hard rock".to_string(), "classic rock".to_string()]),
+            images: Some(vec![]),
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+            followers: Some(Followers { total: 28000000 }),
+        },
+        Artist {
+            id: "artist3".to_string(),
+            name: "Eagles".to_string(),
+            genres: Some(vec!["classic rock".to_string(), "soft rock".to_string()]),
+            images: Some(vec![]),
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+            followers: Some(Followers { total: 15000000 }),
+        },
+    ]
+}
+
+fn get_mock_playlists() -> Vec<Playlist> {
+    vec![
+        Playlist {
+            id: "playlist1".to_string(),
+            name: "Classic Rock Favorites".to_string(),
+            description: Some("The best of classic rock".to_string()),
+            images: vec![],
+            tracks: PlaylistTracks { total: 25 },
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+            owner: PlaylistOwner {
+                display_name: Some("Demo User".to_string()),
+                id: "demo_user_123".to_string(),
+            },
+            public: Some(true),
+        },
+        Playlist {
+            id: "playlist2".to_string(),
+            name: "Road Trip Mix".to_string(),
+            description: Some("Perfect songs for long drives".to_string()),
+            images: vec![],
+            tracks: PlaylistTracks { total: 40 },
+            external_urls: ExternalUrls { spotify: "https://open.spotify.com".to_string() },
+            owner: PlaylistOwner {
+                display_name: Some("Demo User".to_string()),
+                id: "demo_user_123".to_string(),
+            },
+            public: Some(false),
+        },
+    ]
+}
+
+fn get_mock_recently_played() -> Vec<RecentlyPlayedItem> {
+    let tracks = get_mock_top_tracks();
+    vec![
+        RecentlyPlayedItem {
+            track: tracks[0].clone(),
+            played_at: "2024-12-26T10:30:00Z".to_string(),
+        },
+        RecentlyPlayedItem {
+            track: tracks[1].clone(),
+            played_at: "2024-12-26T09:15:00Z".to_string(),
+        },
+    ]
 }

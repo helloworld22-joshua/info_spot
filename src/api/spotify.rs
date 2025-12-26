@@ -185,7 +185,7 @@ impl SpotifyClient {
 
         let status = response.status();
         let response_text = response.text().await?;
-        
+
         println!("DEBUG Playlists - Status: {}", status);
         println!("DEBUG Playlists - Response: {}", response_text);
 
@@ -306,7 +306,7 @@ impl SpotifyClient {
 
         let status = response.status();
         let response_text = response.text().await?;
-        
+
         println!("DEBUG Recently Played - Status: {}", status);
 
         let recent_response: RecentlyPlayedResponse = serde_json::from_str(&response_text)
@@ -333,12 +333,102 @@ impl SpotifyClient {
 
         let status = response.status();
         let response_text = response.text().await?;
-        
+
         println!("DEBUG Playlist Tracks - Status: {}", status);
 
         let tracks_response: PlaylistTracksResponse = serde_json::from_str(&response_text)
             .context(format!("Failed to parse playlist tracks response: {}", response_text))?;
 
         Ok(tracks_response.items)
+    }
+
+    pub async fn remove_tracks_from_playlist(&self, playlist_id: &str, tracks_with_positions: Vec<(String, usize)>) -> Result<()> {
+        let token = self
+            .get_token()
+            .await
+            .context("No access token available")?;
+
+        let url = format!("https://api.spotify.com/v1/playlists/{}/tracks", playlist_id);
+
+        // Group positions by URI
+        let mut uri_positions: std::collections::HashMap<String, Vec<usize>> = std::collections::HashMap::new();
+        for (uri, position) in tracks_with_positions {
+            uri_positions.entry(uri).or_insert_with(Vec::new).push(position);
+        }
+
+        // For each unique URI, remove all its positions in one request
+        for (uri, positions) in uri_positions {
+            let tracks_to_remove = vec![serde_json::json!({
+                "uri": uri,
+                "positions": positions
+            })];
+
+            let body = serde_json::json!({
+                "tracks": tracks_to_remove
+            });
+
+            println!("DEBUG: Removing track with body: {}", serde_json::to_string_pretty(&body).unwrap());
+
+            let response = self
+                .client
+                .delete(&url)
+                .header("Authorization", format!("Bearer {}", token))
+                .header("Content-Type", "application/json")
+                .json(&body)
+                .send()
+                .await
+                .context("Failed to remove tracks from playlist")?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let text = response.text().await?;
+                return Err(anyhow::anyhow!("Failed to remove tracks: {} - {}", status, text));
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn get_tracks(&self, track_ids: Vec<String>) -> Result<Vec<Track>> {
+        let token = self
+            .get_token()
+            .await
+            .context("No access token available")?;
+
+        let mut all_tracks = Vec::new();
+
+        // Spotify API allows up to 50 tracks per request
+        for chunk in track_ids.chunks(50) {
+            let ids = chunk.join(",");
+            let url = format!("https://api.spotify.com/v1/tracks?ids={}", ids);
+
+            let response = self
+                .client
+                .get(&url)
+                .header("Authorization", format!("Bearer {}", token))
+                .send()
+                .await
+                .context("Failed to fetch tracks")?;
+
+            let status = response.status();
+            let response_text = response.text().await?;
+
+            if !status.is_success() {
+                return Err(anyhow::anyhow!("Failed to fetch tracks: {} - {}", status, response_text));
+            }
+
+            #[derive(Deserialize)]
+            struct TracksResponse {
+                tracks: Vec<Option<Track>>,
+            }
+
+            let tracks_response: TracksResponse = serde_json::from_str(&response_text)
+                .context(format!("Failed to parse tracks response: {}", response_text))?;
+
+            // Filter out None values (tracks that don't exist or are unavailable)
+            all_tracks.extend(tracks_response.tracks.into_iter().filter_map(|t| t));
+        }
+
+        Ok(all_tracks)
     }
 }
