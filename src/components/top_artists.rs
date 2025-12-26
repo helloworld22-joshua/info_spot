@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 #[component]
 pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
     rsx! {
-        document::Link { rel: "ystylesheet", href: asset!("assets/compiled/top_artists.css") }
+        document::Link { rel: "stylesheet", href: asset!("assets/compiled/top_artists.css") }
         div { class: "top-artists",
             h2 { class: "section-title", "Top Artists" }
             div { class: "artists-grid",

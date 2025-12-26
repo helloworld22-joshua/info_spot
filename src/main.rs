@@ -428,10 +428,10 @@ fn Dashboard() -> Element {
             } else {
                 div { class: "dashboard-content",
                     UserProfile { user: user }
-                    RecentlyPlayed { recent_tracks: recently_played }
                     TopTracks { tracks: top_tracks }
                     TopArtists { artists: top_artists }
                     Playlists { playlists: playlists }
+                    RecentlyPlayed { recent_tracks: recently_played }
                 }
             }
         }
