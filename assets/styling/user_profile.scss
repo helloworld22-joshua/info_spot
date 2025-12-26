@@ -1,115 +1,138 @@
-.user-profile {
-  margin-bottom: 20px;
-}
-
 .profile-card {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  background: var(--bg1-alpha);
-  -webkit-backdrop-filter: var(--blur);
-          backdrop-filter: var(--blur);
-  padding: 40px;
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	display: flex;
+	align-items: center;
+	gap: 30px;
+	background: rgba(171, 171, 171, 0.15);
+	backdrop-filter: var(--blur);
+	padding: 40px;
+	border-radius: var(--border-radius);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	overflow: hidden;
+
+	&::before {
+		content: "";
+		position: fixed;
+		display: block;
+		width: 500px;
+		height: 500px;
+		background: radial-gradient(500px circle, hsla(276, 73%, 42%, 0.15), transparent 50%);
+		// Maybe not optimal
+		top: calc(var(--mouse-y) - var(--position-y) + var(--scroll-y));
+		left: calc(var(--mouse-x) - var(--position-x) + var(--scroll-x));
+		transform: translate(-50%, -50%);
+		z-index: -2;
+	}
+
+	&::after {
+		content: "";
+		position: absolute;
+		z-index: -1;
+		inset: 2px;
+		background-color: rgba(0, 0, 0, 0.4);
+		border-radius: var(--border-radius);
+		transition: background-color 0.7s;
+		// The two lines below are a faster but slightly imperfect alternative
+		// clip-path: inherit;
+		// inset: var(--border-width);
+	}
 }
 
 .profile-image {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  transition: var(--transition);
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	-o-object-fit: cover;
+	object-fit: cover;
+	transition: var(--transition);
 }
 .profile-image:hover {
-  scale: 1.1;
-  border-radius: var(--border-radius);
+	scale: 1.1;
+	border-radius: var(--border-radius);
 }
 
 .profile-info {
-  flex: 1;
+	flex: 1;
 }
 
 .profile-name {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+	font-size: 2.5rem;
+	margin-bottom: 20px;
 }
 
 .profile-stats {
-  display: flex;
-  gap: 40px;
+	display: flex;
+	gap: 40px;
 }
 
 .stat {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
 }
 
 .stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary);
+	font-size: 2rem;
+	font-weight: 700;
+	color: var(--primary);
 }
 
 .stat-label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}/*# sourceMappingURL=user_profile.css.map */
+	color: var(--text-secondary);
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+} /*# sourceMappingURL=user_profile.css.map */
 /* Profile Actions (Buttons) */
 .profile-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 20px;
+	display: flex;
+	gap: 15px;
+	margin-top: 20px;
 }
 
 .profile-actions button {
-  padding: 12px 24px;
-  border-radius: 500px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+	padding: 12px 24px;
+	border-radius: 500px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
 }
 
 .import-button {
-  background: var(--primary);
-  color: var(--text-primary);
-  border: none;
+	background: var(--primary);
+	color: var(--text-primary);
+	border: none;
 }
 
 .import-button:hover {
-  background: #1aa34a;
-  transform: scale(1.05);
+	background: #1aa34a;
+	transform: scale(1.05);
 }
 
 .logout-button {
-  background: transparent;
-  color: #ff4444;
-  border: 1px solid #ff4444;
+	background: transparent;
+	color: #ff4444;
+	border: 1px solid #ff4444;
 }
 
 .logout-button:hover {
-  background: #ff4444;
-  color: #ffffff;
-  transform: scale(1.05);
+	background: #ff4444;
+	color: #ffffff;
+	transform: scale(1.05);
 }
 
 @media (max-width: 768px) {
-  .profile-card {
-    flex-direction: column;
-    text-align: center;
-  }
+	.profile-card {
+		flex-direction: column;
+		text-align: center;
+	}
 
-  .profile-actions {
-    width: 100%;
-    flex-direction: column;
-  }
+	.profile-actions {
+		width: 100%;
+		flex-direction: column;
+	}
 
-  .profile-actions button {
-    width: 100%;
-  }
+	.profile-actions button {
+		width: 100%;
+	}
 }

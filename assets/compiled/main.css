@@ -93,19 +93,13 @@ button {
 }
 
 .demo-button {
-  background: transparent;
+  display: block;
+  background: none;
   color: var(--text-secondary);
-  padding: 12px 36px;
-  border: 2px solid var(--text-secondary);
-  border-radius: 500px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: var(--transition);
+  margin: auto;
 }
 .demo-button:hover {
-  color: var(--text-primary);
-  border-color: var(--text-primary);
-  transform: scale(1.05);
+  text-decoration: underline;
 }
 
 .callback-container {
@@ -121,6 +115,8 @@ button {
   margin: 0 auto;
   padding: 40px;
   background-color: transparent;
+  height: 100vh; /* Take up the full window height */
+  overflow-y: auto;
   background-image: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 1.5px, #000 0 7px, rgba(0, 0, 0, 0) 7px), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 1.5px, #000 0 7px, rgba(0, 0, 0, 0) 7px);
   background-size: 12px 20px, 12px 20px, 200% 200%, 200% 200%, 200% 200%, 200% 20.7846097px;
   background-position: 0px 0px, 6px 10.39230485px, 0% 0%, 0% 0%, 0% 0px;
@@ -130,8 +126,9 @@ button {
   position: fixed;
   height: 300px;
   width: 300px;
-  top: calc(var(--mouse-y) - 150px);
-  left: calc(var(--mouse-x) - 150px);
+  top: var(--mouse-y);
+  left: var(--mouse-x);
+  transform: translate(-50%, -50%);
   background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
   z-index: -1;
 }

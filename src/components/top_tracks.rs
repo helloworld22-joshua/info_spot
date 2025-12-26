@@ -4,42 +4,37 @@ use dioxus::prelude::*;
 #[component]
 pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/top_tracks.css") }
-        div { class: "top-tracks",
-            h2 { class: "section-title", "Top Tracks" }
-            div { class: "tracks-list",
-                for (index, track) in tracks().iter().enumerate() {
-                    div { class: "track-item", key: "{track.id}",
-                        span { class: "track-number", "{index + 1}" }
-                        if let Some(image) = track.album.images.first() {
-                            img {
-                                class: "track-image",
-                                src: "{image.url}",
-                                alt: "{track.name}"
-                            }
-                        }
-                        div { class: "track-info",
-                            a {
-                                class: "track-name",
-                                href: "{track.external_urls.spotify}",
-                                target: "_blank",
-                                "{track.name}"
-                            }
-                            div { class: "track-artists",
-                                {track.artists.iter()
-                                    .map(|a| a.name.clone())
-                                    .collect::<Vec<_>>()
-                                    .join(", ")}
-                            }
-                        }
-                        div { class: "track-duration",
-                            {format_duration(track.duration_ms)}
-                        }
-                    }
-                }
-            }
-        }
-    }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/top_tracks.css") }
+		div { class: "top-tracks",
+			h2 { class: "section-title", "Top Tracks" }
+			div { class: "tracks-list",
+				for (index , track) in tracks().iter().enumerate() {
+					div { class: "track-item", key: "{track.id}",
+						span { class: "track-number", "{index + 1}" }
+						if let Some(image) = track.album.images.first() {
+							img {
+								class: "track-image",
+								src: "{image.url}",
+								alt: "{track.name}",
+							}
+						}
+						div { class: "track-info",
+							a {
+								class: "track-name",
+								href: "{track.external_urls.spotify}",
+								target: "_blank",
+								"{track.name}"
+							}
+							div { class: "track-artists",
+								{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+							}
+						}
+						div { class: "track-duration", {format_duration(track.duration_ms)} }
+					}
+				}
+			}
+		}
+	}
 }
 
 fn format_duration(ms: u32) -> String {

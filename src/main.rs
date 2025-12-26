@@ -51,10 +51,10 @@ fn App() -> Element {
     });
 
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/main.css") }
-        Router::<Route> {}
-        ToastContainer {}
-    }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/main.css") }
+		Router::<Route> {}
+		ToastContainer {}
+	}
 }
 
 #[derive(Clone, Routable, Debug, PartialEq)]
@@ -165,60 +165,62 @@ fn Home() -> Element {
     };
 
     rsx! {
-        div { class: "home-container",
-            div { class: "login-card",
-                h1 { class: "app-title", "InfoSpot" }
-                p { class: "app-description",
-                    "Connect with Spotify to view your music stats and playlists"
-                }
+		div { class: "home-container",
+			div { class: "login-card",
+				h1 { class: "app-title", "InfoSpot" }
+				p { class: "app-description",
+					"Connect with Spotify to view your music stats and playlists"
+				}
 
-                if credentials_missing {
-                    div { style: "background: #ff4444; padding: 15px; border-radius: 8px; margin-bottom: 20px;",
-                        p { style: "margin-bottom: 10px; font-weight: bold;", "⚠️ Missing Spotify Credentials" }
-                        p { style: "font-size: 0.9rem; margin-bottom: 5px;",
-                            "Please create a .env file in the project root with:"
-                        }
-                        pre { style: "background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; font-size: 0.85rem; overflow-x: auto;",
-                            "SPOTIFY_CLIENT_ID=your_client_id_here\n"
-                            "SPOTIFY_CLIENT_SECRET=your_client_secret_here\n"
-                            "SPOTIFY_REDIRECT_URI=http://127.0.0.1:8888/callback"
-                        }
-                        p { style: "font-size: 0.85rem; margin-top: 10px;",
-                            "Get your credentials at: "
-                            a {
-                                href: "https://developer.spotify.com/dashboard",
-                                target: "_blank",
-                                style: "color: #1ed760; text-decoration: underline;",
-                                "Spotify Developer Dashboard"
-                            }
-                        }
-                    }
-                }
+				if credentials_missing {
+					div { style: "background: #ff4444; padding: 15px; border-radius: 8px; margin-bottom: 20px;",
+						p { style: "margin-bottom: 10px; font-weight: bold;",
+							"⚠️ Missing Spotify Credentials"
+						}
+						p { style: "font-size: 0.9rem; margin-bottom: 5px;",
+							"Please create a .env file in the project root with:"
+						}
+						pre { style: "background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; font-size: 0.85rem; overflow-x: auto;",
+							"SPOTIFY_CLIENT_ID=your_client_id_here\n"
+							"SPOTIFY_CLIENT_SECRET=your_client_secret_here\n"
+							"SPOTIFY_REDIRECT_URI=http://127.0.0.1:8888/callback"
+						}
+						p { style: "font-size: 0.85rem; margin-top: 10px;",
+							"Get your credentials at: "
+							a {
+								href: "https://developer.spotify.com/dashboard",
+								target: "_blank",
+								style: "color: #1ed760; text-decoration: underline;",
+								"Spotify Developer Dashboard"
+							}
+						}
+					}
+				}
 
-                if authenticating() {
-                    p { class: "loading", "Authenticating..." }
-                } else {
-                    button {
-                        class: "login-button",
-                        onclick: handle_login,
-                        disabled: credentials_missing,
-                        style: if credentials_missing { "opacity: 0.5; cursor: not-allowed;" } else { "" },
-                        "Login with Spotify"
-                    }
-                    button {
-                        class: "demo-button",
-                        onclick: handle_demo_mode,
-                        style: "margin-top: 15px;",
-                        "🎭 Try Demo Mode"
-                    }
-                }
+				if authenticating() {
+					p { class: "loading", "Authenticating..." }
+				} else {
+					button {
+						class: "login-button",
+						onclick: handle_login,
+						disabled: credentials_missing,
+						style: if credentials_missing { "opacity: 0.5; cursor: not-allowed;" } else { "" },
+						"Login with Spotify"
+					}
+					button {
+						class: "demo-button",
+						onclick: handle_demo_mode,
+						style: "margin-top: 15px;",
+						"Demo Mode"
+					}
+				}
 
-                if let Some(error) = error_msg() {
-                    p { style: "color: #ff4444; margin-top: 20px;", "{error}" }
-                }
-            }
-        }
-    }
+				if let Some(error) = error_msg() {
+					p { style: "color: #ff4444; margin-top: 20px;", "{error}" }
+				}
+			}
+		}
+	}
 }
 
 #[component]
@@ -238,10 +240,10 @@ fn Callback() -> Element {
     });
 
     rsx! {
-        div { class: "callback-container",
-            p { "Processing authentication..." }
-        }
-    }
+		div { class: "callback-container",
+			p { "Processing authentication..." }
+		}
+	}
 }
 
 #[component]
@@ -280,8 +282,8 @@ fn Dashboard() -> Element {
         });
 
         return rsx! {
-            div { class: "loading", "Redirecting to login..." }
-        };
+			div { class: "loading", "Redirecting to login..." }
+		};
     }
 
     // Load data based on mode
@@ -593,181 +595,198 @@ fn Dashboard() -> Element {
     };
 
     let mut mouse_pos = use_signal(|| (0, 0));
+    let mut scroll_pos = use_signal(|| (0, 0));
     rsx! {
-        div { class: "dashboard-container",
-            onmousemove: move |event| {
-                let coords = event.data().client_coordinates();
-                mouse_pos.set((coords.x as i32, coords.y as i32));
-            },
-            style: "--mouse-x: {mouse_pos().0}px; --mouse-y: {mouse_pos().1}px;",
+		div {
+			class: "dashboard-container",
+			onmousemove: move |event| {
+			    let coords = event.data().client_coordinates();
+			    mouse_pos.set((coords.x as i32, coords.y as i32));
+			},
+			// Inside Dashboard component in main.rs
+			onscroll: move |event| {
+			    // Get the X and Y offsets separately
+			    let x = event.data().scroll_left();
+			    let y = event.data().scroll_top();
 
-            if is_demo_mode {
-                div { style: "background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); padding: 12px 20px; text-align: center; margin-bottom: 20px; border-radius: 8px;",
-                    p { style: "margin: 0; font-weight: 600; font-size: 0.95rem;",
-                        "🎭 Demo Mode - Using mock data (no Spotify connection required)"
-                    }
-                }
-            }
+			    // Update your tuple signal
+			    scroll_pos.set((x as i32, y as i32));
+			},
+			style: "
+                --mouse-x: {mouse_pos().0}px;
+                --mouse-y: {mouse_pos().1}px;
+                --scroll-x: {scroll_pos().0}px;
+                --scroll-y: {scroll_pos().1}px;
+            ",
 
-            header { class: "dashboard-header",
-                div { class: "header-row",
-                    h1 { class: "dashboard-title", "Your Spotify Stats" }
-                }
-                div { class: "time-range-selector",
-                    button {
-                        class: if time_range() == "short_term" { "active" } else { "" },
-                        onclick: on_short_term,
-                        "Last 4 Weeks"
-                    }
-                    button {
-                        class: if time_range() == "medium_term" { "active" } else { "" },
-                        onclick: on_medium_term,
-                        "Last 6 Months"
-                    }
-                    button {
-                        class: if time_range() == "long_term" { "active" } else { "" },
-                        onclick: on_long_term,
-                        "All Time"
-                    }
-                }
-            }
+			if is_demo_mode {
+				div { style: "background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); padding: 12px 20px; text-align: center; margin-bottom: 20px; border-radius: 8px;",
+					p { style: "margin: 0; font-weight: 600; font-size: 0.95rem;",
+						"🎭 Demo Mode - Using mock data (no Spotify connection required)"
+					}
+				}
+			}
 
-            if let Some(err) = error() {
-                div { style: "padding: 20px; background: rgba(255,68,68,0.1); border: 1px solid #ff4444; border-radius: 8px; margin: 20px;",
-                    p { style: "color: #ff4444; margin: 0;", "Error: {err}" }
-                    p { style: "color: #b3b3b3; margin-top: 10px; font-size: 0.9rem;",
-                        "Please try logging in again or check the console for details."
-                    }
-                }
-            }
+			header { class: "dashboard-header",
+				div { class: "header-row",
+					h1 { class: "dashboard-title", "Your Spotify Stats" }
+				}
+				div { class: "time-range-selector",
+					button {
+						class: if time_range() == "short_term" { "active" } else { "" },
+						onclick: on_short_term,
+						"Last 4 Weeks"
+					}
+					button {
+						class: if time_range() == "medium_term" { "active" } else { "" },
+						onclick: on_medium_term,
+						"Last 6 Months"
+					}
+					button {
+						class: if time_range() == "long_term" { "active" } else { "" },
+						onclick: on_long_term,
+						"All Time"
+					}
+				}
+			}
 
-            if loading() {
-                div { class: "loading", "Loading your data..." }
-            } else {
-                div { class: "dashboard-content",
-                    UserProfile { user: user, on_import: on_import_playlist }
-                    TopTracks { tracks: top_tracks }
-                    TopArtists { artists: top_artists }
-                    Playlists { playlists: playlists }
-                    RecentlyPlayed { recent_tracks: recently_played }
-                }
-            }
+			if let Some(err) = error() {
+				div { style: "padding: 20px; background: rgba(255,68,68,0.1); border: 1px solid #ff4444; border-radius: 8px; margin: 20px;",
+					p { style: "color: #ff4444; margin: 0;", "Error: {err}" }
+					p { style: "color: #b3b3b3; margin-top: 10px; font-size: 0.9rem;",
+						"Please try logging in again or check the console for details."
+					}
+				}
+			}
 
-            // Import Playlist Preview Modal
-            if show_import_modal() {
-                div {
-                    class: "modal-overlay",
-                    onclick: move |_| show_import_modal.set(false),
-                    div {
-                        class: "modal-content import-modal",
-                        onclick: move |e| e.stop_propagation(),
-                        div { class: "modal-header",
-                            h2 { "Import Playlist" }
-                            button {
-                                class: "modal-close",
-                                onclick: move |_| show_import_modal.set(false),
-                                "×"
-                            }
-                        }
+			if loading() {
+				div { class: "loading", "Loading your data..." }
+			} else {
+				div { class: "dashboard-content",
+					UserProfile { user, on_import: on_import_playlist }
+					TopTracks { tracks: top_tracks }
+					TopArtists { artists: top_artists }
+					Playlists { playlists }
+					RecentlyPlayed { recent_tracks: recently_played }
+				}
+			}
 
-                        div { class: "modal-body",
-                            div { class: "import-form",
-                                div { class: "form-group",
-                                    label { "Playlist Name" }
-                                    input {
-                                        r#type: "text",
-                                        class: "form-input",
-                                        value: "{import_name()}",
-                                        oninput: move |e| import_name.set(e.value().clone()),
-                                    }
-                                }
+			// Import Playlist Preview Modal
+			if show_import_modal() {
+				div {
+					class: "modal-overlay",
+					onclick: move |_| show_import_modal.set(false),
+					div {
+						class: "modal-content import-modal",
+						onclick: move |e| e.stop_propagation(),
+						div { class: "modal-header",
+							h2 { "Import Playlist" }
+							button {
+								class: "modal-close",
+								onclick: move |_| show_import_modal.set(false),
+								"×"
+							}
+						}
 
-                                div { class: "form-group",
-                                    label { "Description" }
-                                    textarea {
-                                        class: "form-textarea",
-                                        value: "{import_description()}",
-                                        oninput: move |e| import_description.set(e.value().clone()),
-                                        rows: "3"
-                                    }
-                                }
+						div { class: "modal-body",
+							div { class: "import-form",
+								div { class: "form-group",
+									label { "Playlist Name" }
+									input {
+										r#type: "text",
+										class: "form-input",
+										value: "{import_name()}",
+										oninput: move |e| import_name.set(e.value().clone()),
+									}
+								}
 
-                                div { class: "form-group",
-                                    label { "Original Author" }
-                                    p { class: "author-text", "{import_author()}" }
-                                }
+								div { class: "form-group",
+									label { "Description" }
+									textarea {
+										class: "form-textarea",
+										value: "{import_description()}",
+										oninput: move |e| import_description.set(e.value().clone()),
+										rows: "3",
+									}
+								}
 
-                                div { class: "form-group",
-                                    label { "Tracks ({import_track_uris().len()} songs)" }
+								div { class: "form-group",
+									label { "Original Author" }
+									p { class: "author-text", "{import_author()}" }
+								}
 
-                                    if loading_tracks() {
-                                        div { class: "tracks-preview",
-                                            p { style: "text-align: center; padding: 20px; color: var(--text-secondary);",
-                                                "Loading track details..."
-                                            }
-                                        }
-                                    } else if import_tracks().is_empty() {
-                                        div { class: "tracks-preview",
-                                            for (index, track_uri) in import_track_uris().iter().enumerate() {
-                                                div { class: "track-preview-item",
-                                                    key: "{index}",
-                                                    span { class: "track-number", "{index + 1}." }
-                                                    span { class: "track-uri", "{track_uri}" }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        div { class: "tracks-preview",
-                                            for (index, track) in import_tracks().iter().enumerate() {
-                                                div { class: "track-preview-item",
-                                                    key: "{index}",
-                                                    span { class: "track-number", "{index + 1}." }
-                                                    if let Some(image) = track.album.images.first() {
-                                                        img {
-                                                            class: "track-preview-image",
-                                                            src: "{image.url}",
-                                                            alt: "{track.name}"
-                                                        }
-                                                    }
-                                                    div { class: "track-preview-info",
-                                                        div { class: "track-preview-name", "{track.name}" }
-                                                        div { class: "track-preview-artist",
-                                                            {track.artists.iter()
-                                                                .map(|a| a.name.clone())
-                                                                .collect::<Vec<_>>()
-                                                                .join(", ")}
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+								div { class: "form-group",
+									label { "Tracks ({import_track_uris().len()} songs)" }
 
-                        div { class: "modal-footer",
-                            button {
-                                class: "modal-button cancel-button",
-                                onclick: move |_| show_import_modal.set(false),
-                                "Cancel"
-                            }
-                            button {
-                                class: "modal-button import-confirm-button",
-                                onclick: confirm_import,
-                                disabled: importing(),
-                                if importing() {
-                                    "Importing..."
-                                } else {
-                                    "Import Playlist"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+									if loading_tracks() {
+										div { class: "tracks-preview",
+											p { style: "text-align: center; padding: 20px; color: var(--text-secondary);",
+												"Loading track details..."
+											}
+										}
+									} else if import_tracks().is_empty() {
+										div { class: "tracks-preview",
+											for (index , track_uri) in import_track_uris().iter().enumerate() {
+												div {
+													class: "track-preview-item",
+													key: "{index}",
+													span { class: "track-number", "{index + 1}." }
+													span { class: "track-uri", "{track_uri}" }
+												}
+											}
+										}
+									} else {
+										div { class: "tracks-preview",
+											for (index , track) in import_tracks().iter().enumerate() {
+												div {
+													class: "track-preview-item",
+													key: "{index}",
+													span { class: "track-number", "{index + 1}." }
+													if let Some(image) = track.album.images.first() {
+														img {
+															class: "track-preview-image",
+															src: "{image.url}",
+															alt: "{track.name}",
+														}
+													}
+													div { class: "track-preview-info",
+														div { class: "track-preview-name",
+															"{track.name}"
+														}
+														div { class: "track-preview-artist",
+															{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+						div { class: "modal-footer",
+							button {
+								class: "modal-button cancel-button",
+								onclick: move |_| show_import_modal.set(false),
+								"Cancel"
+							}
+							button {
+								class: "modal-button import-confirm-button",
+								onclick: confirm_import,
+								disabled: importing(),
+								if importing() {
+									"Importing..."
+								} else {
+									"Import Playlist"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 #[component]
@@ -793,8 +812,8 @@ fn PlaylistDetail(id: String) -> Element {
         });
 
         return rsx! {
-            div { class: "loading", "Redirecting to login..." }
-        };
+			div { class: "loading", "Redirecting to login..." }
+		};
     }
 
     let client = spotify_client_option.unwrap();
@@ -1021,197 +1040,190 @@ fn PlaylistDetail(id: String) -> Element {
     };
 
     rsx! {
-        div { class: "playlist-detail-container",
-            header { class: "playlist-detail-header",
-                div { class: "header-actions",
-                    button {
-                        class: "back-button",
-                        onclick: move |_| {
-                            nav.push(Route::Dashboard {});
-                        },
-                        "← Back to Dashboard"
-                    }
-                    if playlist_info().is_some() {
-                        button {
-                            class: "download-button",
-                            onclick: download_json,
-                            "⬇ Download JSON"
-                        }
-                        button {
-                            class: "remove-duplicates-button",
-                            onclick: find_duplicates,
-                            style: "margin-left: 10px;",
-                            "🔍 Remove Duplicates"
-                        }
-                    }
-                }
-                h1 { class: "playlist-detail-title",
-                    {playlist_info().as_ref().map(|p| p.name.clone()).unwrap_or_else(|| "Playlist Tracks".to_string())}
-                }
-            }
+		div { class: "playlist-detail-container",
+			header { class: "playlist-detail-header",
+				div { class: "header-actions",
+					button {
+						class: "back-button",
+						onclick: move |_| {
+						    nav.push(Route::Dashboard {});
+						},
+						"← Back to Dashboard"
+					}
+					if playlist_info().is_some() {
+						button { class: "download-button", onclick: download_json, "⬇ Download JSON" }
+						button {
+							class: "remove-duplicates-button",
+							onclick: find_duplicates,
+							style: "margin-left: 10px;",
+							"🔍 Remove Duplicates"
+						}
+					}
+				}
+				h1 { class: "playlist-detail-title",
+					{
+					    playlist_info()
+					        .as_ref()
+					        .map(|p| p.name.clone())
+					        .unwrap_or_else(|| "Playlist Tracks".to_string())
+					}
+				}
+			}
 
-            div { class: "sort-controls",
-                span { class: "sort-label", "Sort by:" }
-                button {
-                    class: if sort_order() == "default" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("default".to_string()),
-                    "Default Order"
-                }
-                button {
-                    class: if sort_order() == "name_asc" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("name_asc".to_string()),
-                    "Name A-Z"
-                }
-                button {
-                    class: if sort_order() == "name_desc" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("name_desc".to_string()),
-                    "Name Z-A"
-                }
-                button {
-                    class: if sort_order() == "artist_asc" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("artist_asc".to_string()),
-                    "Artist A-Z"
-                }
-                button {
-                    class: if sort_order() == "artist_desc" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("artist_desc".to_string()),
-                    "Artist Z-A"
-                }
-                button {
-                    class: if sort_order() == "date_added_desc" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("date_added_desc".to_string()),
-                    "Newest First"
-                }
-                button {
-                    class: if sort_order() == "date_added_asc" { "sort-button active" } else { "sort-button" },
-                    onclick: move |_| sort_order.set("date_added_asc".to_string()),
-                    "Oldest First"
-                }
-            }
+			div { class: "sort-controls",
+				span { class: "sort-label", "Sort by:" }
+				button {
+					class: if sort_order() == "default" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("default".to_string()),
+					"Default Order"
+				}
+				button {
+					class: if sort_order() == "name_asc" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("name_asc".to_string()),
+					"Name A-Z"
+				}
+				button {
+					class: if sort_order() == "name_desc" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("name_desc".to_string()),
+					"Name Z-A"
+				}
+				button {
+					class: if sort_order() == "artist_asc" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("artist_asc".to_string()),
+					"Artist A-Z"
+				}
+				button {
+					class: if sort_order() == "artist_desc" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("artist_desc".to_string()),
+					"Artist Z-A"
+				}
+				button {
+					class: if sort_order() == "date_added_desc" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("date_added_desc".to_string()),
+					"Newest First"
+				}
+				button {
+					class: if sort_order() == "date_added_asc" { "sort-button active" } else { "sort-button" },
+					onclick: move |_| sort_order.set("date_added_asc".to_string()),
+					"Oldest First"
+				}
+			}
 
-            if let Some(err) = error() {
-                div { class: "error-message",
-                    p { "Error: {err}" }
-                }
-            }
+			if let Some(err) = error() {
+				div { class: "error-message",
+					p { "Error: {err}" }
+				}
+			}
 
-            if loading() {
-                div { class: "loading", "Loading tracks..." }
-            } else {
-                div { class: "tracks-list",
-                    for (index, item) in sorted_tracks.iter().enumerate() {
-                        div {
-                            class: "track-item",
-                            key: "{item.track.id}-{index}",
-                            span { class: "track-number", "{index + 1}" }
-                            if let Some(image) = item.track.album.images.first() {
-                                img {
-                                    class: "track-image",
-                                    src: "{image.url}",
-                                    alt: "{item.track.name}"
-                                }
-                            }
-                            div { class: "track-info",
-                                a {
-                                    class: "track-name",
-                                    href: "{item.track.external_urls.spotify}",
-                                    target: "_blank",
-                                    "{item.track.name}"
-                                }
-                                div { class: "track-artists",
-                                    {item.track.artists.iter()
-                                        .map(|a| a.name.clone())
-                                        .collect::<Vec<_>>()
-                                        .join(", ")}
-                                }
-                            }
-                            div { class: "track-duration",
-                                {format_duration(item.track.duration_ms)}
-                            }
-                        }
-                    }
-                }
-            }
+			if loading() {
+				div { class: "loading", "Loading tracks..." }
+			} else {
+				div { class: "tracks-list",
+					for (index , item) in sorted_tracks.iter().enumerate() {
+						div {
+							class: "track-item",
+							key: "{item.track.id}-{index}",
+							span { class: "track-number", "{index + 1}" }
+							if let Some(image) = item.track.album.images.first() {
+								img {
+									class: "track-image",
+									src: "{image.url}",
+									alt: "{item.track.name}",
+								}
+							}
+							div { class: "track-info",
+								a {
+									class: "track-name",
+									href: "{item.track.external_urls.spotify}",
+									target: "_blank",
+									"{item.track.name}"
+								}
+								div { class: "track-artists",
+									{item.track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+								}
+							}
+							div { class: "track-duration", {format_duration(item.track.duration_ms)} }
+						}
+					}
+				}
+			}
 
-            // Duplicates Modal
-            if show_duplicates_modal() {
-                div {
-                    class: "modal-overlay",
-                    onclick: move |_| show_duplicates_modal.set(false),
-                    div {
-                        class: "modal-content",
-                        onclick: move |e| e.stop_propagation(),
-                        div { class: "modal-header",
-                            h2 { "Duplicate Tracks Found" }
-                            button {
-                                class: "modal-close",
-                                onclick: move |_| show_duplicates_modal.set(false),
-                                "×"
-                            }
-                        }
+			// Duplicates Modal
+			if show_duplicates_modal() {
+				div {
+					class: "modal-overlay",
+					onclick: move |_| show_duplicates_modal.set(false),
+					div {
+						class: "modal-content",
+						onclick: move |e| e.stop_propagation(),
+						div { class: "modal-header",
+							h2 { "Duplicate Tracks Found" }
+							button {
+								class: "modal-close",
+								onclick: move |_| show_duplicates_modal.set(false),
+								"×"
+							}
+						}
 
-                        div { class: "modal-body",
-                            if duplicates().is_empty() {
-                                p { style: "text-align: center; padding: 20px;",
-                                    "No duplicate tracks found in this playlist!"
-                                }
-                            } else {
-                                p { style: "margin-bottom: 15px;",
-                                    "Found {duplicates().len()} duplicate track(s). The first occurrence will be kept."
-                                }
+						div { class: "modal-body",
+							if duplicates().is_empty() {
+								p { style: "text-align: center; padding: 20px;",
+									"No duplicate tracks found in this playlist!"
+								}
+							} else {
+								p { style: "margin-bottom: 15px;",
+									"Found {duplicates().len()} duplicate track(s). The first occurrence will be kept."
+								}
 
-                                div { class: "duplicates-list",
-                                    for (track, indices) in duplicates().iter() {
-                                        div { class: "duplicate-item",
-                                            if let Some(image) = track.album.images.first() {
-                                                img {
-                                                    class: "duplicate-image",
-                                                    src: "{image.url}",
-                                                    alt: "{track.name}"
-                                                }
-                                            }
-                                            div { class: "duplicate-info",
-                                                div { class: "duplicate-name", "{track.name}" }
-                                                div { class: "duplicate-artist",
-                                                    {track.artists.iter()
-                                                        .map(|a| a.name.clone())
-                                                        .collect::<Vec<_>>()
-                                                        .join(", ")}
-                                                }
-                                                div { class: "duplicate-count",
-                                                    "Appears {indices.len()} times (will remove {indices.len() - 1})"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+								div { class: "duplicates-list",
+									for (track , indices) in duplicates().iter() {
+										div { class: "duplicate-item",
+											if let Some(image) = track.album.images.first() {
+												img {
+													class: "duplicate-image",
+													src: "{image.url}",
+													alt: "{track.name}",
+												}
+											}
+											div { class: "duplicate-info",
+												div { class: "duplicate-name", "{track.name}" }
+												div { class: "duplicate-artist",
+													{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+												}
+												div { class: "duplicate-count",
+													"Appears {indices.len()} times (will remove {indices.len() - 1})"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 
-                        div { class: "modal-footer",
-                            button {
-                                class: "modal-button cancel-button",
-                                onclick: move |_| show_duplicates_modal.set(false),
-                                "Cancel"
-                            }
-                            if !duplicates().is_empty() {
-                                button {
-                                    class: "modal-button remove-button",
-                                    onclick: remove_duplicates_handler,
-                                    disabled: removing_duplicates(),
-                                    if removing_duplicates() {
-                                        "Removing..."
-                                    } else {
-                                        "Remove Duplicates"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+						div { class: "modal-footer",
+							button {
+								class: "modal-button cancel-button",
+								onclick: move |_| show_duplicates_modal.set(false),
+								"Cancel"
+							}
+							if !duplicates().is_empty() {
+								button {
+									class: "modal-button remove-button",
+									onclick: remove_duplicates_handler,
+									disabled: removing_duplicates(),
+									if removing_duplicates() {
+										"Removing..."
+									} else {
+										"Remove Duplicates"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 fn format_duration(ms: u32) -> String {
@@ -1321,15 +1333,12 @@ fn ToastContainer() -> Element {
     let toasts = context.toasts;
 
     rsx! {
-        div { class: "toast-container",
-            for toast in toasts().iter() {
-                ToastItem {
-                    key: "{toast.id}",
-                    toast: toast.clone()
-                }
-            }
-        }
-    }
+		div { class: "toast-container",
+			for toast in toasts().iter() {
+				ToastItem { key: "{toast.id}", toast: toast.clone() }
+			}
+		}
+	}
 }
 
 #[component]
@@ -1355,16 +1364,12 @@ fn ToastItem(toast: Toast) -> Element {
     };
 
     rsx! {
-        div { class: "{class_name}",
-            span { class: "toast-icon", "{icon}" }
-            span { class: "toast-message", "{toast.message}" }
-            button {
-                class: "toast-close",
-                onclick: remove_toast,
-                "×"
-            }
-        }
-    }
+		div { class: "{class_name}",
+			span { class: "toast-icon", "{icon}" }
+			span { class: "toast-message", "{toast.message}" }
+			button { class: "toast-close", onclick: remove_toast, "×" }
+		}
+	}
 }
 
 fn save_json_file(default_filename: &str) -> Option<String> {

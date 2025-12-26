@@ -16,60 +16,58 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
     }
 
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/recently_played.css") }
-        div { class: "recently-played",
-            h2 { class: "section-title", "Recently Played" }
+		document::Link {
+			rel: "stylesheet",
+			href: asset!("assets/compiled/recently_played.css"),
+		}
+		div { class: "recently-played",
+			h2 { class: "section-title", "Recently Played" }
 
-            if grouped.is_empty() {
-                div { style: "padding: 40px; text-align: center; color: #b3b3b3;",
-                    p { "No recently played tracks found" }
-                }
-            } else {
-                div { class: "recently-played-groups",
-                    for (date, day_tracks) in grouped.iter().rev() {
-                        div { class: "day-group", key: "{date}",
-                            h3 { class: "day-header", "{format_date_header(date)}" }
-                            div { class: "day-tracks",
-                                for (index, item) in day_tracks.iter().enumerate() {
-                                    div {
-                                        class: "recent-track-item",
-                                        key: "{item.played_at}-{index}",
+			if grouped.is_empty() {
+				div { style: "padding: 40px; text-align: center; color: #b3b3b3;",
+					p { "No recently played tracks found" }
+				}
+			} else {
+				div { class: "recently-played-groups",
+					for (date , day_tracks) in grouped.iter().rev() {
+						div { class: "day-group", key: "{date}",
+							h3 { class: "day-header", "{format_date_header(date)}" }
+							div { class: "day-tracks",
+								for (index , item) in day_tracks.iter().enumerate() {
+									div {
+										class: "recent-track-item",
+										key: "{item.played_at}-{index}",
 
-                                        if let Some(image) = item.track.album.images.first() {
-                                            img {
-                                                class: "track-image",
-                                                src: "{image.url}",
-                                                alt: "{item.track.name}"
-                                            }
-                                        }
+										if let Some(image) = item.track.album.images.first() {
+											img {
+												class: "track-image",
+												src: "{image.url}",
+												alt: "{item.track.name}",
+											}
+										}
 
-                                        div { class: "track-info",
-                                            a {
-                                                class: "track-name",
-                                                href: "{item.track.external_urls.spotify}",
-                                                target: "_blank",
-                                                "{item.track.name}"
-                                            }
-                                            div { class: "track-artists",
-                                                {item.track.artists.iter()
-                                                    .map(|a| a.name.clone())
-                                                    .collect::<Vec<_>>()
-                                                    .join(", ")}
-                                            }
-                                        }
+										div { class: "track-info",
+											a {
+												class: "track-name",
+												href: "{item.track.external_urls.spotify}",
+												target: "_blank",
+												"{item.track.name}"
+											}
+											div { class: "track-artists",
+												{item.track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+											}
+										}
 
-                                        div { class: "played-time",
-                                            {format_time(&item.played_at)}
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+										div { class: "played-time", {format_time(&item.played_at)} }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 fn extract_date(timestamp: &str) -> String {
