@@ -9,11 +9,28 @@ use crate::models::*;
 use dioxus::prelude::*;
 use std::rc::Rc;
 
+// Toast notification type
+#[derive(Clone, PartialEq)]
+enum ToastType {
+    Success,
+    Error,
+    Info,
+}
+
+#[derive(Clone, PartialEq)]
+struct Toast {
+    message: String,
+    toast_type: ToastType,
+    id: usize,
+}
+
 // Global context for sharing Spotify client across routes
 #[derive(Clone)]
 struct AppContext {
     spotify_client: Signal<Option<Rc<SpotifyClient>>>,
     demo_mode: Signal<bool>,
+    toasts: Signal<Vec<Toast>>,
+    toast_counter: Signal<usize>,
 }
 
 fn main() {
@@ -29,11 +46,14 @@ fn App() -> Element {
     use_context_provider(|| AppContext {
         spotify_client: Signal::new(None),
         demo_mode: Signal::new(false),
+        toasts: Signal::new(Vec::new()),
+        toast_counter: Signal::new(0),
     });
 
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("assets/compiled/main.css") }
         Router::<Route> {}
+        ToastContainer {}
     }
 }
 
@@ -516,6 +536,7 @@ fn Dashboard() -> Element {
     // Confirm import handler
     let confirm_import = {
         let client_opt = spotify_client_option.clone();
+        let ctx = use_context::<AppContext>();
         move |_| {
             if let Some(client) = client_opt.clone() {
                 importing.set(true);
@@ -523,6 +544,7 @@ fn Dashboard() -> Element {
                 let name = import_name();
                 let description = import_description();
                 let track_uris = import_track_uris();
+                let context = ctx.clone();
 
                 spawn(async move {
                     // Create the playlist
@@ -542,6 +564,7 @@ fn Dashboard() -> Element {
                                             playlists.set(updated_playlists);
                                             show_import_modal.set(false);
                                             importing.set(false);
+                                            show_success(&context, format!("Successfully imported playlist '{}'", name));
                                         }
                                         Err(e) => {
                                             eprintln!("Failed to refresh playlists: {}", e);
@@ -552,6 +575,7 @@ fn Dashboard() -> Element {
                                 Err(e) => {
                                     eprintln!("Failed to add tracks to playlist: {}", e);
                                     error.set(Some(format!("Failed to add tracks: {}", e)));
+                                    show_error(&context, format!("Failed to add tracks: {}", e));
                                     importing.set(false);
                                 }
                             }
@@ -559,6 +583,7 @@ fn Dashboard() -> Element {
                         Err(e) => {
                             eprintln!("Failed to create playlist: {}", e);
                             error.set(Some(format!("Failed to create playlist: {}", e)));
+                            show_error(&context, format!("Failed to create playlist: {}", e));
                             importing.set(false);
                         }
                     }
@@ -810,144 +835,166 @@ fn PlaylistDetail(id: String) -> Element {
     }
 
     // Download playlist as JSON
-    let download_json = move |_| {
-        let playlist = playlist_info();
-        let tracks_list = tracks();
+    let download_json = {
+        let ctx = use_context::<AppContext>();
+        move |_| {
+            let playlist = playlist_info();
+            let tracks_list = tracks();
+            let context = ctx.clone();
 
-        if let Some(pl) = playlist {
-            spawn(async move {
-                // Create JSON structure
-                let json_data = serde_json::json!({
-                    "info": {
-                        "name": pl.name,
-                        "id": pl.id,
-                        "author": pl.owner.display_name.unwrap_or_else(|| "Unknown".to_string()),
-                        "description": pl.description.unwrap_or_else(|| "".to_string()),
-                    },
-                    "tracks": tracks_list.iter().map(|item| {
-                        format!("spotify:track:{}", item.track.id)
-                    }).collect::<Vec<_>>()
-                });
+            if let Some(pl) = playlist {
+                spawn(async move {
+                    // Create JSON structure
+                    let json_data = serde_json::json!({
+                        "info": {
+                            "name": pl.name,
+                            "id": pl.id,
+                            "author": pl.owner.display_name.unwrap_or_else(|| "Unknown".to_string()),
+                            "description": pl.description.unwrap_or_else(|| "".to_string()),
+                        },
+                        "tracks": tracks_list.iter().map(|item| {
+                            format!("spotify:track:{}", item.track.id)
+                        }).collect::<Vec<_>>()
+                    });
 
-                // Convert to pretty JSON string
-                match serde_json::to_string_pretty(&json_data) {
-                    Ok(json_string) => {
-                        // Sanitize filename
-                        let filename = sanitize_filename(&pl.name);
-                        let default_filename = format!("{}.json", filename);
+                    // Convert to pretty JSON string
+                    match serde_json::to_string_pretty(&json_data) {
+                        Ok(json_string) => {
+                            // Sanitize filename
+                            let filename = sanitize_filename(&pl.name);
+                            let default_filename = format!("{}.json", filename);
 
-                        // Show save dialog to let user choose location
-                        if let Some(save_path) = save_json_file(&default_filename) {
-                            // Ensure the path ends with .json
-                            let final_path = if save_path.ends_with(".json") {
-                                save_path
-                            } else {
-                                format!("{}.json", save_path)
-                            };
+                            // Show save dialog to let user choose location
+                            if let Some(save_path) = save_json_file(&default_filename) {
+                                // Ensure the path ends with .json
+                                let final_path = if save_path.ends_with(".json") {
+                                    save_path
+                                } else {
+                                    format!("{}.json", save_path)
+                                };
 
-                            match std::fs::write(&final_path, &json_string) {
-                                Ok(_) => {
-                                    println!("✓ Playlist exported to: {}", final_path);
-                                }
-                                Err(e) => {
-                                    eprintln!("Failed to save playlist: {}", e);
+                                match std::fs::write(&final_path, &json_string) {
+                                    Ok(_) => {
+                                        println!("✓ Playlist exported to: {}", final_path);
+                                        show_success(&context, format!("Playlist exported successfully to {}",
+                                            std::path::Path::new(&final_path)
+                                                .file_name()
+                                                .and_then(|n| n.to_str())
+                                                .unwrap_or("file")));
+                                    }
+                                    Err(e) => {
+                                        eprintln!("Failed to save playlist: {}", e);
+                                        show_error(&context, format!("Failed to save playlist: {}", e));
+                                    }
                                 }
                             }
-                        } else {
-                            println!("Save cancelled by user");
+                        }
+                        Err(e) => {
+                            eprintln!("Failed to serialize JSON: {}", e);
+                            show_error(&context, format!("Failed to create JSON: {}", e));
                         }
                     }
-                    Err(e) => {
-                        eprintln!("Failed to serialize JSON: {}", e);
-                    }
-                }
-            });
+                });
+            }
         }
     };
 
     // Find and show duplicates
-    let find_duplicates = move |_| {
-        let tracks_list = tracks();
-        let mut track_map: std::collections::HashMap<String, Vec<usize>> = std::collections::HashMap::new();
+    let find_duplicates = {
+        let ctx = use_context::<AppContext>();
+        move |_| {
+            let tracks_list = tracks();
+            let mut track_map: std::collections::HashMap<String, Vec<usize>> = std::collections::HashMap::new();
+            let context = ctx.clone();
 
-        // Group tracks by ID
-        for (index, item) in tracks_list.iter().enumerate() {
-            track_map.entry(item.track.id.clone())
-                .or_insert_with(Vec::new)
-                .push(index);
-        }
+            // Group tracks by ID
+            for (index, item) in tracks_list.iter().enumerate() {
+                track_map.entry(item.track.id.clone())
+                    .or_insert_with(Vec::new)
+                    .push(index);
+            }
 
-        // Find tracks that appear more than once
-        let duplicate_tracks: Vec<(Track, Vec<usize>)> = track_map
-            .into_iter()
-            .filter(|(_, indices)| indices.len() > 1)
-            .map(|(track_id, indices)| {
-                // Get the track from the first occurrence
-                let track = tracks_list[indices[0]].track.clone();
-                (track, indices)
-            })
-            .collect();
+            // Find tracks that appear more than once
+            let duplicate_tracks: Vec<(Track, Vec<usize>)> = track_map
+                .into_iter()
+                .filter(|(_, indices)| indices.len() > 1)
+                .map(|(track_id, indices)| {
+                    // Get the track from the first occurrence
+                    let track = tracks_list[indices[0]].track.clone();
+                    (track, indices)
+                })
+                .collect();
 
-        if duplicate_tracks.is_empty() {
-            // No duplicates found - could show a message
-            println!("No duplicates found");
-        } else {
-            duplicates.set(duplicate_tracks);
-            show_duplicates_modal.set(true);
+            if duplicate_tracks.is_empty() {
+                show_info(&context, "No duplicate tracks found in this playlist".to_string());
+            } else {
+                duplicates.set(duplicate_tracks);
+                show_duplicates_modal.set(true);
+            }
         }
     };
 
     // Remove duplicates from playlist
-    let remove_duplicates_handler = move |_| {
-        let client = client.clone();
-        let playlist_id = id.clone();
-        let duplicates_list = duplicates();
+    let remove_duplicates_handler = {
+        let ctx = use_context::<AppContext>();
+        move |_| {
+            let client = client.clone();
+            let playlist_id = id.clone();
+            let duplicates_list = duplicates();
+            let context = ctx.clone();
 
-        removing_duplicates.set(true);
+            removing_duplicates.set(true);
 
-        spawn(async move {
-            let mut tracks_to_remove = Vec::new();
+            spawn(async move {
+                let mut tracks_to_remove = Vec::new();
+                let total_duplicates = duplicates_list.iter()
+                    .map(|(_, indices)| indices.len() - 1)
+                    .sum::<usize>();
 
-            // For each duplicate track, keep the first occurrence and remove the rest
-            for (track, indices) in duplicates_list.iter() {
-                println!("DEBUG: Track '{}' appears at positions: {:?}", track.name, indices);
-                // Skip the first index (keep one copy), add the rest for removal with their positions
-                for &index in indices.iter().skip(1) {
-                    println!("DEBUG: Will remove '{}' at position {}", track.name, index);
-                    tracks_to_remove.push((format!("spotify:track:{}", track.id), index));
+                // For each duplicate track, keep the first occurrence and remove the rest
+                for (track, indices) in duplicates_list.iter() {
+                    println!("DEBUG: Track '{}' appears at positions: {:?}", track.name, indices);
+                    // Skip the first index (keep one copy), add the rest for removal with their positions
+                    for &index in indices.iter().skip(1) {
+                        println!("DEBUG: Will remove '{}' at position {}", track.name, index);
+                        tracks_to_remove.push((format!("spotify:track:{}", track.id), index));
+                    }
                 }
-            }
 
-            // Sort by position in descending order to avoid index shifting issues
-            tracks_to_remove.sort_by(|a, b| b.1.cmp(&a.1));
+                // Sort by position in descending order to avoid index shifting issues
+                tracks_to_remove.sort_by(|a, b| b.1.cmp(&a.1));
 
-            println!("DEBUG: Total tracks to remove: {}", tracks_to_remove.len());
+                println!("DEBUG: Total tracks to remove: {}", tracks_to_remove.len());
 
-            if !tracks_to_remove.is_empty() {
-                match client.remove_tracks_from_playlist(&playlist_id, tracks_to_remove).await {
-                    Ok(_) => {
-                        println!("✓ Successfully removed duplicates");
-                        // Refresh the track list
-                        match client.get_playlist_tracks(&playlist_id).await {
-                            Ok(updated_tracks) => {
-                                tracks.set(updated_tracks);
-                                show_duplicates_modal.set(false);
-                                duplicates.set(Vec::new());
-                            }
-                            Err(e) => {
-                                eprintln!("Failed to refresh tracks: {}", e);
+                if !tracks_to_remove.is_empty() {
+                    match client.remove_tracks_from_playlist(&playlist_id, tracks_to_remove).await {
+                        Ok(_) => {
+                            println!("✓ Successfully removed duplicates");
+                            // Refresh the track list
+                            match client.get_playlist_tracks(&playlist_id).await {
+                                Ok(updated_tracks) => {
+                                    tracks.set(updated_tracks);
+                                    show_duplicates_modal.set(false);
+                                    duplicates.set(Vec::new());
+                                    show_success(&context, format!("Successfully removed {} duplicate track(s)", total_duplicates));
+                                }
+                                Err(e) => {
+                                    eprintln!("Failed to refresh tracks: {}", e);
+                                    show_error(&context, format!("Failed to refresh playlist: {}", e));
+                                }
                             }
                         }
-                    }
-                    Err(e) => {
-                        eprintln!("Failed to remove duplicates: {}", e);
-                        error.set(Some(format!("Failed to remove duplicates: {}", e)));
+                        Err(e) => {
+                            eprintln!("Failed to remove duplicates: {}", e);
+                            error.set(Some(format!("Failed to remove duplicates: {}", e)));
+                            show_error(&context, format!("Failed to remove duplicates: {}", e));
+                        }
                     }
                 }
-            }
 
-            removing_duplicates.set(false);
-        });
+                removing_duplicates.set(false);
+            });
+        }
     };
 
     // Sort tracks based on selected order
@@ -1227,6 +1274,97 @@ fn pick_json_file() -> Option<String> {
     }
 
     None
+}
+
+// Toast helper functions
+fn show_toast(context: &AppContext, message: String, toast_type: ToastType) {
+    let mut toasts = context.toasts;
+    let mut counter = context.toast_counter;
+
+    let id = counter();
+    counter.set(id + 1);
+
+    let toast = Toast {
+        message,
+        toast_type,
+        id,
+    };
+
+    let mut current_toasts = toasts();
+    current_toasts.push(toast.clone());
+    toasts.set(current_toasts);
+
+    // Auto-remove toast after 5 seconds
+    spawn(async move {
+        tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+        let mut current_toasts = toasts();
+        current_toasts.retain(|t| t.id != id);
+        toasts.set(current_toasts);
+    });
+}
+
+fn show_success(context: &AppContext, message: String) {
+    show_toast(context, message, ToastType::Success);
+}
+
+fn show_error(context: &AppContext, message: String) {
+    show_toast(context, message, ToastType::Error);
+}
+
+fn show_info(context: &AppContext, message: String) {
+    show_toast(context, message, ToastType::Info);
+}
+
+#[component]
+fn ToastContainer() -> Element {
+    let context = use_context::<AppContext>();
+    let toasts = context.toasts;
+
+    rsx! {
+        div { class: "toast-container",
+            for toast in toasts().iter() {
+                ToastItem {
+                    key: "{toast.id}",
+                    toast: toast.clone()
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn ToastItem(toast: Toast) -> Element {
+    let mut context = use_context::<AppContext>();
+    let toast_id = toast.id;
+
+    let class_name = match toast.toast_type {
+        ToastType::Success => "toast toast-success",
+        ToastType::Error => "toast toast-error",
+        ToastType::Info => "toast toast-info",
+    };
+
+    let icon = match toast.toast_type {
+        ToastType::Success => "✓",
+        ToastType::Error => "✕",
+        ToastType::Info => "ℹ",
+    };
+
+    let remove_toast = move |_| {
+        let mut current_toasts = context.toasts.write();
+        *current_toasts = current_toasts.iter().filter(|t| t.id != toast_id).cloned().collect();
+    };
+
+    rsx! {
+        div { class: "{class_name}",
+            span { class: "toast-icon", "{icon}" }
+            span { class: "toast-message", "{toast.message}" }
+            button {
+                class: "toast-close",
+                onclick: remove_toast,
+                "×"
+            }
+        }
+    }
 }
 
 fn save_json_file(default_filename: &str) -> Option<String> {
