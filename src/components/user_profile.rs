@@ -1,8 +1,15 @@
 use crate::models::User;
+use crate::{Route, AppContext};
 use dioxus::prelude::*;
 
 #[component]
-pub fn UserProfile(user: ReadOnlySignal<Option<User>>) -> Element {
+pub fn UserProfile(
+    user: ReadSignal<Option<User>>,
+    on_import: EventHandler<()>,
+) -> Element {
+    let context = use_context::<AppContext>();
+    let nav = navigator();
+
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("assets/compiled/user_profile.css") }
         div { class: "user-profile",
@@ -30,6 +37,27 @@ pub fn UserProfile(user: ReadOnlySignal<Option<User>>) -> Element {
                                     span { class: "stat-label", "Country" }
                                 }
                             }
+                        }
+                    }
+                    div { class: "profile-actions",
+                        button {
+                            class: "import-button",
+                            onclick: move |_| on_import.call(()),
+                            "📥 Import Playlist"
+                        }
+                        button {
+                            class: "logout-button",
+                            onclick: {
+                                let mut ctx = context.clone();
+                                let nav_clone = nav.clone();
+                                move |_| {
+                                    // Clear the authenticated session
+                                    ctx.spotify_client.set(None);
+                                    // Navigate back to login screen
+                                    nav_clone.push(Route::Home {});
+                                }
+                            },
+                            "🚪 Logout"
                         }
                     }
                 }

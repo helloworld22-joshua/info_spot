@@ -281,7 +281,7 @@ fn Dashboard() -> Element {
                 }
 
                 // Fetch playlists
-                match client_clone2.get_playlists(50).await {
+                match client_clone2.get_playlists(200).await {
                     Ok(user_playlists) => {
                         println!("DEBUG: Fetched {} playlists", user_playlists.len());
                         playlists.set(user_playlists);
@@ -368,6 +368,19 @@ fn Dashboard() -> Element {
         });
     };
 
+    // Import playlist handler
+    let on_import_playlist = {
+        let client_for_import = client.clone();
+        move |_| {
+            let client_clone = client_for_import.clone();
+            spawn(async move {
+                if let Some(file_path) = pick_json_file() {
+                    import_playlist(client_clone, file_path).await;
+                }
+            });
+        }
+    };
+
     let mut mouse_pos = use_signal(|| (0, 0));
     rsx! {
         div { class: "dashboard-container",
@@ -379,21 +392,6 @@ fn Dashboard() -> Element {
             header { class: "dashboard-header",
                 div { class: "header-row",
                     h1 { class: "dashboard-title", "Your Spotify Stats" }
-                    button {
-                        class: "import-button",
-                        onclick: {
-                            let client_for_import = client.clone();
-                            move |_| {
-                                let client_clone = client_for_import.clone();
-                                spawn(async move {
-                                    if let Some(file_path) = pick_json_file() {
-                                        import_playlist(client_clone, file_path).await;
-                                    }
-                                });
-                            }
-                        },
-                        "📥 Import Playlist"
-                    }
                 }
                 div { class: "time-range-selector",
                     button {
@@ -427,7 +425,7 @@ fn Dashboard() -> Element {
                 div { class: "loading", "Loading your data..." }
             } else {
                 div { class: "dashboard-content",
-                    UserProfile { user: user }
+                    UserProfile { user: user, on_import: on_import_playlist }
                     TopTracks { tracks: top_tracks }
                     TopArtists { artists: top_artists }
                     Playlists { playlists: playlists }
