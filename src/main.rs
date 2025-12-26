@@ -281,7 +281,7 @@ fn Dashboard() -> Element {
                 }
 
                 // Fetch playlists
-                match client_clone2.get_playlists(200).await {
+                match client_clone2.get_playlists(50).await {
                     Ok(user_playlists) => {
                         println!("DEBUG: Fetched {} playlists", user_playlists.len());
                         playlists.set(user_playlists);
