@@ -4,25 +4,10 @@ mod models;
 mod oauth;
 
 use crate::api::SpotifyClient;
-use crate::components::{UserProfile, TopTracks, TopArtists, Playlists, RecentlyPlayed};
+use crate::components::{UserProfile, TopTracks, TopArtists, Playlists, RecentlyPlayed, Toast, ToastType, ToastContainer};
 use crate::models::*;
 use dioxus::prelude::*;
 use std::rc::Rc;
-
-// Toast notification type
-#[derive(Clone, PartialEq)]
-enum ToastType {
-    Success,
-    Error,
-    Info,
-}
-
-#[derive(Clone, PartialEq)]
-struct Toast {
-    message: String,
-    toast_type: ToastType,
-    id: usize,
-}
 
 // Global context for sharing Spotify client across routes
 #[derive(Clone)]
@@ -50,10 +35,12 @@ fn App() -> Element {
         toast_counter: Signal::new(0),
     });
 
+    let context = use_context::<AppContext>();
+
     rsx! {
 		document::Link { rel: "stylesheet", href: asset!("assets/compiled/main.css") }
 		Router::<Route> {}
-		ToastContainer {}
+		ToastContainer { toasts: context.toasts }
 	}
 }
 
@@ -1327,50 +1314,7 @@ fn show_info(context: &AppContext, message: String) {
     show_toast(context, message, ToastType::Info);
 }
 
-#[component]
-fn ToastContainer() -> Element {
-    let context = use_context::<AppContext>();
-    let toasts = context.toasts;
 
-    rsx! {
-		div { class: "toast-container",
-			for toast in toasts().iter() {
-				ToastItem { key: "{toast.id}", toast: toast.clone() }
-			}
-		}
-	}
-}
-
-#[component]
-fn ToastItem(toast: Toast) -> Element {
-    let mut context = use_context::<AppContext>();
-    let toast_id = toast.id;
-
-    let class_name = match toast.toast_type {
-        ToastType::Success => "toast toast-success",
-        ToastType::Error => "toast toast-error",
-        ToastType::Info => "toast toast-info",
-    };
-
-    let icon = match toast.toast_type {
-        ToastType::Success => "✓",
-        ToastType::Error => "✕",
-        ToastType::Info => "ℹ",
-    };
-
-    let remove_toast = move |_| {
-        let mut current_toasts = context.toasts.write();
-        *current_toasts = current_toasts.iter().filter(|t| t.id != toast_id).cloned().collect();
-    };
-
-    rsx! {
-		div { class: "{class_name}",
-			span { class: "toast-icon", "{icon}" }
-			span { class: "toast-message", "{toast.message}" }
-			button { class: "toast-close", onclick: remove_toast, "×" }
-		}
-	}
-}
 
 fn save_json_file(default_filename: &str) -> Option<String> {
     use std::process::Command;
