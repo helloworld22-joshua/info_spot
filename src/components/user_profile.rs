@@ -63,6 +63,8 @@ rsx! {
 						    move |_| {
 						        // Clear the authenticated session
 						        ctx.spotify_client.set(None);
+						        // Reset demo mode flag
+						        ctx.demo_mode.set(false);
 						        // Navigate back to login screen
 						        nav_clone.push(Route::Home {});
 						    }
