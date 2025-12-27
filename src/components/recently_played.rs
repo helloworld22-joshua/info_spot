@@ -14,13 +14,24 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
         let date = extract_date(&item.played_at);
         grouped.entry(date).or_insert_with(Vec::new).push(item.clone());
     }
+    let mut position = use_signal(|| (0.0, 0.0));
 
     rsx! {
 		document::Link {
 			rel: "stylesheet",
 			href: asset!("assets/compiled/recently_played.css"),
 		}
-		div { class: "recently-played",
+		div {
+			class: "recently-played component",
+			onmounted: move |event| {
+			    spawn(async move {
+			        if let Ok(rect) = event.get_client_rect().await {
+			            position.set((rect.origin.x, rect.origin.y));
+			        }
+			    });
+			},
+			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
+
 			h2 { class: "section-title", "Recently Played" }
 
 			if grouped.is_empty() {

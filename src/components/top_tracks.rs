@@ -3,9 +3,19 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
+    let mut position = use_signal(|| (0.0, 0.0));
     rsx! {
 		document::Link { rel: "stylesheet", href: asset!("assets/compiled/top_tracks.css") }
-		div { class: "top-tracks",
+		div {
+			class: "top-tracks component",
+			onmounted: move |event| {
+			    spawn(async move {
+			        if let Ok(rect) = event.get_client_rect().await {
+			            position.set((rect.origin.x, rect.origin.y));
+			        }
+			    });
+			},
+			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 			h2 { class: "section-title", "Top Tracks" }
 			div { class: "tracks-list",
 				for (index , track) in tracks().iter().enumerate() {

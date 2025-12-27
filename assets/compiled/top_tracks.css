@@ -1,34 +1,26 @@
-.top-tracks {
-  background: var(--bg1-alpha);
-  -webkit-backdrop-filter: var(--blur);
-          backdrop-filter: var(--blur);
-  padding: 40px;
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
 .tracks-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--gap-small);
 }
 
 .track-item {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  gap: var(--gap);
+  padding: var(--padding-small);
+  background-color: var(--highlight);
   border-radius: var(--border-radius);
-  transition: var(--transition);
+  transition: scale var(--transition), background-color var(--transition);
 }
 .track-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  scale: 1.01;
+  background-color: var(--highlight2);
 }
 
 .track-number {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: var(--font-normal);
+  font-weight: var(--font-bold);
   color: var(--text-secondary);
   min-width: 30px;
   text-align: center;
@@ -36,7 +28,7 @@
 
 .track-image {
   width: 60px;
-  height: 60px;
+  aspect-ratio: 1;
   border-radius: 4px;
   -o-object-fit: cover;
      object-fit: cover;

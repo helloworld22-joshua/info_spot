@@ -1,28 +1,19 @@
-.top-artists {
-  background: var(--bg1-alpha);
-  -webkit-backdrop-filter: var(--blur);
-          backdrop-filter: var(--blur);
-  padding: 40px;
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
 .artists-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 30px;
+  gap: var(--gap);
 }
 
 .artist-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--highlight);
   border-radius: var(--border-radius);
-  padding: 20px;
+  padding: var(--padding-small);
   text-align: center;
-  transition: var(--transition);
+  transition: translate var(--transition), box-shadow var(--transition);
 }
 .artist-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+  translate: 0 -4px;
+  box-shadow: var(--box-shadow);
 }
 
 .artist-image {
@@ -31,28 +22,24 @@
   border-radius: 50%;
   -o-object-fit: cover;
      object-fit: cover;
-  margin-bottom: 15px;
+  margin-bottom: var(--gap-small);
 }
 
 .artist-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--gap-tiny);
 }
 
 .artist-name {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: var(--font-normal);
+  font-weight: var(--font-bold);
   display: block;
 }
 
-.artist-genres {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  text-transform: capitalize;
-}
-
+.artist-genres,
 .artist-followers {
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: var(--font-small);
+  text-transform: capitalize;
 }/*# sourceMappingURL=top_artists.css.map */

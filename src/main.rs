@@ -622,7 +622,7 @@ fn Dashboard() -> Element {
 			if is_demo_mode {
 				div { style: "background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); padding: 12px 20px; text-align: center; margin-bottom: 20px; border-radius: 8px;",
 					p { style: "margin: 0; font-weight: 600; font-size: 0.95rem;",
-						"🎭 Demo Mode - Using mock data (no Spotify connection required)"
+						"Demo Mode (no Spotify connection required)"
 					}
 				}
 			}

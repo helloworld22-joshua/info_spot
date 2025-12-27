@@ -3,12 +3,22 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
+    let mut position = use_signal(|| (0.0, 0.0));
     rsx! {
 		document::Link {
 			rel: "stylesheet",
 			href: asset!("assets/compiled/top_artists.css"),
 		}
-		div { class: "top-artists",
+		div {
+			class: "top-artists component",
+			onmounted: move |event| {
+			    spawn(async move {
+			        if let Ok(rect) = event.get_client_rect().await {
+			            position.set((rect.origin.x, rect.origin.y));
+			        }
+			    });
+			},
+			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 			h2 { class: "section-title", "Top Artists" }
 			div { class: "artists-grid",
 				for artist in artists().iter() {
@@ -38,7 +48,7 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 							}
 							if let Some(followers) = &artist.followers {
 								div { class: "artist-followers",
-									"{format_number(followers.total)} followers"
+									"{format_number(followers.total)} Followers"
 								}
 							}
 						}

@@ -2,13 +2,25 @@ use crate::models::Playlist;
 use crate::Route;
 use dioxus::prelude::*;
 
+
 #[component]
 pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
     let playlist_items = playlists();
+	let mut position = use_signal(|| (0.0, 0.0));
 
     rsx! {
 		document::Link { rel: "stylesheet", href: asset!("assets/compiled/playlists.css") }
-		div { class: "playlists",
+		div {
+			class: "playlists component",
+			onmounted: move |event| {
+			    spawn(async move {
+			        if let Ok(rect) = event.get_client_rect().await {
+			            position.set((rect.origin.x, rect.origin.y));
+			        }
+			    });
+			},
+			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
+
 			h2 { class: "section-title", "Your Playlists" }
 			if playlist_items.is_empty() {
 				div { style: "padding: 40px; text-align: center; color: #b3b3b3;",

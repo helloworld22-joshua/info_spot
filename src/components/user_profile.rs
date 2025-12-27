@@ -14,7 +14,7 @@ pub fn UserProfile(
 rsx! {
 	document::Link { rel: "stylesheet", href: asset!("assets/compiled/user_profile.css") }
 	div {
-		class: "user-profile",
+		class: "user-profile component",
 		onmounted: move |event| {
 		    spawn(async move {
 		        if let Ok(rect) = event.get_client_rect().await {
@@ -51,12 +51,12 @@ rsx! {
 				}
 				div { class: "profile-actions",
 					button {
-						class: "import-button",
+						class: "import-button button",
 						onclick: move |_| on_import.call(()),
 						"📥 Import Playlist"
 					}
 					button {
-						class: "logout-button",
+						class: "logout-button button",
 						onclick: {
 						    let mut ctx = context.clone();
 						    let nav_clone = nav.clone();

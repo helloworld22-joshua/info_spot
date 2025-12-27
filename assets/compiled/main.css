@@ -1,16 +1,80 @@
 :root {
-  --primary: #7b1db9;
-  --secondary: #14d595;
+  --primary: hsl(276, 73%, 42%);
+  --primary25: hsl(276, 73%, 42%, 0.25);
+  --secondary: hsl(160, 83%, 46%);
+  --background: hsl(0, 0%, 5%);
+  --background40: hsla(0, 0%, 0%, 0.4);
+  --highlight: hsla(0, 0%, 50%, 0.1);
+  --highlight2: hsla(0, 0%, 50%, 0.2);
+  --glow: 0 0 10px hsla(0, 0%, 70%, 0.1);
+  --box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+  --padding: 40px;
+  --padding-small: 20px;
+  --padding-tiny: 10px;
+  --gap: 30px;
+  --gap-small: 15px;
+  --gap-tiny: 7.5px;
+  --font-giant: 2.5rem;
+  --font-huge: 2rem;
+  --font-large: 1.35rem;
+  --font-normal: 1.1rem;
+  --font-small: 0.85rem;
+  --font-bold: 600;
+  --font-default: 400;
+  --font-light: 200;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-radius: 20px;
+  --border-radius-small: 5px;
+  --transition: 0.3s ease;
   --bg1-alpha: hsla(0, 0%, 15%, 0.3);
   --blur: blur(5px);
   --black: #191414;
   --dark: #121212;
   --gray: #282828;
   --light-gray: #535353;
-  --text-primary: #ffffff;
-  --text-secondary: #b3b3b3;
-  --border-radius: 8px;
-  --transition: all 0.3s ease;
+}
+
+.component {
+  padding: 40px;
+  transform: translateZ(0);
+  overflow: hidden;
+  background-color: var(--background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--glow);
+}
+.component::before {
+  position: fixed;
+  display: block;
+  width: 500px;
+  height: 500px;
+  content: "";
+  top: calc(var(--mouse-y) - var(--position-y) + var(--scroll-y));
+  left: calc(var(--mouse-x) - var(--position-x) + var(--scroll-x));
+  translate: -50% -50%;
+  z-index: -2;
+  background: radial-gradient(500px circle, var(--primary25), transparent 50%);
+}
+.component::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  z-index: -1;
+  background-color: var(--background40);
+  border-radius: calc(var(--border-radius) - 2px);
+}
+
+.button {
+  padding: 12px 24px;
+  background-color: var(--primary);
+  color: var(--text-primary);
+  border-radius: var(--border-radius);
+  transition: scale var(--transition);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.button:hover {
+  scale: 1.05;
 }
 
 * {
@@ -154,21 +218,6 @@ button {
   flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 20px;
-}
-
-.import-button {
-  background: var(--primary);
-  color: #ffffff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 500px;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.import-button:hover {
-  transform: scale(1.05);
 }
 
 .time-range-selector {
