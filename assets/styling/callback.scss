@@ -1,0 +1,23 @@
+.callback-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background: var(--bg1);
+	color: var(--text-primary);
+
+	p {
+		font-size: 1.2rem;
+		animation: pulse 1.5s ease-in-out infinite;
+	}
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 1;
+	}
+}
