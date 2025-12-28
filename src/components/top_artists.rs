@@ -20,7 +20,7 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 			},
 			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 			h2 { class: "section-title", "Top Artists" }
-			div { class: "artists-grid",
+			div { class: "artists",
 				for artist in artists().iter() {
 					div { class: "artist-card", key: "{artist.id}",
 						if let Some(images) = &artist.images {
