@@ -1,10 +1,12 @@
-use crate::models::{RecentlyPlayedItem};
+use crate::components::TrackDetail;
+use crate::models::{RecentlyPlayedItem, Track};
 use dioxus::prelude::*;
 use std::collections::BTreeMap;
 
 #[component]
 pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Element {
     let tracks = recent_tracks();
+    let mut selected_track = use_signal(|| None::<Track>);
 
     // Group tracks by day
     let mut grouped: BTreeMap<String, Vec<RecentlyPlayedItem>> = BTreeMap::new();
@@ -46,7 +48,11 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
 							div { class: "day-tracks",
 								for (index , item) in day_tracks.iter().enumerate() {
 									div {
-										class: "recent-track-item",
+										class: "recent-track-item clickable",
+									onclick: {
+										let track = item.track.clone();
+										move |_| selected_track.set(Some(track.clone()))
+									},
 										key: "{item.played_at}-{index}",
 
 										if let Some(image) = item.track.album.images.first() {
@@ -58,10 +64,8 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
 										}
 
 										div { class: "track-info",
-											a {
+											div {
 												class: "track-name",
-												href: "{item.track.external_urls.spotify}",
-												target: "_blank",
 												"{item.track.name}"
 											}
 											div { class: "track-artists",
@@ -76,6 +80,14 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
 						}
 					}
 				}
+			}
+		}
+
+		// Track detail modal
+		if let Some(track) = selected_track() {
+			TrackDetail {
+				track: track,
+				on_close: move |_| selected_track.set(None),
 			}
 		}
 	}

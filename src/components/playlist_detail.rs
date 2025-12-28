@@ -1,3 +1,4 @@
+use crate::components::TrackDetail;
 use crate::models::*;
 use crate::{Route, AppContext};
 use crate::utils::*;
@@ -19,6 +20,7 @@ pub fn PlaylistDetail(id: String) -> Element {
     let mut show_duplicates_modal = use_signal(|| false);
     let mut duplicates = use_signal(|| Vec::<(Track, Vec<usize>)>::new());
     let mut removing_duplicates = use_signal(|| false);
+    let mut selected_track = use_signal(|| None::<Track>);
 
     // Check if we have a Spotify client with token
     let spotify_client_option = context.spotify_client.read().clone();
@@ -154,7 +156,7 @@ pub fn PlaylistDetail(id: String) -> Element {
             let duplicate_tracks: Vec<(Track, Vec<usize>)> = track_map
                 .into_iter()
                 .filter(|(_, indices)| indices.len() > 1)
-                .map(|(track_id, indices)| {
+                .map(|(_track_id, indices)| {
                     // Get the track from the first occurrence
                     let track = tracks_list[indices[0]].track.clone();
                     (track, indices)
@@ -349,8 +351,12 @@ pub fn PlaylistDetail(id: String) -> Element {
 				div { class: "tracks-list",
 					for (index , item) in sorted_tracks.iter().enumerate() {
 						div {
-							class: "track-item",
+							class: "track-item clickable",
 							key: "{item.track.id}-{index}",
+							onclick: {
+								let track = item.track.clone();
+								move |_| selected_track.set(Some(track.clone()))
+							},
 							span { class: "track-number", "{index + 1}" }
 							if let Some(image) = item.track.album.images.first() {
 								img {
@@ -360,12 +366,7 @@ pub fn PlaylistDetail(id: String) -> Element {
 								}
 							}
 							div { class: "track-info",
-								a {
-									class: "track-name",
-									href: "{item.track.external_urls.spotify}",
-									target: "_blank",
-									"{item.track.name}"
-								}
+								div { class: "track-name", "{item.track.name}" }
 								div { class: "track-artists",
 									{item.track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
 								}
@@ -449,6 +450,14 @@ pub fn PlaylistDetail(id: String) -> Element {
 						}
 					}
 				}
+			}
+		}
+
+		// Track detail modal
+		if let Some(track) = selected_track() {
+			TrackDetail {
+				track: track,
+				on_close: move |_| selected_track.set(None),
 			}
 		}
 	}

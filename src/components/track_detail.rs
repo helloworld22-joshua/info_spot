@@ -1,5 +1,5 @@
 use crate::models::Track;
-use crate::utils::format_duration;
+use crate::utils::{format_duration, format_release_date};
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::fa_brands_icons::FaSpotify;
 use dioxus_free_icons::Icon;
@@ -14,6 +14,7 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
         .join(", ");
     let duration = format_duration(track.duration_ms);
     let popularity = track.popularity.unwrap_or(0);
+    let release_date = format_release_date(&track.album.release_date);
 
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("assets/compiled/track_detail.css") }
@@ -68,7 +69,7 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
 
                         div { class: "metadata-item",
                             span { class: "metadata-label", "Release Date" }
-                            span { class: "metadata-value", "{track.album.release_date}" }
+                            span { class: "metadata-value", "{release_date}" }
                         }
 
                         div { class: "metadata-item",

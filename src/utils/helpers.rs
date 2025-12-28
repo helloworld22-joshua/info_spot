@@ -214,3 +214,33 @@ pub fn create_zip_from_directory(source_dir: &std::path::Path, dest_zip: &str) -
     zip.finish()?;
     Ok(())
 }
+
+/// Format release date from "YYYY-MM-DD" to "Month DD, YYYY"
+pub fn format_release_date(date: &str) -> String {
+    let parts: Vec<&str> = date.split('-').collect();
+    if parts.len() == 3 {
+        let year = parts[0];
+        let month = parts[1];
+        let day = parts[2].trim_start_matches('0'); // Remove leading zero
+
+        let month_name = match month {
+            "01" => "January",
+            "02" => "February",
+            "03" => "March",
+            "04" => "April",
+            "05" => "May",
+            "06" => "June",
+            "07" => "July",
+            "08" => "August",
+            "09" => "September",
+            "10" => "October",
+            "11" => "November",
+            "12" => "December",
+            _ => return date.to_string(),
+        };
+
+        format!("{} {}, {}", month_name, day, year)
+    } else {
+        date.to_string()
+    }
+}
