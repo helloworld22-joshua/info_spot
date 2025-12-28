@@ -1,4 +1,4 @@
-use crate::models::Playlist;
+use crate::models::{Playlist, Track};
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
@@ -12,7 +12,7 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
     let mut position = use_signal(|| (0.0, 0.0));
     let mut selected_playlists = use_signal(|| HashSet::<String>::new());
     let mut show_duplicates_modal = use_signal(|| false);
-    let mut duplicates_data = use_signal(|| Vec::<(String, Vec<(String, String, usize)>)>::new());
+    let mut duplicates_data = use_signal(|| Vec::<(Playlist, Vec<(Track, usize)>)>::new());
     let mut removing_duplicates = use_signal(|| false);
     let context = use_context::<AppContext>();
 
@@ -154,7 +154,7 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                                         .push(idx);
                                 }
 
-                                let playlist_duplicates: Vec<(String, String, usize)> = track_map
+                                let playlist_duplicates: Vec<(Track, usize)> = track_map
                                     .into_iter()
                                     .filter(|(_, indices)| indices.len() > 1)
                                     .map(|(track_id, indices)| {
@@ -164,16 +164,12 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                                                 Some(&item.track).filter(|t| t.id == track_id)
                                             })
                                             .unwrap();
-                                        (
-                                            format!("{} - {}", track.name, track.artists.first().map(|a| a.name.as_str()).unwrap_or("Unknown")),
-                                            track_id,
-                                            indices.len(),
-                                        )
+                                        (track.clone(), indices.len())
                                     })
                                     .collect();
 
                                 if !playlist_duplicates.is_empty() {
-                                    all_duplicates.push((playlist.name.clone(), playlist_duplicates));
+                                    all_duplicates.push((playlist.clone(), playlist_duplicates));
                                 }
                             }
                             Err(e) => {
@@ -352,26 +348,67 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
             div { class: "modal-overlay",
                 onclick: move |_| show_duplicates_modal.set(false),
                 div {
-                    class: "modal-content duplicates-modal",
+                    class: "modal-content",
                     onclick: move |e| e.stop_propagation(),
 
                     div { class: "modal-header",
                         h2 { "Duplicate Tracks Found" }
-                        p { class: "modal-subtitle",
-                            "Found duplicates in {duplicates_data().len()} playlist(s)"
+                        button {
+                            class: "modal-close",
+                            onclick: move |_| show_duplicates_modal.set(false),
+                            "×"
                         }
                     }
 
-                    div { class: "duplicates-list",
-                        for (playlist_name, dups) in duplicates_data().iter() {
-                            div { class: "playlist-duplicates-section",
-                                h3 { class: "playlist-name-header", "{playlist_name}" }
-                                for (track_info, _track_id, count) in dups.iter() {
-                                    div { class: "duplicate-item",
-                                        div { class: "duplicate-track-info",
-                                            strong { "{track_info}" }
-                                            div { class: "duplicate-count",
-                                                "Found {count} times"
+                    div { class: "modal-body",
+                        if duplicates_data().is_empty() {
+                            p { style: "text-align: center; padding: 20px;",
+                                "No duplicate tracks found in selected playlists!"
+                            }
+                        } else {
+                            p { style: "margin-bottom: 20px; color: var(--text-secondary);",
+                                "Found duplicates in {duplicates_data().len()} playlist(s). First occurrence of each track will be kept."
+                            }
+
+                            for (playlist, dups) in duplicates_data().iter() {
+                                div { class: "playlist-section",
+                                    div { class: "playlist-section-header",
+                                        if let Some(image) = playlist.images.first() {
+                                            img {
+                                                class: "playlist-section-image",
+                                                src: "{image.url}",
+                                                alt: "{playlist.name}",
+                                            }
+                                        } else {
+                                            div { class: "playlist-section-placeholder", "♪" }
+                                        }
+                                        div { class: "playlist-section-info",
+                                            div { class: "playlist-section-name", "{playlist.name}" }
+                                            div { class: "playlist-section-meta",
+                                                "{dups.len()} duplicate track(s)"
+                                            }
+                                        }
+                                    }
+
+                                    div { class: "duplicates-list",
+                                        for (track, count) in dups.iter() {
+                                            div { class: "duplicate-item",
+                                                if let Some(image) = track.album.images.first() {
+                                                    img {
+                                                        class: "duplicate-image",
+                                                        src: "{image.url}",
+                                                        alt: "{track.name}",
+                                                    }
+                                                }
+                                                div { class: "duplicate-info",
+                                                    div { class: "duplicate-name", "{track.name}" }
+                                                    div { class: "duplicate-artist",
+                                                        {track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+                                                    }
+                                                    div { class: "duplicate-count",
+                                                        "Appears {count} times (will remove {count - 1})"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -380,20 +417,22 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                         }
                     }
 
-                    div { class: "modal-actions",
+                    div { class: "modal-footer",
                         button {
                             class: "modal-button cancel-button",
                             onclick: move |_| show_duplicates_modal.set(false),
-                            "Close"
+                            "Cancel"
                         }
-                        button {
-                            class: "modal-button remove-button",
-                            onclick: remove_duplicates,
-                            disabled: removing_duplicates(),
-                            if removing_duplicates() {
-                                "Removing..."
-                            } else {
-                                "Remove All Duplicates"
+                        if !duplicates_data().is_empty() {
+                            button {
+                                class: "modal-button remove-button",
+                                onclick: remove_duplicates,
+                                disabled: removing_duplicates(),
+                                if removing_duplicates() {
+                                    "Removing..."
+                                } else {
+                                    "Remove All Duplicates"
+                                }
                             }
                         }
                     }
