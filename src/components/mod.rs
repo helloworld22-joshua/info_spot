@@ -5,6 +5,9 @@ pub mod playlists;
 pub mod recently_played;
 pub mod toast;
 pub mod callback;
+pub mod home;
+pub mod dashboard;
+pub mod playlist_detail;
 
 pub use user_profile::UserProfile;
 pub use top_tracks::TopTracks;
@@ -13,3 +16,6 @@ pub use playlists::Playlists;
 pub use recently_played::RecentlyPlayed;
 pub use toast::{Toast, ToastType, ToastContainer};
 pub use callback::Callback;
+pub use home::Home;
+pub use dashboard::Dashboard;
+pub use playlist_detail::PlaylistDetail;
