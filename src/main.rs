@@ -5,9 +5,7 @@ mod oauth;
 mod utils;
 
 use crate::api::SpotifyClient;
-use crate::components::{UserProfile, TopTracks, TopArtists, Playlists, RecentlyPlayed, Toast, ToastContainer, Callback, Home, Dashboard, PlaylistDetail};
-use crate::utils::*;
-use crate::models::*;
+use crate::components::{Toast, ToastContainer, Callback, Home, Dashboard, PlaylistDetail};
 use dioxus::prelude::*;
 use std::rc::Rc;
 

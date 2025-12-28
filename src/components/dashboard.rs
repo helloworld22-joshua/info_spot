@@ -3,7 +3,6 @@ use crate::models::*;
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
-use std::rc::Rc;
 
 #[component]
 pub fn Dashboard() -> Element {

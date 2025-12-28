@@ -184,3 +184,33 @@ pub fn show_error(context: &AppContext, message: String) {
 pub fn show_info(context: &AppContext, message: String) {
     show_toast(context, message, ToastType::Info);
 }
+
+/// Create a ZIP file from a directory
+pub fn create_zip_from_directory(source_dir: &std::path::Path, dest_zip: &str) -> Result<(), Box<dyn std::error::Error>> {
+    use std::fs::File;
+    use std::io::{Write, Read};
+    use zip::write::FileOptions;
+    use zip::ZipWriter;
+
+    let file = File::create(dest_zip)?;
+    let mut zip = ZipWriter::new(file);
+    let options = FileOptions::<()>::default().compression_method(zip::CompressionMethod::Deflated);
+
+    let mut buffer = Vec::new();
+    for entry in std::fs::read_dir(source_dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_file() {
+            let name = path.file_name().unwrap().to_str().unwrap();
+            zip.start_file(name, options)?;
+
+            let mut f = File::open(&path)?;
+            f.read_to_end(&mut buffer)?;
+            zip.write_all(&buffer)?;
+            buffer.clear();
+        }
+    }
+
+    zip.finish()?;
+    Ok(())
+}
