@@ -1,6 +1,10 @@
 use crate::models::User;
 use crate::{Route, AppContext};
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaFileArrowUp;
+use dioxus_free_icons::icons::fa_solid_icons::FaRightFromBracket;
+use dioxus_free_icons::icons::fa_solid_icons::FaArrowUpRightFromSquare;
+use dioxus_free_icons::Icon;
 
 #[component]
 pub fn UserProfile(
@@ -53,7 +57,25 @@ rsx! {
 					button {
 						class: "import-button button",
 						onclick: move |_| on_import.call(()),
-						"📥 Import Playlist"
+						Icon {
+							icon: FaFileArrowUp,
+							width: 18,
+							height: 18,
+						}
+						"Import Playlist"
+					}
+					button {
+						class: "spotify-button button",
+						onclick: move |_| {
+						    let url = format!("https://open.spotify.com/user/{}", user_data.id);
+						    let _ = open::that(url);
+						},
+						Icon {
+							icon: FaArrowUpRightFromSquare,
+							width: 18,
+							height: 18,
+						}
+						"Go to Spotify"
 					}
 					button {
 						class: "logout-button button",
@@ -69,7 +91,12 @@ rsx! {
 						        nav_clone.push(Route::Home {});
 						    }
 						},
-						"🚪 Logout"
+						Icon {
+							icon: FaRightFromBracket,
+							width: 18,
+							height: 18,
+						}
+						"Logout"
 					}
 				}
 			}

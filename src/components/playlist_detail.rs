@@ -2,6 +2,9 @@ use crate::models::*;
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaFileArrowDown;
+use dioxus_free_icons::icons::fa_solid_icons::FaMagnifyingGlass;
+use dioxus_free_icons::Icon;
 
 #[component]
 pub fn PlaylistDetail(id: String) -> Element {
@@ -265,12 +268,23 @@ pub fn PlaylistDetail(id: String) -> Element {
 						"← Back to Dashboard"
 					}
 					if playlist_info().is_some() {
-						button { class: "download-button", onclick: download_json, "⬇ Download JSON" }
+						button { class: "download-button", onclick: download_json,
+                        Icon {
+							icon: FaFileArrowDown,
+							width: 18,
+							height: 18,
+						}
+                        "Download JSON" }
 						button {
 							class: "remove-duplicates-button",
 							onclick: find_duplicates,
 							style: "margin-left: 10px;",
-							"🔍 Remove Duplicates"
+                            Icon {
+							icon: FaMagnifyingGlass,
+							width: 18,
+							height: 18,
+						}
+							"Remove Duplicates"
 						}
 					}
 				}
