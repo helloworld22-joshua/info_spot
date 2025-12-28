@@ -30,6 +30,8 @@ pub struct Track {
     pub album: Album,
     pub duration_ms: u32,
     pub external_urls: ExternalUrls,
+    pub popularity: Option<u32>,
+    pub explicit: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

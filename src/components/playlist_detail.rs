@@ -154,7 +154,7 @@ pub fn PlaylistDetail(id: String) -> Element {
             let duplicate_tracks: Vec<(Track, Vec<usize>)> = track_map
                 .into_iter()
                 .filter(|(_, indices)| indices.len() > 1)
-                .map(|(_track_id, indices)| {
+                .map(|(track_id, indices)| {
                     // Get the track from the first occurrence
                     let track = tracks_list[indices[0]].track.clone();
                     (track, indices)

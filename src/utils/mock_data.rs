@@ -38,6 +38,8 @@ pub fn get_mock_top_tracks() -> Vec<Track> {
             external_urls: ExternalUrls {
                 spotify: "https://open.spotify.com".to_string(),
             },
+            popularity: Some(92),
+            explicit: false,
         },
         Track {
             id: "track2".to_string(),
@@ -62,6 +64,8 @@ pub fn get_mock_top_tracks() -> Vec<Track> {
             external_urls: ExternalUrls {
                 spotify: "https://open.spotify.com".to_string(),
             },
+            popularity: Some(88),
+            explicit: false,
         },
         Track {
             id: "track3".to_string(),
@@ -86,6 +90,8 @@ pub fn get_mock_top_tracks() -> Vec<Track> {
             external_urls: ExternalUrls {
                 spotify: "https://open.spotify.com".to_string(),
             },
+            popularity: Some(90),
+            explicit: false,
         },
     ]
 }

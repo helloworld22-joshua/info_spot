@@ -1,9 +1,13 @@
+use crate::components::TrackDetail;
 use crate::models::Track;
+use crate::utils::format_duration;
 use dioxus::prelude::*;
 
 #[component]
 pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
     let mut position = use_signal(|| (0.0, 0.0));
+    let mut selected_track = use_signal(|| None::<Track>);
+
     rsx! {
 		document::Link { rel: "stylesheet", href: asset!("assets/compiled/top_tracks.css") }
 		div {
@@ -19,7 +23,13 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 			h2 { class: "section-title", "Top Tracks" }
 			div { class: "tracks-list",
 				for (index , track) in tracks().iter().enumerate() {
-					div { class: "track-item", key: "{track.id}",
+					div {
+						class: "track-item clickable",
+						key: "{track.id}",
+						onclick: {
+							let track = track.clone();
+							move |_| selected_track.set(Some(track.clone()))
+						},
 						span { class: "track-number", "{index + 1}" }
 						if let Some(image) = track.album.images.first() {
 							img {
@@ -29,12 +39,7 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 							}
 						}
 						div { class: "track-info",
-							a {
-								class: "track-name",
-								href: "{track.external_urls.spotify}",
-								target: "_blank",
-								"{track.name}"
-							}
+							div { class: "track-name", "{track.name}" }
 							div { class: "track-artists",
 								{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
 							}
@@ -44,12 +49,13 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 				}
 			}
 		}
-	}
-}
 
-fn format_duration(ms: u32) -> String {
-    let total_seconds = ms / 1000;
-    let minutes = total_seconds / 60;
-    let seconds = total_seconds % 60;
-    format!("{}:{:02}", minutes, seconds)
+		// Track detail modal
+		if let Some(track) = selected_track() {
+			TrackDetail {
+				track: track,
+				on_close: move |_| selected_track.set(None),
+			}
+		}
+	}
 }
