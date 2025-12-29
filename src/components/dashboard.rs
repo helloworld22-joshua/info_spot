@@ -387,8 +387,13 @@ pub fn Dashboard() -> Element {
 
 			header { class: "dashboard-header",
 				div { class: "header-row",
-					h1 { class: "dashboard-title", "Your Spotify Stats" }
-				}
+                    img {
+                        class: "dashboard-logo",
+                        src: asset!("assets/media/logo.svg"),
+                        alt: "InfoSpot Logo"
+                    }
+                    h1 { class: "dashboard-title", "InfoSpot" }
+                }
 				div { class: "time-range-selector",
 					button {
 						class: if time_range() == "short_term" { "active" } else { "" },

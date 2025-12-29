@@ -34,15 +34,13 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
                 }
 
                 // Album cover
-                div { class: "track-detail-cover-container",
-                    if let Some(image) = track.album.images.first() {
+                if let Some(image) = track.album.images.first() {
                         img {
                             class: "track-detail-cover",
                             src: "{image.url}",
                             alt: "{track.name}",
                         }
                     }
-                }
 
                 // Track info
                 div { class: "track-detail-info",
