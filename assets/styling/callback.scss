@@ -1,7 +1,7 @@
+@import "style.scss";
+
 .callback-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	@include flex-center;
 	min-height: 100vh;
 	background: var(--bg1);
 	color: var(--text-primary);

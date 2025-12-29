@@ -31,7 +31,7 @@
 	--border-radius-small: 5px;
 	--transition: 0.3s ease;
 
-	// Legacy: Do not use, leave for no
+	// Legacy: Do not use, leave for now
 	--bg1-alpha: hsla(0, 0%, 15%, 0.3);
 	--blur: blur(5px);
 	--black: #191414;
@@ -42,8 +42,7 @@
 
 // Base styles
 * {
-	margin: 0;
-	padding: 0;
+	@include space(0, 0);
 	box-sizing: border-box;
 }
 
@@ -71,7 +70,8 @@ button {
 }
 
 .component {
-	padding: 40px;
+	@include default(relative, block);
+	@include space(40px);
 	transform: translateZ(0); // Hack to fix rendering bug
 	overflow: hidden;
 	background-color: var(--background);
@@ -82,7 +82,7 @@ button {
 		@include default(fixed, block);
 		@include size(500px);
 		content: "";
-		top: calc(var(--mouse-y) - var(--position-y) + var(--scroll-y)); // Maybe not optimal
+		top: calc(var(--mouse-y) - var(--position-y) + var(--scroll-y));
 		left: calc(var(--mouse-x) - var(--position-x) + var(--scroll-x));
 		translate: -50% -50%;
 		z-index: -2;
@@ -90,8 +90,8 @@ button {
 	}
 
 	&::after {
+		@include default(absolute, block);
 		content: "";
-		position: absolute;
 		inset: 2px;
 		z-index: -1;
 		background-color: var(--background40);
@@ -126,26 +126,23 @@ button {
 
 // Home page
 .home-container {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	@include flex-center;
 	min-height: 100vh;
 	padding: 20px;
 }
 
 .login-card {
+	@include text-center(500px);
 	background: var(--bg1-alpha);
 	backdrop-filter: var(--blur);
 	padding: 60px 40px;
 	border-radius: var(--border-radius);
-	text-align: center;
-	max-width: 500px;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .app-title {
+	@include space(0, 0 0 20px 0);
 	font-size: 3rem;
-	margin-bottom: 20px;
 	background: linear-gradient(135deg, var(--primary) 0%, #1ed760 100%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -153,8 +150,8 @@ button {
 }
 
 .app-description {
+	@include space(0, 0 0 40px 0);
 	color: var(--text-secondary);
-	margin-bottom: 40px;
 	font-size: 1.1rem;
 }
 
@@ -188,9 +185,7 @@ button {
 
 // Callback page
 .callback-container {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	@include flex-center;
 	min-height: 100vh;
 	font-size: 1.2rem;
 	color: var(--text-secondary);
@@ -198,9 +193,9 @@ button {
 
 // Dashboard
 .dashboard-container {
-	margin: 0 auto;
+	@include space(0, 0 auto);
 	background-color: transparent;
-	height: 100vh; /* Take up the full window height */
+	height: 100vh;
 	overflow-y: auto;
 	background-image:
 		radial-gradient(circle at 50% 50%, #0000 1.5px, #000 0 7px, #0000 7px),
@@ -220,10 +215,9 @@ button {
 		0% 0px;
 
 	&::before {
+		@include default(fixed, block);
+		@include size(300px);
 		content: "";
-		position: fixed;
-		height: 300px;
-		width: 300px;
 		top: var(--mouse-y);
 		left: var(--mouse-x);
 		transform: translate(-50%, -50%);
@@ -233,25 +227,23 @@ button {
 }
 
 .dashboard-header {
-	position: sticky;
-	display: flex;
+	@include default(sticky, flex);
 	justify-content: space-between;
 	align-items: center;
 	gap: 20px;
 	z-index: 100;
 	top: calc(var(--padding) * -1);
 	padding: var(--padding);
-	// box-shadow: inset 0 100px 50px -10px black;
 }
 
 .dashboard-logo {
 	@include size(50px);
-	filter: invert(100); // Dirty ass fix, TODO: Important change later
+	filter: invert(100);
 }
 
 .dashboard-title {
+	@include space(0, 0);
 	font-size: 2.5rem;
-	margin: 0;
 }
 
 .header-row {
@@ -292,7 +284,7 @@ button {
 }
 
 .loading {
-	text-align: center;
+	@include text-center;
 	padding: 60px 20px;
 	font-size: 1.2rem;
 	color: var(--text-secondary);
@@ -307,8 +299,8 @@ button {
 
 // Section Titles
 .section-title {
+	@include space(0, 0 0 30px 0);
 	font-size: 2rem;
-	margin-bottom: 30px;
 }
 
 // Responsive Design
@@ -345,8 +337,7 @@ button {
 // Playlist Detail View
 .playlist-detail-container {
 	max-width: 1400px;
-	margin: 0 auto;
-	padding: 40px 20px;
+	@include space(40px 20px, 0 auto);
 }
 
 .playlist-detail-header {
@@ -410,13 +401,12 @@ button {
 
 // Modal styles
 .modal-overlay {
-	position: fixed;
+	@include default(fixed, flex);
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	background: rgba(0, 0, 0, 0.8);
-	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 1000;
@@ -457,10 +447,9 @@ button {
 }
 
 .author-text {
+	@include space(8px 0, 0);
 	color: var(--text-secondary);
 	font-size: 0.95rem;
-	margin: 0;
-	padding: 8px 0;
 }
 
 .form-input,
@@ -523,8 +512,7 @@ button {
 }
 
 .track-preview-image {
-	width: 48px;
-	height: 48px;
+	@include size(48px);
 	border-radius: 4px;
 	object-fit: cover;
 }
@@ -538,20 +526,16 @@ button {
 }
 
 .track-preview-name {
+	@include text-truncate;
 	color: var(--text-primary);
 	font-weight: 500;
 	font-size: 0.95rem;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .track-preview-artist {
+	@include text-truncate;
 	color: var(--text-secondary);
 	font-size: 0.85rem;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .track-uri {
@@ -579,11 +563,10 @@ button {
 
 // Toast notifications
 .toast-container {
-	position: fixed;
+	@include default(fixed, flex);
 	top: 20px;
 	right: 20px;
 	z-index: 10000;
-	display: flex;
 	flex-direction: column;
 	gap: 10px;
 	max-width: 400px;
@@ -640,14 +623,13 @@ button {
 }
 
 .toast-close {
+	@include size(24px);
+	@include space(0);
 	background: transparent;
 	color: var(--text-secondary);
 	border: none;
 	font-size: 1.5rem;
 	line-height: 1;
-	padding: 0;
-	width: 24px;
-	height: 24px;
 	cursor: pointer;
 	flex-shrink: 0;
 	transition: color 0.2s;
@@ -676,19 +658,18 @@ button {
 	border-bottom: 1px solid var(--light-gray);
 
 	h2 {
-		margin: 0;
+		@include space(0, 0);
 		font-size: 1.5rem;
 	}
 }
 
 .modal-close {
+	@include size(40px);
 	background: transparent;
 	color: var(--text-secondary);
 	font-size: 2rem;
 	line-height: 1;
-	padding: 0;
-	width: 40px;
-	height: 40px;
+	@include space(0);
 	border-radius: 50%;
 	transition: var(--transition);
 
@@ -720,8 +701,7 @@ button {
 }
 
 .duplicate-image {
-	width: 60px;
-	height: 60px;
+	@include size(60px);
 	border-radius: 4px;
 	object-fit: cover;
 }
@@ -731,16 +711,16 @@ button {
 }
 
 .duplicate-name {
+	@include space(0, 0 0 5px 0);
 	font-weight: 600;
 	font-size: 1rem;
-	margin-bottom: 5px;
 	color: var(--text-primary);
 }
 
 .duplicate-artist {
+	@include space(0, 0 0 5px 0);
 	font-size: 0.9rem;
 	color: var(--text-secondary);
-	margin-bottom: 5px;
 }
 
 .duplicate-count {
@@ -793,14 +773,14 @@ button {
 }
 
 .playlist-detail-title {
+	@include space(0, 0 0 10px 0);
 	font-size: 2.5rem;
-	margin-bottom: 10px;
 }
 
 .playlist-detail-description {
+	@include space(0, 0 0 20px 0);
 	color: var(--text-secondary);
 	font-size: var(--font-normal);
-	margin-bottom: 20px;
 	line-height: 1.5;
 	max-width: 800px;
 }
@@ -846,15 +826,14 @@ button {
 }
 
 .error-message {
-	padding: 20px;
+	@include space(20px, 0 0 20px 0);
 	background: rgba(255, 68, 68, 0.1);
 	border: 1px solid #ff4444;
 	border-radius: var(--border-radius);
-	margin-bottom: 20px;
 
 	p {
+		@include space(0, 0);
 		color: #ff4444;
-		margin: 0;
 	}
 }
 
@@ -871,10 +850,10 @@ button {
 }
 
 .playlist-name {
+	@include space(0, 0 0 5px 0);
 	display: block;
 	font-size: 1.1rem;
 	font-weight: 600;
-	margin-bottom: 5px;
 }
 
 // Responsive updates for playlist detail
@@ -885,6 +864,6 @@ button {
 	}
 
 	.sort-button {
-		width: 100%;
+		@include size(100%, auto);
 	}
 }

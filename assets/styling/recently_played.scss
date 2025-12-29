@@ -55,27 +55,23 @@
 }
 
 .recent-track-item .track-name {
+	@include text-truncate;
 	display: block;
 	color: var(--text-primary);
 	text-decoration: none;
 	font-weight: var(--font-bold);
 	margin-bottom: 4px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .recent-track-item .track-artists {
+	@include text-truncate;
 	color: #b3b3b3;
 	font-size: 0.9rem;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .played-time {
+	@include text-truncate;
 	color: var(--text-secondary);
 	font-size: var(--font-small);
 	font-weight: var(--font-light);
-	white-space: nowrap;
 }

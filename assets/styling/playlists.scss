@@ -82,7 +82,7 @@
 }
 
 .playlist-card-wrapper {
-	position: relative;
+	@include default(relative, block);
 	border-radius: var(--border-radius);
 	transition: all var(--transition);
 
@@ -103,12 +103,11 @@
 }
 
 .playlist-checkbox {
-	position: absolute;
+	@include default(absolute, block);
+	@include size(40px);
 	bottom: var(--gap-small);
 	right: var(--gap-small);
 	z-index: 10;
-	width: 40px;
-	height: 40px;
 	cursor: pointer;
 
 	input[type="checkbox"] {
@@ -144,7 +143,7 @@
 }
 
 .playlist-image {
-	width: 100%;
+	@include size(100%);
 	aspect-ratio: 1;
 	border-radius: var(--border-radius);
 	object-fit: cover;
@@ -153,7 +152,7 @@
 
 .playlist-placeholder {
 	@include flex-center;
-	width: 100%;
+	@include size(100%);
 	aspect-ratio: 1;
 	background: linear-gradient(135deg, #535353, #282828);
 	border-radius: var(--border-radius);
@@ -171,13 +170,10 @@
 }
 
 .playlist-name {
+	@include text-truncate;
 	font-size: var(--font-normal);
 	font-weight: var(--font-bold);
 	display: block;
-	// Truncate to 1 line with ellipsis
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .playlist-description {
@@ -200,21 +196,17 @@
 
 .playlist-meta,
 .playlist-owner {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	@include text-truncate;
 }
 
 // Modal Styles (matching playlist_detail.rs design)
 .modal-overlay {
-	position: fixed;
+	@include default(fixed, flex);
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	@include size(100%);
 	background: rgba(0, 0, 0, 0.8);
 	backdrop-filter: blur(5px);
-	display: flex;
 	justify-content: center;
 	align-items: center;
 	z-index: 1000;
@@ -241,19 +233,18 @@
 	border-bottom: 1px solid var(--highlight2);
 
 	h2 {
+		@include space(0, 0);
 		font-size: var(--font-huge);
-		margin: 0;
 	}
 }
 
 .modal-close {
+	@include size(40px);
 	background: transparent;
 	border: none;
 	font-size: 2rem;
 	color: var(--text-secondary);
 	cursor: pointer;
-	width: 40px;
-	height: 40px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -273,10 +264,9 @@
 }
 
 .playlist-section {
-	margin-bottom: var(--gap);
+	@include space(var(--padding-small), 0 0 var(--gap) 0);
 	background: var(--highlight2);
 	border-radius: var(--border-radius);
-	padding: var(--padding-small);
 }
 
 .playlist-section-header {
@@ -289,16 +279,14 @@
 }
 
 .playlist-section-image {
-	width: 60px;
-	height: 60px;
+	@include size(60px);
 	border-radius: 8px;
 	object-fit: cover;
 }
 
 .playlist-section-placeholder {
 	@include flex-center;
-	width: 60px;
-	height: 60px;
+	@include size(60px);
 	background: linear-gradient(135deg, #535353, #282828);
 	border-radius: 8px;
 	font-size: 1.5rem;
@@ -310,9 +298,9 @@
 }
 
 .playlist-section-name {
+	@include space(0, 0 0 5px 0);
 	font-size: var(--font-large);
 	font-weight: var(--font-bold);
-	margin-bottom: 5px;
 	color: var(--primary);
 }
 
@@ -342,8 +330,7 @@
 }
 
 .duplicate-image {
-	width: 50px;
-	height: 50px;
+	@include size(50px);
 	border-radius: 4px;
 	object-fit: cover;
 }
@@ -354,20 +341,16 @@
 }
 
 .duplicate-name {
+	@include text-truncate;
 	font-weight: var(--font-bold);
 	margin-bottom: 4px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .duplicate-artist {
+	@include text-truncate;
+	@include space(0, 0 0 6px 0);
 	font-size: var(--font-small);
 	color: var(--text-secondary);
-	margin-bottom: 6px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .duplicate-count {
@@ -463,10 +446,8 @@
 
 // Show more/less button
 .show-more-container {
-	display: flex;
-	justify-content: center;
-	margin-top: var(--gap);
-	margin-bottom: var(--gap);
+	@include flex-center;
+	@include space(var(--gap), var(--gap) 0);
 }
 
 .show-more-button {
@@ -504,7 +485,7 @@
 }
 
 .search-bar {
-	width: 100%;
+	@include size(100%, auto);
 	padding: 12px 20px;
 	background: var(--bg1-alpha);
 	backdrop-filter: var(--blur);

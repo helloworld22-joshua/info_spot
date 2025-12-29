@@ -1,7 +1,9 @@
 .callback-container {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
+  gap: 0;
   min-height: 100vh;
   background: var(--bg1);
   color: var(--text-primary);

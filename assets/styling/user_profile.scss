@@ -112,7 +112,7 @@
 
 // Top Genres Section
 .top-genres-section {
-	margin-top: 30px;
+	@include space(0, 30px 0 0 0);
 }
 
 .genres-header {
@@ -124,15 +124,15 @@
 	gap: 15px;
 
 	h3 {
+		@include space(0, 0);
 		font-size: var(--font-large);
-		margin: 0;
 		color: var(--text-primary);
 	}
 }
 
 .genres-loading {
-	text-align: center;
-	padding: 40px 20px;
+	@include text-center;
+	@include space(40px 20px);
 	color: var(--text-secondary);
 	font-size: var(--font-normal);
 }
@@ -179,19 +179,17 @@
 }
 
 .genres-title {
+	@include space(0, 0 0 20px 0);
 	font-size: var(--font-large);
-	margin: 0 0 20px 0;
 	color: var(--text-primary);
 }
 
 // Profile image placeholder (when user has no image)
 .profile-image-placeholder {
-	@include size(200px); // Same size as profile-image
+	@include size(200px);
+	@include flex-center;
 	border-radius: 50%;
 	background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	font-size: 4rem;
 	font-weight: var(--font-bold);
 	color: var(--text-primary);
@@ -207,7 +205,6 @@
 
 @media (max-width: 768px) {
 	.profile-image-placeholder {
-		// Match mobile profile image sizing if different
 		font-size: 3rem;
 	}
 }

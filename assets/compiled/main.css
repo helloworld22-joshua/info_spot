@@ -37,8 +37,8 @@
 }
 
 * {
-  margin: 0;
   padding: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -64,7 +64,10 @@ button {
 }
 
 .component {
+  position: relative;
+  display: block;
   padding: 40px;
+  margin: 0;
   transform: translateZ(0);
   overflow: hidden;
   background-color: var(--background);
@@ -84,8 +87,9 @@ button {
   background: radial-gradient(500px circle, var(--primary25), transparent 50%);
 }
 .component::after {
-  content: "";
   position: absolute;
+  display: block;
+  content: "";
   inset: 2px;
   z-index: -1;
   background-color: var(--background40);
@@ -114,26 +118,30 @@ button {
 
 .home-container {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
+  gap: 0;
   min-height: 100vh;
   padding: 20px;
 }
 
 .login-card {
+  text-align: center;
+  margin-inline: auto;
+  max-width: 500px;
   background: var(--bg1-alpha);
   -webkit-backdrop-filter: var(--blur);
           backdrop-filter: var(--blur);
   padding: 60px 40px;
   border-radius: var(--border-radius);
-  text-align: center;
-  max-width: 500px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .app-title {
+  padding: 0;
+  margin: 0 0 20px 0;
   font-size: 3rem;
-  margin-bottom: 20px;
   background: linear-gradient(135deg, var(--primary) 0%, #1ed760 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -141,8 +149,9 @@ button {
 }
 
 .app-description {
+  padding: 0;
+  margin: 0 0 40px 0;
   color: var(--text-secondary);
-  margin-bottom: 40px;
   font-size: 1.1rem;
 }
 
@@ -174,27 +183,31 @@ button {
 
 .callback-container {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
+  gap: 0;
   min-height: 100vh;
   font-size: 1.2rem;
   color: var(--text-secondary);
 }
 
 .dashboard-container {
+  padding: 0;
   margin: 0 auto;
   background-color: transparent;
-  height: 100vh; /* Take up the full window height */
+  height: 100vh;
   overflow-y: auto;
   background-image: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 1.5px, #000 0 7px, rgba(0, 0, 0, 0) 7px), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 1.5px, #000 0 7px, rgba(0, 0, 0, 0) 7px);
   background-size: 12px 20px, 12px 20px, 200% 200%, 200% 200%, 200% 200%, 200% 20.7846097px;
   background-position: 0px 0px, 6px 10.39230485px, 0% 0%, 0% 0%, 0% 0px;
 }
 .dashboard-container::before {
-  content: "";
   position: fixed;
-  height: 300px;
+  display: block;
   width: 300px;
+  height: 300px;
+  content: "";
   top: var(--mouse-y);
   left: var(--mouse-x);
   transform: translate(-50%, -50%);
@@ -220,8 +233,9 @@ button {
 }
 
 .dashboard-title {
-  font-size: 2.5rem;
+  padding: 0;
   margin: 0;
+  font-size: 2.5rem;
 }
 
 .header-row {
@@ -261,6 +275,8 @@ button {
 
 .loading {
   text-align: center;
+  margin-inline: auto;
+  max-width: 600px;
   padding: 60px 20px;
   font-size: 1.2rem;
   color: var(--text-secondary);
@@ -274,8 +290,9 @@ button {
 }
 
 .section-title {
+  padding: 0;
+  margin: 0 0 30px 0;
   font-size: 2rem;
-  margin-bottom: 30px;
 }
 
 @media (max-width: 768px) {
@@ -304,8 +321,8 @@ button {
 }
 .playlist-detail-container {
   max-width: 1400px;
-  margin: 0 auto;
   padding: 40px 20px;
+  margin: 0 auto;
 }
 
 .playlist-detail-header {
@@ -366,12 +383,12 @@ button {
 
 .modal-overlay {
   position: fixed;
+  display: flex;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.8);
-  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
@@ -411,10 +428,10 @@ button {
 }
 
 .author-text {
+  padding: 8px 0;
+  margin: 0;
   color: var(--text-secondary);
   font-size: 0.95rem;
-  margin: 0;
-  padding: 8px 0;
 }
 
 .form-input,
@@ -492,20 +509,20 @@ button {
 }
 
 .track-preview-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--text-primary);
   font-weight: 500;
   font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .track-preview-artist {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
 .track-uri {
@@ -531,10 +548,10 @@ button {
 
 .toast-container {
   position: fixed;
+  display: flex;
   top: 20px;
   right: 20px;
   z-index: 10000;
-  display: flex;
   flex-direction: column;
   gap: 10px;
   max-width: 400px;
@@ -585,14 +602,15 @@ button {
 }
 
 .toast-close {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
   background: transparent;
   color: var(--text-secondary);
   border: none;
   font-size: 1.5rem;
   line-height: 1;
-  padding: 0;
-  width: 24px;
-  height: 24px;
   cursor: pointer;
   flex-shrink: 0;
   transition: color 0.2s;
@@ -619,18 +637,20 @@ button {
   border-bottom: 1px solid var(--light-gray);
 }
 .modal-header h2 {
+  padding: 0;
   margin: 0;
   font-size: 1.5rem;
 }
 
 .modal-close {
+  width: 40px;
+  height: 40px;
   background: transparent;
   color: var(--text-secondary);
   font-size: 2rem;
   line-height: 1;
   padding: 0;
-  width: 40px;
-  height: 40px;
+  margin: 0;
   border-radius: 50%;
   transition: var(--transition);
 }
@@ -673,16 +693,18 @@ button {
 }
 
 .duplicate-name {
+  padding: 0;
+  margin: 0 0 5px 0;
   font-weight: 600;
   font-size: 1rem;
-  margin-bottom: 5px;
   color: var(--text-primary);
 }
 
 .duplicate-artist {
+  padding: 0;
+  margin: 0 0 5px 0;
   font-size: 0.9rem;
   color: var(--text-secondary);
-  margin-bottom: 5px;
 }
 
 .duplicate-count {
@@ -730,14 +752,16 @@ button {
 }
 
 .playlist-detail-title {
+  padding: 0;
+  margin: 0 0 10px 0;
   font-size: 2.5rem;
-  margin-bottom: 10px;
 }
 
 .playlist-detail-description {
+  padding: 0;
+  margin: 0 0 20px 0;
   color: var(--text-secondary);
   font-size: var(--font-normal);
-  margin-bottom: 20px;
   line-height: 1.5;
   max-width: 800px;
 }
@@ -783,14 +807,15 @@ button {
 
 .error-message {
   padding: 20px;
+  margin: 0 0 20px 0;
   background: rgba(255, 68, 68, 0.1);
   border: 1px solid #ff4444;
   border-radius: var(--border-radius);
-  margin-bottom: 20px;
 }
 .error-message p {
-  color: #ff4444;
+  padding: 0;
   margin: 0;
+  color: #ff4444;
 }
 
 .playlist-card-link {
@@ -804,10 +829,11 @@ button {
 }
 
 .playlist-name {
+  padding: 0;
+  margin: 0 0 5px 0;
   display: block;
   font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 5px;
 }
 
 @media (max-width: 768px) {
@@ -817,5 +843,6 @@ button {
   }
   .sort-button {
     width: 100%;
+    height: auto;
   }
 }/*# sourceMappingURL=main.css.map */

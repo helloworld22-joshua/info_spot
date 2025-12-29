@@ -10,7 +10,7 @@
 
 // Individual track card
 .track-card {
-	position: relative;
+	@include default(relative, flex);
 	min-width: 200px;
 	width: 200px;
 	background: var(--bg1-alpha);
@@ -19,7 +19,6 @@
 	padding: var(--padding-small);
 	cursor: pointer;
 	transition: all var(--transition);
-	display: flex;
 	flex-direction: column;
 	gap: var(--gap-small);
 	border: 1px solid rgba(255, 255, 255, 0.1);
@@ -34,7 +33,7 @@
 
 // Rank badge (top-right corner)
 .track-rank {
-	position: absolute;
+	@include default(absolute, block);
 	bottom: var(--gap-small);
 	right: var(--gap-small);
 	background: var(--primary);
@@ -49,7 +48,7 @@
 
 // Album cover
 .track-card-image {
-	width: 100%;
+	@include size(100%);
 	aspect-ratio: 1;
 	border-radius: var(--border-radius-small);
 	object-fit: cover;
@@ -77,19 +76,15 @@
 }
 
 .track-card-artists {
+	@include text-truncate;
 	font-size: var(--font-small);
 	color: var(--text-secondary);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .track-card-album {
+	@include text-truncate;
 	font-size: var(--font-small);
 	color: var(--text-secondary);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	font-style: italic;
 }
 

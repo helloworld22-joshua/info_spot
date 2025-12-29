@@ -98,7 +98,8 @@
   }
 }
 .top-genres-section {
-  margin-top: 30px;
+  padding: 0;
+  margin: 30px 0 0 0;
 }
 
 .genres-header {
@@ -110,14 +111,18 @@
   gap: 15px;
 }
 .genres-header h3 {
-  font-size: var(--font-large);
+  padding: 0;
   margin: 0;
+  font-size: var(--font-large);
   color: var(--text-primary);
 }
 
 .genres-loading {
   text-align: center;
+  margin-inline: auto;
+  max-width: 600px;
   padding: 40px 20px;
+  margin: 0;
   color: var(--text-secondary);
   font-size: var(--font-normal);
 }
@@ -161,19 +166,22 @@
   }
 }
 .genres-title {
-  font-size: var(--font-large);
+  padding: 0;
   margin: 0 0 20px 0;
+  font-size: var(--font-large);
   color: var(--text-primary);
 }
 
 .profile-image-placeholder {
   width: 200px;
   height: 200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 4rem;
   font-weight: var(--font-bold);
   color: var(--text-primary);

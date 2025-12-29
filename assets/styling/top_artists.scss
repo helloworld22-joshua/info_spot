@@ -1,3 +1,5 @@
+@import "style.scss";
+
 .artists {
 	display: flex;
 	gap: var(--gap);
@@ -21,7 +23,7 @@
 }
 
 .artist-image {
-	width: 100%;
+	@include size(100%);
 	aspect-ratio: 1;
 	border-radius: 50%;
 	object-fit: cover;

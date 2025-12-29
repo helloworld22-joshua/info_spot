@@ -78,6 +78,7 @@
 
 .playlist-card-wrapper {
   position: relative;
+  display: block;
   border-radius: var(--border-radius);
   transition: all var(--transition);
 }
@@ -98,11 +99,12 @@
 
 .playlist-checkbox {
   position: absolute;
+  display: block;
+  width: 40px;
+  height: 40px;
   bottom: var(--gap-small);
   right: var(--gap-small);
   z-index: 10;
-  width: 40px;
-  height: 40px;
   cursor: pointer;
 }
 .playlist-checkbox input[type=checkbox] {
@@ -137,6 +139,7 @@
 
 .playlist-image {
   width: 100%;
+  height: 100%;
   aspect-ratio: 1;
   border-radius: var(--border-radius);
   -o-object-fit: cover;
@@ -151,6 +154,7 @@
   align-items: center;
   gap: 0;
   width: 100%;
+  height: 100%;
   aspect-ratio: 1;
   background: linear-gradient(135deg, #535353, #282828);
   border-radius: var(--border-radius);
@@ -168,12 +172,12 @@
 }
 
 .playlist-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--font-normal);
   font-weight: var(--font-bold);
   display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .playlist-description {
@@ -195,13 +199,14 @@
 
 .playlist-meta,
 .playlist-owner {
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .modal-overlay {
   position: fixed;
+  display: flex;
   top: 0;
   left: 0;
   width: 100%;
@@ -209,7 +214,6 @@
   background: rgba(0, 0, 0, 0.8);
   -webkit-backdrop-filter: blur(5px);
           backdrop-filter: blur(5px);
-  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -236,18 +240,19 @@
   border-bottom: 1px solid var(--highlight2);
 }
 .modal-header h2 {
-  font-size: var(--font-huge);
+  padding: 0;
   margin: 0;
+  font-size: var(--font-huge);
 }
 
 .modal-close {
+  width: 40px;
+  height: 40px;
   background: transparent;
   border: none;
   font-size: 2rem;
   color: var(--text-secondary);
   cursor: pointer;
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,10 +271,10 @@
 }
 
 .playlist-section {
-  margin-bottom: var(--gap);
+  padding: var(--padding-small);
+  margin: 0 0 var(--gap) 0;
   background: var(--highlight2);
   border-radius: var(--border-radius);
-  padding: var(--padding-small);
 }
 
 .playlist-section-header {
@@ -308,9 +313,10 @@
 }
 
 .playlist-section-name {
+  padding: 0;
+  margin: 0 0 5px 0;
   font-size: var(--font-large);
   font-weight: var(--font-bold);
-  margin-bottom: 5px;
   color: var(--primary);
 }
 
@@ -352,20 +358,21 @@
 }
 
 .duplicate-name {
-  font-weight: var(--font-bold);
-  margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: var(--font-bold);
+  margin-bottom: 4px;
 }
 
 .duplicate-artist {
-  font-size: var(--font-small);
-  color: var(--text-secondary);
-  margin-bottom: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 0;
+  margin: 0 0 6px 0;
+  font-size: var(--font-small);
+  color: var(--text-secondary);
 }
 
 .duplicate-count {
@@ -450,9 +457,12 @@
 }
 .show-more-container {
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  margin-top: var(--gap);
-  margin-bottom: var(--gap);
+  align-items: center;
+  gap: 0;
+  padding: var(--gap);
+  margin: var(--gap) 0;
 }
 
 .show-more-button {
@@ -489,6 +499,7 @@
 
 .search-bar {
   width: 100%;
+  height: auto;
   padding: 12px 20px;
   background: var(--bg1-alpha);
   -webkit-backdrop-filter: var(--blur);

@@ -40,21 +40,22 @@
 }
 
 .track-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0 0 var(--gap-tiny) 0;
   font-size: var(--font-normal);
   font-weight: var(--font-bold);
   display: block;
-  margin-bottom: var(--gap-tiny);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .track-artists {
-  color: var(--text-secondary);
-  font-size: var(--font-small);
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  font-size: var(--font-small);
 }
 
 .track-duration {

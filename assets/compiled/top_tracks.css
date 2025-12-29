@@ -7,6 +7,7 @@
 
 .track-card {
   position: relative;
+  display: flex;
   min-width: 200px;
   width: 200px;
   background: var(--bg1-alpha);
@@ -16,7 +17,6 @@
   padding: var(--padding-small);
   cursor: pointer;
   transition: all var(--transition);
-  display: flex;
   flex-direction: column;
   gap: var(--gap-small);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -30,6 +30,7 @@
 
 .track-rank {
   position: absolute;
+  display: block;
   bottom: var(--gap-small);
   right: var(--gap-small);
   background: var(--primary);
@@ -44,6 +45,7 @@
 
 .track-card-image {
   width: 100%;
+  height: 100%;
   aspect-ratio: 1;
   border-radius: var(--border-radius-small);
   -o-object-fit: cover;
@@ -71,19 +73,19 @@
 }
 
 .track-card-artists {
-  font-size: var(--font-small);
-  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: var(--font-small);
+  color: var(--text-secondary);
 }
 
 .track-card-album {
-  font-size: var(--font-small);
-  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: var(--font-small);
+  color: var(--text-secondary);
   font-style: italic;
 }
 
