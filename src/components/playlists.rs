@@ -2,7 +2,7 @@ use crate::models::{Playlist, Track};
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowDown, FaMagnifyingGlass};
+use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowDown, FaMagnifyingGlass, FaCheck};
 use dioxus_free_icons::Icon;
 use std::collections::HashSet;
 
@@ -470,6 +470,12 @@ fn PlaylistCard(
                     r#type: "checkbox",
                     checked: is_selected,
                     onchange: move |_| {},
+                }
+                Icon {
+                    icon: FaCheck,
+                    width: 24,
+                    height: 24,
+                    fill: "white"
                 }
             }
 

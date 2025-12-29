@@ -84,27 +84,43 @@
 	border-radius: var(--border-radius);
 	transition: all var(--transition);
 
+	svg {
+		@include absolute-center;
+		opacity: 0;
+		transition: opacity var(--transition);
+	}
+
 	&.selected {
 		outline: 3px solid var(--primary);
 		outline-offset: 2px;
+
+		svg {
+			opacity: 1;
+		}
 	}
 }
 
 .playlist-checkbox {
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	bottom: var(--gap-small);
+	right: var(--gap-small);
 	z-index: 10;
-	background: rgba(0, 0, 0, 0.8);
-	border-radius: 4px;
-	padding: 4px;
+	width: 40px;
+	height: 40px;
 	cursor: pointer;
 
 	input[type="checkbox"] {
-		width: 20px;
-		height: 20px;
+		appearance: none;
+		@include size(inherit);
+		background-color: transparent;
+		border: 1px var(--primary) solid;
+		border-radius: var(--border-radius-mid);
 		cursor: pointer;
 		accent-color: var(--primary);
+
+		&:checked {
+			background-color: var(--primary);
+		}
 	}
 }
 
