@@ -183,7 +183,6 @@ button {
 
 .dashboard-container {
   margin: 0 auto;
-  padding: 40px;
   background-color: transparent;
   height: 100vh; /* Take up the full window height */
   overflow-y: auto;
@@ -204,17 +203,19 @@ button {
 }
 
 .dashboard-header {
-  margin-bottom: 40px;
+  position: sticky;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: 20px;
+  z-index: 100;
+  top: calc(var(--padding) * -1);
+  padding: var(--padding);
 }
 
 .dashboard-logo {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   filter: invert(100);
 }
 
@@ -269,6 +270,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 60px;
+  padding: var(--padding);
 }
 
 .section-title {

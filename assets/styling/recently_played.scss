@@ -32,6 +32,7 @@
 	padding: var(--padding-tiny);
 	background-color: var(--highlight);
 	border-radius: var(--border-radius);
+	cursor: pointer;
 	transition:
 		scale var(--transition),
 		background-color var(--transition);

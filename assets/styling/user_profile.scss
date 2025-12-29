@@ -10,12 +10,9 @@
 	@include size(200px);
 	border-radius: 50%;
 	object-fit: cover;
-	transition:
-		scale var(--transition),
-		border-radius var(--transition);
+	transition: border-radius var(--transition);
 
 	&:hover {
-		scale: 1.2;
 		border-radius: var(--border-radius);
 	}
 }
@@ -116,8 +113,6 @@
 // Top Genres Section
 .top-genres-section {
 	margin-top: 30px;
-	padding-top: 30px;
-	border-top: 1px solid var(--light-gray);
 }
 
 .genres-header {
@@ -132,37 +127,6 @@
 		font-size: var(--font-large);
 		margin: 0;
 		color: var(--text-primary);
-	}
-}
-
-.genre-time-range {
-	display: flex;
-	gap: 8px;
-	background: var(--bg1-alpha);
-	backdrop-filter: var(--blur);
-	padding: 4px;
-	border-radius: 500px;
-
-	button {
-		padding: 8px 16px;
-		background: transparent;
-		color: var(--text-secondary);
-		border-radius: 500px;
-		transition: var(--transition);
-		font-size: var(--font-small);
-		font-weight: 600;
-		border: none;
-		cursor: pointer;
-
-		&.active {
-			background: var(--primary);
-			color: var(--text-primary);
-		}
-
-		&:hover:not(.active) {
-			color: var(--text-primary);
-			background: rgba(255, 255, 255, 0.05);
-		}
 	}
 }
 
@@ -226,63 +190,11 @@
 		}
 	}
 }
-// Top Genres Section
-.top-genres-section {
-	margin-top: 30px;
-	padding-top: 30px;
-	border-top: 1px solid var(--light-gray);
-}
 
 .genres-title {
 	font-size: var(--font-large);
 	margin: 0 0 20px 0;
 	color: var(--text-primary);
-}
-
-.genres-loading {
-	text-align: center;
-	padding: 40px 20px;
-	color: var(--text-secondary);
-	font-size: var(--font-normal);
-}
-
-.genres-list {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-}
-
-.genre-tag {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 10px 16px;
-	background: var(--bg1-alpha);
-	backdrop-filter: var(--blur);
-	border-radius: 500px;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	transition: all var(--transition);
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.1);
-		border-color: var(--primary);
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
-	}
-}
-
-.genre-rank {
-	font-weight: var(--font-bold);
-	color: var(--primary);
-	font-size: var(--font-small);
-	min-width: 24px;
-}
-
-.genre-name {
-	color: var(--text-primary);
-	font-size: var(--font-normal);
-	font-weight: 500;
-	text-transform: capitalize;
 }
 
 // Profile image placeholder (when user has no image)
@@ -299,12 +211,9 @@
 	text-transform: uppercase;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	user-select: none;
-	transition:
-		scale var(--transition),
-		border-radius var(--transition);
+	transition: border-radius var(--transition);
 
 	&:hover {
-		scale: 1.2;
 		border-radius: var(--border-radius);
 	}
 }
