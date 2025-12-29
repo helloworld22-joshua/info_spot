@@ -21,30 +21,37 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 			},
 			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 			h2 { class: "section-title", "Top Tracks" }
-			div { class: "tracks-list",
+			div { class: "tracks-scroll-container",
 				for (index , track) in tracks().iter().enumerate() {
 					div {
-						class: "track-item clickable",
+						class: "track-card",
 						key: "{track.id}",
 						onclick: {
 							let track = track.clone();
 							move |_| selected_track.set(Some(track.clone()))
 						},
-						span { class: "track-number", "{index + 1}" }
+
+						// Rank badge
+						span { class: "track-rank", "#{index + 1}" }
+
+						// Album cover
 						if let Some(image) = track.album.images.first() {
 							img {
-								class: "track-image",
+								class: "track-card-image",
 								src: "{image.url}",
 								alt: "{track.name}",
 							}
 						}
-						div { class: "track-info",
-							div { class: "track-name", "{track.name}" }
-							div { class: "track-artists",
+
+						// Track info
+						div { class: "track-card-info",
+							div { class: "track-card-name", "{track.name}" }
+							div { class: "track-card-artists",
 								{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
 							}
+							div { class: "track-card-album", "{track.album.name}" }
+							div { class: "track-card-duration", {format_duration(track.duration_ms)} }
 						}
-						div { class: "track-duration", {format_duration(track.duration_ms)} }
 					}
 				}
 			}
