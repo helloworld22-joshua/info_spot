@@ -244,3 +244,53 @@ pub fn format_release_date(date: &str) -> String {
         date.to_string()
     }
 }
+
+/// Convert ISO 3166-1 alpha-2 country code to emoji flag
+/// Example: "DE" -> "🇩🇪", "US" -> "🇺🇸"
+fn country_code_to_flag(code: &str) -> String {
+    // Emoji flags are formed by combining Regional Indicator Symbols
+    // Each letter A-Z maps to 🇦-🇿 (U+1F1E6 to U+1F1FF)
+    let code = code.to_uppercase();
+    if code.len() != 2 {
+        return String::new();
+    }
+
+    let mut flag = String::new();
+    for ch in code.chars() {
+        if !ch.is_ascii_alphabetic() {
+            return String::new();
+        }
+        // Convert A-Z to Regional Indicator Symbols (U+1F1E6 is 'A')
+        let offset = (ch as u32) - ('A' as u32);
+        let regional_indicator = char::from_u32(0x1F1E6 + offset).unwrap();
+        flag.push(regional_indicator);
+    }
+    flag
+}
+
+/// Format country code to "Name 🇫🇱AG" format
+/// Example: "DE" -> "Germany 🇩🇪"
+/// Uses the isocountry crate for ISO 3166-1 country codes
+pub fn format_country(code: &str) -> String {
+    use isocountry::CountryCode;
+
+    let flag = country_code_to_flag(code);
+
+    match CountryCode::for_alpha2(code) {
+        Ok(country) => {
+            if flag.is_empty() {
+                country.name().to_string()
+            } else {
+                format!("{} {}", country.name(), flag)
+            }
+        }
+        Err(_) => {
+            // If country code is invalid, return code with flag if available
+            if flag.is_empty() {
+                code.to_string()
+            } else {
+                format!("{} {}", code, flag)
+            }
+        }
+    }
+}

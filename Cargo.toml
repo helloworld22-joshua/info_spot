@@ -20,6 +20,7 @@ sha2 = "0.10"
 open = "5.0"
 urlencoding = "2.1"
 zip = "7.0.0"
+isocountry = "0.3"
 
 [profile.release]
 opt-level = 3

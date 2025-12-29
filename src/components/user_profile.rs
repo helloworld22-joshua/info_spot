@@ -1,4 +1,5 @@
 use crate::models::User;
+use crate::utils::format_country;
 use crate::{Route, AppContext};
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::fa_solid_icons::FaFileArrowUp;
@@ -81,7 +82,7 @@ rsx! {
 						}
 						if let Some(country) = &user_data.country {
 							div { class: "stat",
-								span { class: "stat-value", "{country}" }
+								span { class: "stat-value", "{format_country(country)}" }
 								span { class: "stat-label", "Country" }
 							}
 						}
