@@ -476,4 +476,124 @@
 }
 .show-more-button:active {
   transform: translateY(0);
+}
+
+.playlist-card-link {
+  height: 100%;
+  display: block;
+}
+
+.search-bar-container {
+  margin-bottom: var(--gap);
+}
+
+.search-bar {
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--bg1-alpha);
+  -webkit-backdrop-filter: var(--blur);
+          backdrop-filter: var(--blur);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 500px;
+  color: var(--text-primary);
+  font-size: var(--font-normal);
+  transition: var(--transition);
+}
+.search-bar::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.search-bar::placeholder {
+  color: var(--text-secondary);
+}
+.search-bar:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+.search-bar:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.playlist-card-wrapper {
+  animation: fadeInUp 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.playlists-grid .playlist-card-wrapper:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(3) {
+  animation-delay: 0.09s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(6) {
+  animation-delay: 0.18s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(7) {
+  animation-delay: 0.21s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(8) {
+  animation-delay: 0.24s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(9) {
+  animation-delay: 0.27s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(10) {
+  animation-delay: 0.3s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(11) {
+  animation-delay: 0.33s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(12) {
+  animation-delay: 0.36s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(13) {
+  animation-delay: 0.39s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(14) {
+  animation-delay: 0.42s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(15) {
+  animation-delay: 0.45s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(16) {
+  animation-delay: 0.48s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(17) {
+  animation-delay: 0.51s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(18) {
+  animation-delay: 0.54s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(19) {
+  animation-delay: 0.57s;
+}
+.playlists-grid .playlist-card-wrapper:nth-child(20) {
+  animation-delay: 0.6s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.playlists-grid {
+  transition: all 0.3s ease-out;
+}
+
+.playlist-card-wrapper {
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }/*# sourceMappingURL=playlists.css.map */

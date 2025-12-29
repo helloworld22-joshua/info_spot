@@ -492,3 +492,78 @@
 		transform: translateY(0);
 	}
 }
+
+.playlist-card-link {
+	height: 100%;
+	display: block;
+}
+
+// Search bar
+.search-bar-container {
+	margin-bottom: var(--gap);
+}
+
+.search-bar {
+	width: 100%;
+	padding: 12px 20px;
+	background: var(--bg1-alpha);
+	backdrop-filter: var(--blur);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 500px;
+	color: var(--text-primary);
+	font-size: var(--font-normal);
+	transition: var(--transition);
+
+	&::placeholder {
+		color: var(--text-secondary);
+	}
+
+	&:focus {
+		outline: none;
+		border-color: var(--primary);
+		box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+	}
+
+	&:hover {
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+}
+
+// Smooth animations for search filtering
+.playlist-card-wrapper {
+	animation: fadeInUp 0.3s ease-out;
+	animation-fill-mode: both;
+}
+
+// Stagger animation for each card
+.playlists-grid {
+	.playlist-card-wrapper {
+		@for $i from 1 through 20 {
+			&:nth-child(#{$i}) {
+				animation-delay: #{$i * 0.03}s;
+			}
+		}
+	}
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+// Smooth transition for grid layout changes
+.playlists-grid {
+	transition: all 0.3s ease-out;
+}
+
+.playlist-card-wrapper {
+	transition:
+		opacity 0.3s ease-out,
+		transform 0.3s ease-out;
+}

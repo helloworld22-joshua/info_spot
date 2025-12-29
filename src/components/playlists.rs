@@ -13,6 +13,7 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
     let mut selected_playlists = use_signal(|| HashSet::<String>::new());
     let mut show_duplicates_modal = use_signal(|| false);
     let mut show_all = use_signal(|| false);
+    let mut search_query = use_signal(|| String::new());
     let mut duplicates_data = use_signal(|| Vec::<(Playlist, Vec<(Track, usize)>)>::new());
     let mut removing_duplicates = use_signal(|| false);
     let context = use_context::<AppContext>();
@@ -324,13 +325,42 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                     }
                 }
             } else {
+                // Search bar
+                div { class: "search-bar-container",
+                    input {
+                        class: "search-bar",
+                        r#type: "text",
+                        placeholder: "Search playlists...",
+                        value: "{search_query()}",
+                        oninput: move |e| search_query.set(e.value()),
+                    }
+                }
+
                 div { class: "playlists-grid",
                     {
+                        // Filter by search query
+                        let query = search_query().to_lowercase();
+                        let filtered_items: Vec<_> = if query.is_empty() {
+                            playlist_items.iter().collect()
+                        } else {
+                            playlist_items.iter()
+                                .filter(|p| {
+                                    p.name.to_lowercase().contains(&query) ||
+                                    p.description.as_ref()
+                                        .map(|d| d.to_lowercase().contains(&query))
+                                        .unwrap_or(false) ||
+                                    p.owner.display_name.as_ref()
+                                        .map(|o| o.to_lowercase().contains(&query))
+                                        .unwrap_or(false)
+                                })
+                                .collect()
+                        };
+
                         let items_to_show = if show_all() {
-                            playlist_items.iter().collect::<Vec<_>>()
+                            filtered_items
                         } else {
                             // Show only first 2 rows (assuming ~4 cards per row = 8 cards)
-                            playlist_items.iter().take(8).collect::<Vec<_>>()
+                            filtered_items.into_iter().take(8).collect::<Vec<_>>()
                         };
 
                         items_to_show
@@ -340,6 +370,7 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                                 let is_selected = selected_playlists().contains(&playlist_id);
                                 rsx! {
                                     PlaylistCard {
+                                        key: "{playlist_id}",
                                         playlist: playlist.clone(),
                                         is_selected: is_selected,
                                         on_toggle: move |_| toggle_selection(playlist_id.clone()),
@@ -350,17 +381,40 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                 }
 
                 // Show more/less button if there are more than 8 playlists
-                if playlist_items.len() > 8 {
-                    div { class: "show-more-container",
-                        button {
-                            class: "show-more-button",
-                            onclick: move |_| show_all.set(!show_all()),
-                            if show_all() {
-                                "Show Less"
-                            } else {
-                                "Show More ({playlist_items.len() - 8} more)"
+                {
+                    let query = search_query().to_lowercase();
+                    let filtered_count = if query.is_empty() {
+                        playlist_items.len()
+                    } else {
+                        playlist_items.iter()
+                            .filter(|p| {
+                                p.name.to_lowercase().contains(&query) ||
+                                p.description.as_ref()
+                                    .map(|d| d.to_lowercase().contains(&query))
+                                    .unwrap_or(false) ||
+                                p.owner.display_name.as_ref()
+                                    .map(|o| o.to_lowercase().contains(&query))
+                                    .unwrap_or(false)
+                            })
+                            .count()
+                    };
+
+                    if filtered_count > 8 {
+                        rsx! {
+                            div { class: "show-more-container",
+                                button {
+                                    class: "show-more-button",
+                                    onclick: move |_| show_all.set(!show_all()),
+                                    if show_all() {
+                                        "Show Less"
+                                    } else {
+                                        "Show More ({filtered_count - 8} more)"
+                                    }
+                                }
                             }
                         }
+                    } else {
+                        rsx! {}
                     }
                 }
             }
