@@ -70,6 +70,16 @@ rsx! {
 						src: "{image.url}",
 						alt: "Profile",
 					}
+				} else {
+					// Placeholder for users without profile image
+					div {
+						class: "profile-image-placeholder",
+						{user_data.display_name
+							.as_ref()
+							.and_then(|name| name.chars().next())
+							.map(|c| c.to_uppercase().to_string())
+							.unwrap_or_else(|| "?".to_string())}
+					}
 				}
 				div { class: "profile-info",
 					h1 { class: "profile-name",
