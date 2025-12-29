@@ -65,15 +65,19 @@ pub fn Dashboard() -> Element {
                 let current_time_range = time_range();
 
                 spawn(async move {
-                    // Fetch user data
-                    match client_clone2.get_current_user().await {
-                        Ok(user_data) => {
-                            user.set(Some(user_data));
+                    // Fetch user data (only if not already loaded)
+                    if user().is_none() {
+                        match client_clone2.get_current_user().await {
+                            Ok(user_data) => {
+                                user.set(Some(user_data));
+                            }
+                            Err(e) => {
+                                eprintln!("Failed to fetch user: {}", e);
+                                error.set(Some(format!("Failed to fetch user data: {}", e)));
+                            }
                         }
-                        Err(e) => {
-                            eprintln!("Failed to fetch user: {}", e);
-                            error.set(Some(format!("Failed to fetch user data: {}", e)));
-                        }
+                    } else {
+                        println!("DEBUG: Using cached user data");
                     }
 
                     // Fetch top tracks
@@ -96,26 +100,34 @@ pub fn Dashboard() -> Element {
                     }
                 }
 
-                // Fetch playlists
-                match client_clone2.get_playlists(50).await {
-                    Ok(user_playlists) => {
-                        println!("DEBUG: Fetched {} playlists", user_playlists.len());
-                        playlists.set(user_playlists);
+                // Fetch playlists (only if not already loaded)
+                if playlists().is_empty() {
+                    match client_clone2.get_playlists(50).await {
+                        Ok(user_playlists) => {
+                            println!("DEBUG: Fetched {} playlists", user_playlists.len());
+                            playlists.set(user_playlists);
+                        }
+                        Err(e) => {
+                            eprintln!("Failed to fetch playlists: {}", e);
+                        }
                     }
-                    Err(e) => {
-                        eprintln!("Failed to fetch playlists: {}", e);
-                    }
+                } else {
+                    println!("DEBUG: Using cached playlists ({} items)", playlists().len());
                 }
 
-                // Fetch recently played (last 50 tracks)
-                match client_clone2.get_recently_played(50).await {
-                    Ok(recent_tracks) => {
-                        println!("DEBUG: Fetched {} recently played tracks", recent_tracks.len());
-                        recently_played.set(recent_tracks);
+                // Fetch recently played (only if not already loaded)
+                if recently_played().is_empty() {
+                    match client_clone2.get_recently_played(50).await {
+                        Ok(recent_tracks) => {
+                            println!("DEBUG: Fetched {} recently played tracks", recent_tracks.len());
+                            recently_played.set(recent_tracks);
+                        }
+                        Err(e) => {
+                            eprintln!("Failed to fetch recently played: {}", e);
+                        }
                     }
-                    Err(e) => {
-                        eprintln!("Failed to fetch recently played: {}", e);
-                    }
+                } else {
+                    println!("DEBUG: Using cached recently played ({} items)", recently_played().len());
                 }
 
                 loading.set(false);
