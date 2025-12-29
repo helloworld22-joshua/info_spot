@@ -1,0 +1,59 @@
+@import "style.scss";
+
+.home-container {
+	@include flex-center;
+	min-height: 100vh;
+	padding: 20px;
+}
+
+.login-card {
+	@include text-center(500px);
+	background: var(--bg1-alpha);
+	backdrop-filter: var(--blur);
+	padding: 60px 40px;
+	border-radius: var(--border-radius);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.app-title {
+	@include space(0, 0 0 20px 0);
+	font-size: 3rem;
+	background: linear-gradient(135deg, var(--primary) 0%, #1ed760 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.app-description {
+	@include space(0, 0 0 40px 0);
+	color: var(--text-secondary);
+	font-size: 1.1rem;
+}
+
+.login-button {
+	background: var(--primary);
+	color: var(--text-primary);
+	padding: 16px 48px;
+	border-radius: 500px;
+	font-size: 1rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: var(--transition);
+
+	&:hover {
+		background: #1ed760;
+		transform: scale(1.05);
+	}
+}
+
+.demo-button {
+	display: block;
+	background: none;
+	color: var(--text-secondary);
+	margin: auto;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
