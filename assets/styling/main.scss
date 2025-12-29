@@ -245,7 +245,7 @@ button {
 }
 
 .dashboard-logo {
-	@include size(60px);
+	@include size(50px);
 	filter: invert(100); // Dirty ass fix, TODO: Important change later
 }
 

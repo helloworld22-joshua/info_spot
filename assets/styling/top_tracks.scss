@@ -1,42 +1,11 @@
 @import "style.scss";
 
-.top-tracks {
-	.section-title {
-		font-size: var(--font-huge);
-		margin-bottom: var(--gap);
-		color: var(--text-primary);
-	}
-}
-
 // Horizontal scroll container
 .tracks-scroll-container {
 	display: flex;
 	gap: var(--gap-small);
-	overflow-x: auto;
-	overflow-y: hidden;
+	overflow: auto;
 	padding-bottom: var(--padding-small);
-	scroll-behavior: smooth;
-
-	// Hide scrollbar but keep functionality
-	scrollbar-width: thin;
-	scrollbar-color: var(--primary) transparent;
-
-	&::-webkit-scrollbar {
-		height: 8px;
-	}
-
-	&::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background: var(--primary);
-		border-radius: 10px;
-
-		&:hover {
-			background: #9333ea;
-		}
-	}
 }
 
 // Individual track card
@@ -66,7 +35,7 @@
 // Rank badge (top-right corner)
 .track-rank {
 	position: absolute;
-	top: var(--gap-small);
+	bottom: var(--gap-small);
 	right: var(--gap-small);
 	background: var(--primary);
 	color: var(--text-primary);

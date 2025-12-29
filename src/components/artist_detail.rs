@@ -1,5 +1,6 @@
 use crate::models::Artist;
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaXmark;
 use dioxus_free_icons::icons::fa_brands_icons::FaSpotify;
 use dioxus_free_icons::Icon;
 
@@ -37,7 +38,11 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
                 button {
                     class: "artist-detail-close",
                     onclick: move |_| on_close.call(()),
-                    "×"
+                    Icon {
+                        icon: FaXmark,
+                        width: 20,
+                        height: 20,
+                    }
                 }
 
                 // Artist image

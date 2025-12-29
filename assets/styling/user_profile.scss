@@ -140,39 +140,26 @@
 .genres-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 12px;
+	gap: 2px;
 }
 
 .genre-tag {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 4px;
 	padding: 10px 16px;
-	background: var(--bg1-alpha);
-	backdrop-filter: var(--blur);
-	border-radius: 500px;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	transition: all var(--transition);
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.1);
-		border-color: var(--primary);
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
-	}
 }
 
 .genre-rank {
 	font-weight: var(--font-bold);
 	color: var(--primary);
 	font-size: var(--font-small);
-	min-width: 24px;
 }
 
 .genre-name {
-	color: var(--text-primary);
-	font-size: var(--font-normal);
-	font-weight: 500;
+	color: var(--text-secondary);
+	font-size: var(--font-small);
+	font-weight: var(--font-bold);
 	text-transform: capitalize;
 }
 

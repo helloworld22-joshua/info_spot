@@ -1,31 +1,8 @@
-.top-tracks .section-title {
-  font-size: var(--font-huge);
-  margin-bottom: var(--gap);
-  color: var(--text-primary);
-}
-
 .tracks-scroll-container {
   display: flex;
   gap: var(--gap-small);
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto;
   padding-bottom: var(--padding-small);
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary) transparent;
-}
-.tracks-scroll-container::-webkit-scrollbar {
-  height: 8px;
-}
-.tracks-scroll-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-.tracks-scroll-container::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 10px;
-}
-.tracks-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: #9333ea;
 }
 
 .track-card {
@@ -53,7 +30,7 @@
 
 .track-rank {
   position: absolute;
-  top: var(--gap-small);
+  bottom: var(--gap-small);
   right: var(--gap-small);
   background: var(--primary);
   color: var(--text-primary);
