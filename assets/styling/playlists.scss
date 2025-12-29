@@ -77,6 +77,8 @@
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 	gap: var(--gap);
+	grid-auto-rows: 1fr; // Makes all rows equal height
+	align-items: stretch; // Stretch items to fill row height
 }
 
 .playlist-card-wrapper {
@@ -128,6 +130,9 @@
 	background: var(--highlight);
 	border-radius: var(--border-radius);
 	padding: var(--padding-small);
+	display: flex;
+	flex-direction: column;
+	height: 100%; // Fill the grid cell height
 	transition:
 		translate var(--transition),
 		box-shadow var(--transition);
@@ -161,6 +166,8 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap-small);
+	min-width: 0; // Allow text truncation to work
+	flex: 1; // Take remaining space
 }
 
 .playlist-name {
@@ -180,6 +187,8 @@
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	min-height: 2.6em; // Reserve space for 2 lines even if empty (line-height * 2 lines + small buffer)
+	line-height: 1.3;
 }
 
 .playlist-description,
@@ -187,6 +196,13 @@
 .playlist-owner {
 	color: var(--text-secondary);
 	font-size: var(--font-small);
+}
+
+.playlist-meta,
+.playlist-owner {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 // Modal Styles (matching playlist_detail.rs design)
@@ -442,5 +458,37 @@
 
 	.playlists-grid {
 		grid-template-columns: 1fr;
+	}
+}
+
+// Show more/less button
+.show-more-container {
+	display: flex;
+	justify-content: center;
+	margin-top: var(--gap);
+	margin-bottom: var(--gap);
+}
+
+.show-more-button {
+	padding: 12px 32px;
+	background: var(--bg1-alpha);
+	backdrop-filter: var(--blur);
+	color: var(--text-primary);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 500px;
+	font-size: var(--font-normal);
+	font-weight: var(--font-bold);
+	cursor: pointer;
+	transition: var(--transition);
+
+	&:hover {
+		background: var(--primary);
+		border-color: var(--primary);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+	}
+
+	&:active {
+		transform: translateY(0);
 	}
 }

@@ -12,6 +12,7 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
     let mut position = use_signal(|| (0.0, 0.0));
     let mut selected_playlists = use_signal(|| HashSet::<String>::new());
     let mut show_duplicates_modal = use_signal(|| false);
+    let mut show_all = use_signal(|| false);
     let mut duplicates_data = use_signal(|| Vec::<(Playlist, Vec<(Track, usize)>)>::new());
     let mut removing_duplicates = use_signal(|| false);
     let context = use_context::<AppContext>();
@@ -325,8 +326,15 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
             } else {
                 div { class: "playlists-grid",
                     {
-                        playlist_items
-                            .iter()
+                        let items_to_show = if show_all() {
+                            playlist_items.iter().collect::<Vec<_>>()
+                        } else {
+                            // Show only first 2 rows (assuming ~4 cards per row = 8 cards)
+                            playlist_items.iter().take(8).collect::<Vec<_>>()
+                        };
+
+                        items_to_show
+                            .into_iter()
                             .map(|playlist| {
                                 let playlist_id = playlist.id.clone();
                                 let is_selected = selected_playlists().contains(&playlist_id);
@@ -338,6 +346,21 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                                     }
                                 }
                             })
+                    }
+                }
+
+                // Show more/less button if there are more than 8 playlists
+                if playlist_items.len() > 8 {
+                    div { class: "show-more-container",
+                        button {
+                            class: "show-more-button",
+                            onclick: move |_| show_all.set(!show_all()),
+                            if show_all() {
+                                "Show Less"
+                            } else {
+                                "Show More ({playlist_items.len() - 8} more)"
+                            }
+                        }
                     }
                 }
             }
