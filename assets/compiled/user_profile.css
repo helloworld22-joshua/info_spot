@@ -56,6 +56,28 @@
   gap: var(--gap-small);
 }
 
+.spotify-button {
+  background-color: var(--primary);
+  color: var(--text-primary);
+  border: 1px solid var(--primary);
+  transition: background-color var(--transition), scale var(--transition);
+}
+.spotify-button:hover {
+  background-color: #9333ea;
+  scale: 1.05;
+}
+
+.import-button {
+  background-color: var(--secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--secondary);
+  transition: background-color var(--transition), scale var(--transition);
+}
+.import-button:hover {
+  background-color: #1aa34a;
+  scale: 1.05;
+}
+
 .logout-button {
   background-color: transparent;
   color: #ff4444;
@@ -75,4 +97,168 @@
   .profile-actions {
     width: 100%;
   }
+}
+.top-genres-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid var(--light-gray);
+}
+
+.genres-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.genres-header h3 {
+  font-size: var(--font-large);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.genre-time-range {
+  display: flex;
+  gap: 8px;
+  background: var(--bg1-alpha);
+  -webkit-backdrop-filter: var(--blur);
+          backdrop-filter: var(--blur);
+  padding: 4px;
+  border-radius: 500px;
+}
+.genre-time-range button {
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 500px;
+  transition: var(--transition);
+  font-size: var(--font-small);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+.genre-time-range button.active {
+  background: var(--primary);
+  color: var(--text-primary);
+}
+.genre-time-range button:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.genres-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-size: var(--font-normal);
+}
+
+.genres-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.genre-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg1-alpha);
+  -webkit-backdrop-filter: var(--blur);
+          backdrop-filter: var(--blur);
+  border-radius: 500px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition);
+}
+.genre-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+}
+
+.genre-rank {
+  font-weight: var(--font-bold);
+  color: var(--primary);
+  font-size: var(--font-small);
+  min-width: 24px;
+}
+
+.genre-name {
+  color: var(--text-primary);
+  font-size: var(--font-normal);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+  .genres-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .genre-time-range {
+    width: 100%;
+  }
+  .genre-time-range button {
+    flex: 1;
+  }
+}
+.top-genres-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid var(--light-gray);
+}
+
+.genres-title {
+  font-size: var(--font-large);
+  margin: 0 0 20px 0;
+  color: var(--text-primary);
+}
+
+.genres-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-size: var(--font-normal);
+}
+
+.genres-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.genre-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg1-alpha);
+  -webkit-backdrop-filter: var(--blur);
+          backdrop-filter: var(--blur);
+  border-radius: 500px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition);
+}
+.genre-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+}
+
+.genre-rank {
+  font-weight: var(--font-bold);
+  color: var(--primary);
+  font-size: var(--font-small);
+  min-width: 24px;
+}
+
+.genre-name {
+  color: var(--text-primary);
+  font-size: var(--font-normal);
+  font-weight: 500;
+  text-transform: capitalize;
 }/*# sourceMappingURL=user_profile.css.map */

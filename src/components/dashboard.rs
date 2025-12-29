@@ -426,7 +426,11 @@ pub fn Dashboard() -> Element {
 				div { class: "loading", "Loading your data..." }
 			} else {
 				div { class: "dashboard-content",
-					UserProfile { user, on_import: on_import_playlist }
+					UserProfile {
+					user,
+					on_import: on_import_playlist,
+					time_range: time_range,
+				}
 					TopTracks { tracks: top_tracks }
 					TopArtists { artists: top_artists }
 					Playlists { playlists }
