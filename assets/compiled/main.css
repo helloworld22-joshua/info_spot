@@ -734,6 +734,14 @@ button {
   margin-bottom: 10px;
 }
 
+.playlist-detail-description {
+  color: var(--text-secondary);
+  font-size: var(--font-normal);
+  margin-bottom: 20px;
+  line-height: 1.5;
+  max-width: 800px;
+}
+
 .sort-controls {
   display: flex;
   gap: 10px;

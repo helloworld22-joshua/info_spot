@@ -167,12 +167,19 @@
 	font-size: var(--font-normal);
 	font-weight: var(--font-bold);
 	display: block;
+	// Truncate to 1 line with ellipsis
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .playlist-description {
+	// Truncate to 2 lines with ellipsis
+	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .playlist-description,

@@ -299,6 +299,14 @@ pub fn PlaylistDetail(id: String) -> Element {
 					        .unwrap_or_else(|| "Playlist Tracks".to_string())
 					}
 				}
+				// Show description if available
+				if let Some(playlist) = playlist_info() {
+					if let Some(desc) = &playlist.description {
+						if !desc.is_empty() {
+							p { class: "playlist-detail-description", "{desc}" }
+						}
+					}
+				}
 			}
 
 			div { class: "sort-controls",
