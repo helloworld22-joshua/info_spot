@@ -42,6 +42,7 @@ pub struct Artist {
     pub images: Option<Vec<Image>>,
     pub external_urls: ExternalUrls,
     pub followers: Option<Followers>,
+    pub popularity: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

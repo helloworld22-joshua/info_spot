@@ -27,6 +27,7 @@ pub fn get_mock_top_tracks() -> Vec<Track> {
                     spotify: "https://open.spotify.com".to_string(),
                 },
                 followers: None,
+popularity: None,
             }],
             album: Album {
                 id: "album1".to_string(),
@@ -53,6 +54,7 @@ pub fn get_mock_top_tracks() -> Vec<Track> {
                     spotify: "https://open.spotify.com".to_string(),
                 },
                 followers: None,
+popularity: None,
             }],
             album: Album {
                 id: "album2".to_string(),
@@ -79,6 +81,7 @@ pub fn get_mock_top_tracks() -> Vec<Track> {
                     spotify: "https://open.spotify.com".to_string(),
                 },
                 followers: None,
+popularity: None,
             }],
             album: Album {
                 id: "album3".to_string(),
@@ -108,6 +111,7 @@ pub fn get_mock_top_artists() -> Vec<Artist> {
                 spotify: "https://open.spotify.com".to_string(),
             },
             followers: Some(Followers { total: 35000000 }),
+popularity: Some(85),
         },
         Artist {
             id: "artist2".to_string(),
@@ -118,6 +122,7 @@ pub fn get_mock_top_artists() -> Vec<Artist> {
                 spotify: "https://open.spotify.com".to_string(),
             },
             followers: Some(Followers { total: 28000000 }),
+popularity: Some(85),
         },
         Artist {
             id: "artist3".to_string(),
@@ -128,6 +133,7 @@ pub fn get_mock_top_artists() -> Vec<Artist> {
                 spotify: "https://open.spotify.com".to_string(),
             },
             followers: Some(Followers { total: 15000000 }),
+popularity: Some(85),
         },
     ]
 }

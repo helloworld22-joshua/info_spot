@@ -1,9 +1,11 @@
+use crate::components::ArtistDetail;
 use crate::models::Artist;
 use dioxus::prelude::*;
 
 #[component]
 pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
     let mut position = use_signal(|| (0.0, 0.0));
+    let mut selected_artist = use_signal(|| None::<Artist>);
     rsx! {
 		document::Link {
 			rel: "stylesheet",
@@ -22,7 +24,13 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 			h2 { class: "section-title", "Top Artists" }
 			div { class: "artists",
 				for artist in artists().iter() {
-					div { class: "artist-card", key: "{artist.id}",
+					div {
+						class: "artist-card clickable",
+						key: "{artist.id}",
+						onclick: {
+							let artist = artist.clone();
+							move |_| selected_artist.set(Some(artist.clone()))
+						},
 						if let Some(images) = &artist.images {
 							if let Some(image) = images.first() {
 								img {
@@ -33,12 +41,7 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 							}
 						}
 						div { class: "artist-info",
-							a {
-								class: "artist-name",
-								href: "{artist.external_urls.spotify}",
-								target: "_blank",
-								"{artist.name}"
-							}
+							div { class: "artist-name", "{artist.name}" }
 							if let Some(genres) = &artist.genres {
 								if !genres.is_empty() {
 									div { class: "artist-genres",
@@ -54,6 +57,14 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 						}
 					}
 				}
+			}
+		}
+
+		// Artist detail modal
+		if let Some(artist) = selected_artist() {
+			ArtistDetail {
+				artist: artist,
+				on_close: move |_| selected_artist.set(None),
 			}
 		}
 	}

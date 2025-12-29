@@ -9,6 +9,7 @@ pub mod home;
 pub mod dashboard;
 pub mod playlist_detail;
 pub mod track_detail;
+pub mod artist_detail;
 
 pub use user_profile::UserProfile;
 pub use top_tracks::TopTracks;
@@ -21,3 +22,4 @@ pub use home::Home;
 pub use dashboard::Dashboard;
 pub use playlist_detail::PlaylistDetail;
 pub use track_detail::TrackDetail;
+pub use artist_detail::ArtistDetail;
