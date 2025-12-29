@@ -259,6 +259,7 @@ pub fn PlaylistDetail(id: String) -> Element {
     };
 
     rsx! {
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/playlist_detail.css") }
 		div { class: "playlist-detail-container",
 			header { class: "playlist-detail-header",
 				div { class: "header-actions",

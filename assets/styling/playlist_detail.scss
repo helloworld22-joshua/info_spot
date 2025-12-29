@@ -1,0 +1,66 @@
+@import "style.scss";
+
+.tracks-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-small);
+}
+
+.track-item {
+	display: flex;
+	align-items: center;
+	gap: var(--gap);
+	padding: var(--padding-small);
+	background-color: var(--highlight);
+	border-radius: var(--border-radius);
+	transition:
+		scale var(--transition),
+		background-color var(--transition);
+
+	&:hover {
+		scale: 1.01;
+		background-color: var(--highlight2);
+	}
+}
+
+.track-number {
+	font-size: var(--font-normal);
+	font-weight: var(--font-bold);
+	color: var(--text-secondary);
+	min-width: 30px;
+	text-align: center;
+}
+
+.track-image {
+	@include size(70px);
+	border-radius: var(--border-radius-small);
+	object-fit: cover;
+}
+
+.track-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.track-name {
+	font-size: var(--font-normal);
+	font-weight: var(--font-bold);
+	display: block;
+	margin-bottom: var(--gap-tiny);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.track-artists {
+	color: var(--text-secondary);
+	font-size: var(--font-small);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.track-duration {
+	color: var(--text-secondary);
+	font-size: var(--font-small);
+}
