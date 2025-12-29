@@ -367,7 +367,7 @@ pub fn Dashboard() -> Element {
     let mut mouse_pos = use_signal(|| (-500, -500)); // -500 so the effect doesn't appear initially
     let mut scroll_pos = use_signal(|| (0, 0));
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/user_profile.css") }
+        document::Link { rel: "stylesheet", href: asset!("assets/compiled/dashboard.css") }
 		div {
 			class: "dashboard-container",
 			onmousemove: move |event| {

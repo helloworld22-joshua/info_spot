@@ -114,13 +114,4 @@ button {
 }
 .button svg {
   margin-right: var(--gap-tiny);
-}
-
-.clickable {
-  cursor: pointer;
-  transition: all var(--transition);
-}
-.clickable:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
 }/*# sourceMappingURL=main.css.map */
