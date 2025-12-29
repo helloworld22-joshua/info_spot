@@ -60,9 +60,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.recent-track-item .track-name:hover {
-  color: var(--primary);
-}
 
 .recent-track-item .track-artists {
   color: #b3b3b3;

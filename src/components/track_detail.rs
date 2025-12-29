@@ -1,6 +1,7 @@
 use crate::models::Track;
 use crate::utils::{format_duration, format_release_date};
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaXmark;
 use dioxus_free_icons::icons::fa_brands_icons::FaSpotify;
 use dioxus_free_icons::Icon;
 
@@ -30,7 +31,11 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
                 button {
                     class: "track-detail-close",
                     onclick: move |_| on_close.call(()),
-                    "×"
+                    Icon {
+                        icon: FaXmark,
+                        width: 20,
+                        height: 20,
+                    }
                 }
 
                 // Album cover
