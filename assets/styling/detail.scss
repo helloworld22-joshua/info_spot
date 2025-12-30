@@ -1,6 +1,6 @@
 @import "style.scss";
 
-.artist-detail-overlay {
+.detail-overlay {
 	@include default(fixed, flex);
 	top: 0;
 	left: 0;
@@ -13,7 +13,7 @@
 	animation: fadeIn 0.2s ease;
 }
 
-.artist-detail-modal {
+.detail-modal {
 	@include default(relative, flex);
 	background: var(--highlight);
 	border-radius: var(--border-radius);
@@ -24,24 +24,24 @@
 	animation: slideUp 0.3s ease;
 }
 
-.artist-detail-cover {
+.detail-cover {
 	height: 100%;
 	aspect-ratio: 1;
 	object-fit: cover;
 }
 
 @media (max-width: 1080px) {
-	.artist-detail-modal {
+	.detail-modal {
 		display: block;
 		width: 500px;
 	}
 
-	.artist-detail-cover {
+	.detail-cover {
 		@include size(100%, initial);
 	}
 }
 
-.artist-detail-close {
+.detail-close {
 	@include default(absolute, flex);
 	@include size(35px);
 	top: 15px;
@@ -63,18 +63,18 @@
 	}
 }
 
-.artist-detail-info {
+.detail-info {
 	padding: var(--padding);
 	overflow-y: scroll;
 }
 
-.artist-detail-header {
+.detail-header {
 	@include space(0, 0 0 var(--gap) 0);
 	padding-bottom: var(--gap-small);
 	border-bottom: 1px solid var(--highlight2);
 }
 
-.artist-detail-title {
+.detail-title {
 	@include space(0, 0 0 var(--gap-tiny) 0);
 	font-size: var(--font-huge);
 	display: flex;
@@ -93,13 +93,13 @@
 	flex-shrink: 0;
 }
 
-.artist-detail-artists {
+.detail-artists {
 	@include space(0, 0);
 	font-size: var(--font-large);
 	color: var(--text-secondary);
 }
 
-.artist-detail-metadata {
+.detail-metadata {
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap-small);
@@ -139,7 +139,7 @@
 	gap: 5px;
 }
 
-.artist-uri {
+.uri {
 	font-family: "Courier New", monospace;
 	font-size: var(--font-small);
 	color: var(--primary);
@@ -167,7 +167,7 @@
 	color: var(--text-secondary);
 }
 
-.artist-detail-spotify-button {
+.detail-spotify-button {
 	@include size(100%, auto);
 	display: flex;
 	align-items: center;
@@ -212,11 +212,11 @@
 }
 
 @media (max-width: 768px) {
-	.artist-detail-info {
+	.detail-info {
 		padding: var(--padding-small);
 	}
 
-	.artist-detail-title {
+	.detail-title {
 		font-size: var(--font-large);
 	}
 

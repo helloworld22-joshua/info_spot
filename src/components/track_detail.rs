@@ -20,19 +20,19 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
     rsx! {
 		document::Link {
 			rel: "stylesheet",
-			href: asset!("assets/compiled/track_detail.css"),
+			href: asset!("assets/compiled/detail.css"),
 		}
 		div {
-			class: "track-detail-overlay",
+			class: "detail-overlay",
 			onclick: move |_| on_close.call(()),
 
 			div {
-				class: "track-detail-modal",
+				class: "detail-modal",
 				onclick: move |e| e.stop_propagation(),
 
 				// Close button
 				button {
-					class: "track-detail-close",
+					class: "detail-close",
 					onclick: move |_| on_close.call(()),
 					Icon { icon: FaXmark, width: 20, height: 20 }
 				}
@@ -40,25 +40,25 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
 				// Album cover
 				if let Some(image) = track.album.images.first() {
 					img {
-						class: "track-detail-cover",
+						class: "detail-cover",
 						src: "{image.url}",
 						alt: "{track.name}",
 					}
 				}
 
 				// Track info
-				div { class: "track-detail-info",
-					div { class: "track-detail-header",
-						h2 { class: "track-detail-title",
+				div { class: "detail-info",
+					div { class: "detail-header",
+						h2 { class: "detail-title",
 							"{track.name}"
 							if track.explicit {
 								span { class: "explicit-badge", "E" }
 							}
 						}
-						p { class: "track-detail-artists", "{artists}" }
+						p { class: "detail-artists", "{artists}" }
 					}
 
-					div { class: "track-detail-metadata",
+					div { class: "detail-metadata",
 						div { class: "metadata-item",
 							span { class: "metadata-label", "Album" }
 							span { class: "metadata-value", "{track.album.name}" }
@@ -89,13 +89,13 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
 
 						div { class: "metadata-item",
 							span { class: "metadata-label", "Track URI" }
-							span { class: "metadata-value track-uri", "{track_uri}" }
+							span { class: "metadata-value uri", "{track_uri}" }
 						}
 					}
 
 					// Spotify button
 					a {
-						class: "track-detail-spotify-button",
+						class: "detail-spotify-button",
 						href: "{spotify_url}",
 						target: "_blank",
 						Icon { icon: FaSpotify, width: 20, height: 20 }

@@ -27,19 +27,19 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
     rsx! {
 		document::Link {
 			rel: "stylesheet",
-			href: asset!("assets/compiled/artist_detail.css"),
+			href: asset!("assets/compiled/detail.css"),
 		}
 		div {
-			class: "artist-detail-overlay",
+			class: "detail-overlay",
 			onclick: move |_| on_close.call(()),
 
 			div {
-				class: "artist-detail-modal",
+				class: "detail-modal",
 				onclick: move |e| e.stop_propagation(),
 
 				// Close button
 				button {
-					class: "artist-detail-close",
+					class: "detail-close",
 					onclick: move |_| on_close.call(()),
 					Icon { icon: FaXmark, width: 20, height: 20 }
 				}
@@ -48,7 +48,7 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
 				if let Some(images) = &artist.images {
 					if let Some(image) = images.first() {
 						img {
-							class: "artist-detail-cover",
+							class: "detail-cover",
 							src: "{image.url}",
 							alt: "{artist.name}",
 						}
@@ -56,12 +56,12 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
 				}
 
 				// Artist info
-				div { class: "artist-detail-info",
-					div { class: "artist-detail-header",
-						h2 { class: "artist-detail-title", "{artist.name}" }
+				div { class: "detail-info",
+					div { class: "detail-header",
+						h2 { class: "detail-title", "{artist.name}" }
 					}
 
-					div { class: "artist-detail-metadata",
+					div { class: "detail-metadata",
 						div { class: "metadata-item",
 							span { class: "metadata-label", "Followers" }
 							span { class: "metadata-value", "{followers}" }
@@ -87,13 +87,13 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
 
 						div { class: "metadata-item",
 							span { class: "metadata-label", "Artist URI" }
-							span { class: "metadata-value artist-uri", "{artist_uri}" }
+							span { class: "metadata-value uri", "{artist_uri}" }
 						}
 					}
 
 					// Spotify button
 					a {
-						class: "artist-detail-spotify-button",
+						class: "detail-spotify-button",
 						href: "{spotify_url}",
 						target: "_blank",
 						Icon { icon: FaSpotify, width: 20, height: 20 }

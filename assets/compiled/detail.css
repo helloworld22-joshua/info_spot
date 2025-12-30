@@ -1,4 +1,4 @@
-.artist-detail-overlay {
+.detail-overlay {
   position: fixed;
   display: flex;
   top: 0;
@@ -14,7 +14,7 @@
   animation: fadeIn 0.2s ease;
 }
 
-.artist-detail-modal {
+.detail-modal {
   position: relative;
   display: flex;
   background: var(--highlight);
@@ -26,7 +26,7 @@
   animation: slideUp 0.3s ease;
 }
 
-.artist-detail-cover {
+.detail-cover {
   height: 100%;
   aspect-ratio: 1;
   -o-object-fit: cover;
@@ -34,16 +34,16 @@
 }
 
 @media (max-width: 1080px) {
-  .artist-detail-modal {
+  .detail-modal {
     display: block;
     width: 500px;
   }
-  .artist-detail-cover {
+  .detail-cover {
     width: 100%;
     height: initial;
   }
 }
-.artist-detail-close {
+.detail-close {
   position: absolute;
   display: flex;
   width: 35px;
@@ -61,24 +61,24 @@
   transition: all var(--transition);
   z-index: 10;
 }
-.artist-detail-close:hover {
+.detail-close:hover {
   background: rgba(0, 0, 0, 0.8);
   transform: scale(1.1);
 }
 
-.artist-detail-info {
+.detail-info {
   padding: var(--padding);
   overflow-y: scroll;
 }
 
-.artist-detail-header {
+.detail-header {
   padding: 0;
   margin: 0 0 var(--gap) 0;
   padding-bottom: var(--gap-small);
   border-bottom: 1px solid var(--highlight2);
 }
 
-.artist-detail-title {
+.detail-title {
   padding: 0;
   margin: 0 0 var(--gap-tiny) 0;
   font-size: var(--font-huge);
@@ -98,14 +98,14 @@
   flex-shrink: 0;
 }
 
-.artist-detail-artists {
+.detail-artists {
   padding: 0;
   margin: 0;
   font-size: var(--font-large);
   color: var(--text-secondary);
 }
 
-.artist-detail-metadata {
+.detail-metadata {
   display: flex;
   flex-direction: column;
   gap: var(--gap-small);
@@ -144,7 +144,7 @@
   gap: 5px;
 }
 
-.artist-uri {
+.uri {
   font-family: "Courier New", monospace;
   font-size: var(--font-small);
   color: var(--primary);
@@ -177,7 +177,7 @@
   color: var(--text-secondary);
 }
 
-.artist-detail-spotify-button {
+.detail-spotify-button {
   width: 100%;
   height: auto;
   display: flex;
@@ -195,7 +195,7 @@
   border: none;
   cursor: pointer;
 }
-.artist-detail-spotify-button:hover {
+.detail-spotify-button:hover {
   background: #9333ea;
   transform: scale(1.05);
   box-shadow: 0 8px 24px rgba(147, 51, 234, 0.4);
@@ -220,10 +220,10 @@
   }
 }
 @media (max-width: 768px) {
-  .artist-detail-info {
+  .detail-info {
     padding: var(--padding-small);
   }
-  .artist-detail-title {
+  .detail-title {
     font-size: var(--font-large);
   }
   .metadata-item {
@@ -238,4 +238,4 @@
     width: 100%;
     height: 8px;
   }
-}/*# sourceMappingURL=artist_detail.css.map */
+}/*# sourceMappingURL=detail.css.map */
