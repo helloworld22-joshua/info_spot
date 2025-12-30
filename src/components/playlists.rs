@@ -282,16 +282,6 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
 
 				if !playlist_items.is_empty() {
 					div { class: "playlists-actions",
-						button {
-							class: "select-all-button",
-							onclick: toggle_select_all,
-							if all_selected {
-								"✓ Deselect All"
-							} else {
-								"Select All"
-							}
-						}
-
 						if selected_count > 0 {
 							span { class: "selected-count", "{selected_count} selected" }
 
@@ -315,6 +305,15 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
 									height: 16,
 								}
 								"Find Duplicates"
+							}
+						}
+						button {
+							class: "select-all-button",
+							onclick: toggle_select_all,
+							if all_selected {
+								"Deselect All"
+							} else {
+								"Select All"
 							}
 						}
 					}

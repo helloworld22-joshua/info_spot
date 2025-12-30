@@ -8,10 +8,7 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
     let mut selected_artist = use_signal(|| None::<Artist>);
 
     rsx! {
-		document::Link {
-			rel: "stylesheet",
-			href: asset!("assets/compiled/top.css"),
-		}
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/top.css") }
 		div {
 			class: "top-artists component",
 			onmounted: move |event| {

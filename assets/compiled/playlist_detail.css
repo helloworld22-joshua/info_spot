@@ -1,8 +1,9 @@
 .playlist-detail-container {
-  max-width: 1400px;
+  max-width: 1080px;
   padding: var(--padding);
   position: relative;
   min-height: 100vh;
+  margin: auto;
 }
 .playlist-detail-container::before {
   content: "";
@@ -14,23 +15,16 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(50px);
+  filter: blur(50px) brightness(0.7);
   z-index: -2;
   background-image: var(--playlist-cover-url, none);
 }
-.playlist-detail-container::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: -1;
-}
 
 .playlist-detail-header {
-  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  margin-bottom: var(--gap-small);
 }
 
 .playlist-detail-title {
@@ -50,54 +44,29 @@
 
 .header-actions {
   display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
+  margin-left: auto;
+  gap: var(--gap-small);
   flex-wrap: wrap;
 }
 
 .back-button {
   background: transparent;
   color: var(--primary);
-  border: 1px solid var(--primary);
-  padding: 10px 20px;
-  border-radius: 500px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: var(--transition);
+  transition: translate var(--transition);
 }
 .back-button:hover {
-  background: var(--primary);
-  color: var(--text-primary);
+  translate: calc(var(--hover-movement) * -1) 0;
 }
 
 .download-button {
   background: var(--primary);
   color: var(--text-primary);
   border: none;
-  padding: 10px 20px;
-  border-radius: 500px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: var(--transition);
-}
-.download-button:hover {
-  background: #cc0000;
-  transform: scale(1.05);
 }
 
 .remove-duplicates-button {
   background: var(--secondary);
   color: var(--text-primary);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 500px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: var(--transition);
-}
-.remove-duplicates-button:hover {
-  background: #30ecae;
-  transform: scale(1.05);
 }
 
 .sort-controls {
@@ -180,6 +149,7 @@
   padding: var(--padding-tiny);
   background-color: var(--highlight);
   border-radius: var(--border-radius);
+  cursor: pointer;
   transition: scale var(--transition), background-color var(--transition);
 }
 .track-item:hover {
@@ -191,7 +161,6 @@
   font-size: var(--font-normal);
   font-weight: var(--font-bold);
   color: var(--text-secondary);
-  min-width: 30px;
   text-align: center;
 }
 

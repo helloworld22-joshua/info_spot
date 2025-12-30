@@ -25,17 +25,10 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
     let popularity = artist.popularity.unwrap_or(0);
 
     rsx! {
-		document::Link {
-			rel: "stylesheet",
-			href: asset!("assets/compiled/detail.css"),
-		}
-		div {
-			class: "detail-overlay",
-			onclick: move |_| on_close.call(()),
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/detail.css") }
+		div { class: "detail-overlay", onclick: move |_| on_close.call(()),
 
-			div {
-				class: "detail-modal",
-				onclick: move |e| e.stop_propagation(),
+			div { class: "detail-modal", onclick: move |e| e.stop_propagation(),
 
 				// Close button
 				button {

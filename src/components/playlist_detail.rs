@@ -3,7 +3,7 @@ use crate::models::*;
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowDown, FaXmark, FaMagnifyingGlass};
+use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowDown, FaArrowLeft, FaXmark, FaMagnifyingGlass};
 use dioxus_free_icons::Icon;
 
 #[component]
@@ -319,35 +319,12 @@ let sorted_tracks = {
 			class: "playlist-detail-container",
 			style: "--playlist-cover-url: url('{cover_url}');",
 			header { class: "playlist-detail-header",
-				div { class: "header-actions",
-					button {
-						class: "back-button",
-						onclick: move |_| {
-						    nav.push(Route::Dashboard {});
-						},
-						"← Back to Dashboard"
-					}
-					if playlist_info().is_some() {
-						button { class: "download-button", onclick: download_json,
-							Icon {
-								icon: FaFileArrowDown,
-								width: 18,
-								height: 18,
-							}
-							"Download JSON"
-						}
-						button {
-							class: "remove-duplicates-button",
-							onclick: find_duplicates,
-							style: "margin-left: 10px;",
-							Icon {
-								icon: FaMagnifyingGlass,
-								width: 18,
-								height: 18,
-							}
-							"Remove Duplicates"
-						}
-					}
+				button {
+					class: "back-button",
+					onclick: move |_| {
+					    nav.push(Route::Dashboard {});
+					},
+					Icon { icon: FaArrowLeft, width: 42, height: 42 }
 				}
 				h1 { class: "playlist-detail-title",
 					{
@@ -357,12 +334,37 @@ let sorted_tracks = {
 					        .unwrap_or_else(|| "Playlist Tracks".to_string())
 					}
 				}
-				// Show description if available
-				if let Some(playlist) = playlist_info() {
-					if let Some(desc) = &playlist.description {
-						if !desc.is_empty() {
-							p { class: "playlist-detail-description", "{desc}" }
+				div { class: "header-actions",
+					if playlist_info().is_some() {
+						button {
+							class: "download-button button",
+							onclick: download_json,
+							Icon {
+								icon: FaFileArrowDown,
+								width: 18,
+								height: 18,
+							}
+							"Download JSON"
 						}
+						button {
+							class: "remove-duplicates-button button",
+							onclick: find_duplicates,
+							Icon {
+								icon: FaMagnifyingGlass,
+								width: 18,
+								height: 18,
+							}
+							"Remove Duplicates"
+						}
+					}
+				}
+			}
+
+			// Show description if available
+			if let Some(playlist) = playlist_info() {
+				if let Some(desc) = &playlist.description {
+					if !desc.is_empty() {
+						p { class: "playlist-detail-description", "{desc}" }
 					}
 				}
 			}

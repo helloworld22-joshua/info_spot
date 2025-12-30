@@ -55,6 +55,15 @@ body {
   line-height: 1.6;
 }
 
+button {
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
 .component {
   position: relative;
   display: block;

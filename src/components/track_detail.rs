@@ -18,17 +18,10 @@ pub fn TrackDetail(track: Track, on_close: EventHandler<()>) -> Element {
     let release_date = format_release_date(&track.album.release_date);
 
     rsx! {
-		document::Link {
-			rel: "stylesheet",
-			href: asset!("assets/compiled/detail.css"),
-		}
-		div {
-			class: "detail-overlay",
-			onclick: move |_| on_close.call(()),
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/detail.css") }
+		div { class: "detail-overlay", onclick: move |_| on_close.call(()),
 
-			div {
-				class: "detail-modal",
-				onclick: move |e| e.stop_propagation(),
+			div { class: "detail-modal", onclick: move |e| e.stop_propagation(),
 
 				// Close button
 				button {

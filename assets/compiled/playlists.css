@@ -17,11 +17,13 @@
 .select-all-button {
   padding: 8px 16px;
   background: var(--highlight);
-  color: var(--text-primary);
-  border: 1px solid var(--text-secondary);
-  border-radius: 8px;
+  color: var(--text-secondary);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--border-radius);
   cursor: pointer;
   transition: all var(--transition);
+  font-size: var(--font-normal);
+  font-weight: var(--font-bold);
 }
 .select-all-button:hover {
   background: var(--highlight2);
@@ -31,47 +33,42 @@
 .selected-count {
   color: var(--text-secondary);
   font-size: var(--font-small);
-  padding: 8px 12px;
-  background: var(--highlight);
-  border-radius: 8px;
 }
 
 .batch-download-button,
 .batch-duplicates-button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--gap-small);
+  border-radius: var(--border-radius);
   padding: 8px 16px;
-  border-radius: 8px;
   cursor: pointer;
   transition: all var(--transition);
   border: none;
-  font-size: var(--font-small);
+  font-size: var(--font-normal);
   font-weight: var(--font-bold);
 }
 
 .batch-download-button {
-  background: var(--secondary);
+  background: var(--primary);
   color: var(--text-primary);
 }
 .batch-download-button:hover {
-  background: #1aa34a;
   scale: 1.05;
 }
 
 .batch-duplicates-button {
-  background: #ff6b35;
+  background: var(--secondary);
   color: var(--text-primary);
 }
 .batch-duplicates-button:hover {
-  background: #ff8555;
   scale: 1.05;
 }
 
 .playlists-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: var(--gap);
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-width), 1fr));
+  gap: var(--gap-small);
   grid-auto-rows: 1fr;
   align-items: stretch;
 }
@@ -166,7 +163,7 @@
 .playlist-info {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-small);
+  gap: var(--gap-tiny);
   min-width: 0;
   flex: 1;
 }

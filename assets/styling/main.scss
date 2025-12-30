@@ -61,6 +61,17 @@ body {
 	line-height: 1.6;
 }
 
+button {
+	// <- Legacy, remove
+	border: none;
+}
+
+a {
+	// <- Legacy, remove
+	text-decoration: none;
+	color: var(--text-primary);
+}
+
 // Global Component Styles (used across multiple components)
 .component {
 	@include default(relative, block);
