@@ -2,31 +2,46 @@
 
 // Horizontal scroll container
 .tracks-scroll-container {
+	@include space(
+		calc(var(--padding) - var(--border-width-thick)),
+		calc(var(--padding) * -1 + var(--border-width-thick))
+	);
 	display: flex;
 	gap: var(--gap-small);
-	overflow: auto;
-	padding-bottom: var(--padding-small);
+	overflow-x: scroll;
+
+	// Box-shadow box, maybe add later
+	// &::after {
+	// 	content: "";
+	// 	position: absolute;
+	// 	inset: var(--border-width-thick);
+	// 	pointer-events: none;
+	// 	box-shadow: inset 0 0 24px 24px var(--background);
+	// 	border-radius: calc(var(--border-radius) - 2px);
+	// }
 }
 
 // Individual track card
 .track-card {
 	@include default(relative, flex);
-	min-width: 200px;
-	width: 200px;
-	background: var(--highlight);
+	width: var(--card-width);
 	border-radius: var(--border-radius);
 	padding: var(--padding-small);
-	cursor: pointer;
-	transition: all var(--transition);
 	flex-direction: column;
+	flex-shrink: 0;
 	gap: var(--gap-small);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	background: var(--highlight);
+	border: var(--border-width) var(--highlight2) solid;
+	cursor: pointer;
+	transition:
+		translate var(--transition),
+		border-color var(--transition),
+		box-shadow var(--transition);
 
 	&:hover {
-		transform: translateY(-8px);
+		translate: 0 calc(var(--hover-movement) * -1);
 		border-color: var(--primary);
-		box-shadow: 0 8px 24px rgba(168, 85, 247, 0.3);
-		background: rgba(255, 255, 255, 0.05);
+		box-shadow: var(--box-shadow-primary);
 	}
 }
 
@@ -35,21 +50,20 @@
 	@include default(absolute, block);
 	bottom: var(--gap-small);
 	right: var(--gap-small);
-	background: var(--primary);
-	color: var(--text-primary);
-	padding: 4px 10px;
-	border-radius: 500px;
+	padding: var(--padding-mini) var(--padding-tiny);
 	font-size: var(--font-small);
 	font-weight: var(--font-bold);
-	z-index: 1;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	background: var(--primary);
+	color: var(--text-primary);
+	border-radius: var(--border-radius);
+	box-shadow: var(--box-shadow);
 }
 
 // Album cover
 .track-card-image {
-	@include size(100%);
+	width: 100%;
 	aspect-ratio: 1;
-	border-radius: var(--border-radius-small);
+	border-radius: var(--border-radius-mid);
 	object-fit: cover;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -58,7 +72,7 @@
 .track-card-info {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: var(--gap-tiny);
 	flex: 1;
 }
 
@@ -97,14 +111,14 @@
 // Mobile responsive
 @media (max-width: 768px) {
 	.track-card {
-		min-width: 160px;
-		width: 160px;
+		width: var(--card-width-small);
 		padding: var(--padding-tiny);
 	}
 
 	.track-rank {
-		font-size: 0.7rem;
-		padding: 3px 8px;
+		bottom: var(--gap-tiny);
+		right: var(--gap-tiny);
+		font-size: var(--font-tiny);
 	}
 
 	.track-card-name {
@@ -114,6 +128,6 @@
 	.track-card-artists,
 	.track-card-album,
 	.track-card-duration {
-		font-size: 0.75rem;
+		font-size: var(--font-tiny);
 	}
 }

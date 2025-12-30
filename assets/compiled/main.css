@@ -8,9 +8,11 @@
   --highlight2: hsla(0, 0%, 50%, 0.2);
   --glow: 0 0 10px hsla(0, 0%, 70%, 0.1);
   --box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+  --box-shadow-primary: 0 8px 24px rgba(168, 85, 247, 0.3);
   --padding: 40px;
   --padding-small: 20px;
   --padding-tiny: 10px;
+  --padding-mini: 5px;
   --gap: 30px;
   --gap-small: 15px;
   --gap-tiny: 7.5px;
@@ -19,6 +21,7 @@
   --font-large: 1.35rem;
   --font-normal: 1.1rem;
   --font-small: 0.85rem;
+  --font-tiny: 0.75rem;
   --font-bold: 600;
   --font-default: 400;
   --font-light: 200;
@@ -27,8 +30,13 @@
   --border-radius: 20px;
   --border-radius-mid: 10px;
   --border-radius-small: 5px;
+  --border-width: 1px;
+  --border-width-thick: 2px;
   --transition: 0.3s ease;
   --blur: blur(5px);
+  --hover-movement: 8px;
+  --card-width: 200px;
+  --card-width-small: 160px;
   --light-gray: #535353;
 }
 
@@ -86,7 +94,7 @@ button {
   position: absolute;
   display: block;
   content: "";
-  inset: 2px;
+  inset: var(--border-width-thick);
   z-index: -1;
   background-color: var(--background40);
   border-radius: calc(var(--border-radius) - 2px);
