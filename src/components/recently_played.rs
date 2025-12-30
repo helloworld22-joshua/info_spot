@@ -49,10 +49,10 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
 								for (index , item) in day_tracks.iter().enumerate() {
 									div {
 										class: "recent-track-item clickable",
-									onclick: {
-										let track = item.track.clone();
-										move |_| selected_track.set(Some(track.clone()))
-									},
+										onclick: {
+										    let track = item.track.clone();
+										    move |_| selected_track.set(Some(track.clone()))
+										},
 										key: "{item.played_at}-{index}",
 
 										if let Some(image) = item.track.album.images.first() {
@@ -64,10 +64,7 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
 										}
 
 										div { class: "track-info",
-											div {
-												class: "track-name",
-												"{item.track.name}"
-											}
+											div { class: "track-name", "{item.track.name}" }
 											div { class: "track-artists",
 												{item.track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
 											}
@@ -85,10 +82,7 @@ pub fn RecentlyPlayed(recent_tracks: ReadSignal<Vec<RecentlyPlayedItem>>) -> Ele
 
 		// Track detail modal
 		if let Some(track) = selected_track() {
-			TrackDetail {
-				track: track,
-				on_close: move |_| selected_track.set(None),
-			}
+			TrackDetail { track, on_close: move |_| selected_track.set(None) }
 		}
 	}
 }

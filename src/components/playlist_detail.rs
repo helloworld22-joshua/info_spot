@@ -263,9 +263,59 @@ pub fn PlaylistDetail(id: String) -> Element {
         .map(|img| img.url.clone())
         .unwrap_or_default();
 
+    let mut search_query = use_signal(|| String::new());
+
+    // Filter and sort tracks based on search query and sort order
+let sorted_tracks = {
+    let mut tracks_vec = tracks();
+    let query = search_query().to_lowercase();
+
+    // Filter by search query
+    if !query.is_empty() {
+        tracks_vec.retain(|item| {
+            let track_name = item.track.name.to_lowercase();
+            let artist_names = item.track.artists
+                .iter()
+                .map(|a| a.name.to_lowercase())
+                .collect::<Vec<_>>()
+                .join(" ");
+            let album_name = item.track.album.name.to_lowercase();
+
+            track_name.contains(&query) ||
+            artist_names.contains(&query) ||
+            album_name.contains(&query)
+        });
+    }
+
+    // Sort based on selected order
+    match sort_order().as_str() {
+        "name_asc" => tracks_vec.sort_by(|a, b| a.track.name.to_lowercase().cmp(&b.track.name.to_lowercase())),
+        "name_desc" => tracks_vec.sort_by(|a, b| b.track.name.to_lowercase().cmp(&a.track.name.to_lowercase())),
+        "artist_asc" => tracks_vec.sort_by(|a, b| {
+            let a_artist = a.track.artists.first().map(|ar| ar.name.to_lowercase()).unwrap_or_default();
+            let b_artist = b.track.artists.first().map(|ar| ar.name.to_lowercase()).unwrap_or_default();
+            a_artist.cmp(&b_artist)
+        }),
+        "artist_desc" => tracks_vec.sort_by(|a, b| {
+            let a_artist = a.track.artists.first().map(|ar| ar.name.to_lowercase()).unwrap_or_default();
+            let b_artist = b.track.artists.first().map(|ar| ar.name.to_lowercase()).unwrap_or_default();
+            b_artist.cmp(&a_artist)
+        }),
+        "date_added_desc" => tracks_vec.sort_by(|a, b| b.added_at.cmp(&a.added_at)),
+        "date_added_asc" => tracks_vec.sort_by(|a, b| a.added_at.cmp(&b.added_at)),
+        _ => {} // default - keep original order
+    }
+    tracks_vec
+};
+
     rsx! {
-		document::Link { rel: "stylesheet", href: asset!("assets/compiled/playlist_detail.css") }
-		div { class: "playlist-detail-container", style: "--playlist-cover-url: url('{cover_url}');",
+		document::Link {
+			rel: "stylesheet",
+			href: asset!("assets/compiled/playlist_detail.css"),
+		}
+		div {
+			class: "playlist-detail-container",
+			style: "--playlist-cover-url: url('{cover_url}');",
 			header { class: "playlist-detail-header",
 				div { class: "header-actions",
 					button {
@@ -277,21 +327,22 @@ pub fn PlaylistDetail(id: String) -> Element {
 					}
 					if playlist_info().is_some() {
 						button { class: "download-button", onclick: download_json,
-                        Icon {
-							icon: FaFileArrowDown,
-							width: 18,
-							height: 18,
+							Icon {
+								icon: FaFileArrowDown,
+								width: 18,
+								height: 18,
+							}
+							"Download JSON"
 						}
-                        "Download JSON" }
 						button {
 							class: "remove-duplicates-button",
 							onclick: find_duplicates,
 							style: "margin-left: 10px;",
-                            Icon {
-							icon: FaMagnifyingGlass,
-							width: 18,
-							height: 18,
-						}
+							Icon {
+								icon: FaMagnifyingGlass,
+								width: 18,
+								height: 18,
+							}
 							"Remove Duplicates"
 						}
 					}
@@ -311,6 +362,22 @@ pub fn PlaylistDetail(id: String) -> Element {
 							p { class: "playlist-detail-description", "{desc}" }
 						}
 					}
+				}
+			}
+
+			div { class: "search-bar-container",
+				input {
+					class: "search-bar",
+					r#type: "text",
+					placeholder: "Search tracks, artists, or albums...",
+					value: "{search_query()}",
+					oninput: move |e| search_query.set(e.value()),
+				}
+			}
+
+			if !search_query().is_empty() {
+				div { style: "padding: 10px 0; color: var(--text-secondary); font-size: var(--font-small);",
+					"Found {sorted_tracks.len()} track(s)"
 				}
 			}
 
@@ -368,8 +435,8 @@ pub fn PlaylistDetail(id: String) -> Element {
 							class: "track-item clickable",
 							key: "{item.track.id}-{index}",
 							onclick: {
-								let track = item.track.clone();
-								move |_| selected_track.set(Some(track.clone()))
+							    let track = item.track.clone();
+							    move |_| selected_track.set(Some(track.clone()))
 							},
 							span { class: "track-number", "{index + 1}" }
 							if let Some(image) = item.track.album.images.first() {
@@ -404,11 +471,7 @@ pub fn PlaylistDetail(id: String) -> Element {
 							button {
 								class: "modal-close",
 								onclick: move |_| show_duplicates_modal.set(false),
-								Icon {
-                                    icon: FaXmark,
-                                    width: 20,
-                                    height: 20,
-                                }
+								Icon { icon: FaXmark, width: 20, height: 20 }
 							}
 						}
 
@@ -473,10 +536,7 @@ pub fn PlaylistDetail(id: String) -> Element {
 
 		// Track detail modal
 		if let Some(track) = selected_track() {
-			TrackDetail {
-				track: track,
-				on_close: move |_| selected_track.set(None),
-			}
+			TrackDetail { track, on_close: move |_| selected_track.set(None) }
 		}
 	}
 }

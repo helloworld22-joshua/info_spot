@@ -111,6 +111,36 @@
   border-radius: var(--border-radius);
 }
 
+.search-bar-container {
+  margin-bottom: var(--gap);
+}
+
+.search-bar {
+  width: 100%;
+  height: auto;
+  padding: 12px 20px;
+  background: var(--highlight);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 500px;
+  color: var(--text-primary);
+  font-size: var(--font-normal);
+  transition: var(--transition);
+}
+.search-bar::-moz-placeholder {
+  color: var(--text-secondary);
+}
+.search-bar::placeholder {
+  color: var(--text-secondary);
+}
+.search-bar:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+.search-bar:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 .sort-label {
   font-weight: 600;
   color: var(--text-secondary);
@@ -387,4 +417,173 @@
     width: 100%;
     height: auto;
   }
+}
+.track-item {
+  animation: fadeInUp 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.tracks-list .track-item:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.tracks-list .track-item:nth-child(2) {
+  animation-delay: 0.04s;
+}
+.tracks-list .track-item:nth-child(3) {
+  animation-delay: 0.06s;
+}
+.tracks-list .track-item:nth-child(4) {
+  animation-delay: 0.08s;
+}
+.tracks-list .track-item:nth-child(5) {
+  animation-delay: 0.1s;
+}
+.tracks-list .track-item:nth-child(6) {
+  animation-delay: 0.12s;
+}
+.tracks-list .track-item:nth-child(7) {
+  animation-delay: 0.14s;
+}
+.tracks-list .track-item:nth-child(8) {
+  animation-delay: 0.16s;
+}
+.tracks-list .track-item:nth-child(9) {
+  animation-delay: 0.18s;
+}
+.tracks-list .track-item:nth-child(10) {
+  animation-delay: 0.2s;
+}
+.tracks-list .track-item:nth-child(11) {
+  animation-delay: 0.22s;
+}
+.tracks-list .track-item:nth-child(12) {
+  animation-delay: 0.24s;
+}
+.tracks-list .track-item:nth-child(13) {
+  animation-delay: 0.26s;
+}
+.tracks-list .track-item:nth-child(14) {
+  animation-delay: 0.28s;
+}
+.tracks-list .track-item:nth-child(15) {
+  animation-delay: 0.3s;
+}
+.tracks-list .track-item:nth-child(16) {
+  animation-delay: 0.32s;
+}
+.tracks-list .track-item:nth-child(17) {
+  animation-delay: 0.34s;
+}
+.tracks-list .track-item:nth-child(18) {
+  animation-delay: 0.36s;
+}
+.tracks-list .track-item:nth-child(19) {
+  animation-delay: 0.38s;
+}
+.tracks-list .track-item:nth-child(20) {
+  animation-delay: 0.4s;
+}
+.tracks-list .track-item:nth-child(21) {
+  animation-delay: 0.42s;
+}
+.tracks-list .track-item:nth-child(22) {
+  animation-delay: 0.44s;
+}
+.tracks-list .track-item:nth-child(23) {
+  animation-delay: 0.46s;
+}
+.tracks-list .track-item:nth-child(24) {
+  animation-delay: 0.48s;
+}
+.tracks-list .track-item:nth-child(25) {
+  animation-delay: 0.5s;
+}
+.tracks-list .track-item:nth-child(26) {
+  animation-delay: 0.52s;
+}
+.tracks-list .track-item:nth-child(27) {
+  animation-delay: 0.54s;
+}
+.tracks-list .track-item:nth-child(28) {
+  animation-delay: 0.56s;
+}
+.tracks-list .track-item:nth-child(29) {
+  animation-delay: 0.58s;
+}
+.tracks-list .track-item:nth-child(30) {
+  animation-delay: 0.6s;
+}
+.tracks-list .track-item:nth-child(31) {
+  animation-delay: 0.62s;
+}
+.tracks-list .track-item:nth-child(32) {
+  animation-delay: 0.64s;
+}
+.tracks-list .track-item:nth-child(33) {
+  animation-delay: 0.66s;
+}
+.tracks-list .track-item:nth-child(34) {
+  animation-delay: 0.68s;
+}
+.tracks-list .track-item:nth-child(35) {
+  animation-delay: 0.7s;
+}
+.tracks-list .track-item:nth-child(36) {
+  animation-delay: 0.72s;
+}
+.tracks-list .track-item:nth-child(37) {
+  animation-delay: 0.74s;
+}
+.tracks-list .track-item:nth-child(38) {
+  animation-delay: 0.76s;
+}
+.tracks-list .track-item:nth-child(39) {
+  animation-delay: 0.78s;
+}
+.tracks-list .track-item:nth-child(40) {
+  animation-delay: 0.8s;
+}
+.tracks-list .track-item:nth-child(41) {
+  animation-delay: 0.82s;
+}
+.tracks-list .track-item:nth-child(42) {
+  animation-delay: 0.84s;
+}
+.tracks-list .track-item:nth-child(43) {
+  animation-delay: 0.86s;
+}
+.tracks-list .track-item:nth-child(44) {
+  animation-delay: 0.88s;
+}
+.tracks-list .track-item:nth-child(45) {
+  animation-delay: 0.9s;
+}
+.tracks-list .track-item:nth-child(46) {
+  animation-delay: 0.92s;
+}
+.tracks-list .track-item:nth-child(47) {
+  animation-delay: 0.94s;
+}
+.tracks-list .track-item:nth-child(48) {
+  animation-delay: 0.96s;
+}
+.tracks-list .track-item:nth-child(49) {
+  animation-delay: 0.98s;
+}
+.tracks-list .track-item:nth-child(50) {
+  animation-delay: 1s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tracks-list {
+  transition: all 0.3s ease-out;
 }/*# sourceMappingURL=playlist_detail.css.map */

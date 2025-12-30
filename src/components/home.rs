@@ -101,8 +101,8 @@ pub fn Home() -> Element {
     };
 
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/main.css") }
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/home.css") }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/main.css") }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/home.css") }
 		div { class: "home-container",
 			div { class: "login-card",
 				h1 { class: "app-title", "InfoSpot" }

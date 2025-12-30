@@ -121,6 +121,36 @@
 	border-radius: var(--border-radius);
 }
 
+// Search bar
+.search-bar-container {
+	margin-bottom: var(--gap);
+}
+
+.search-bar {
+	@include size(100%, auto);
+	padding: 12px 20px;
+	background: var(--highlight);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 500px;
+	color: var(--text-primary);
+	font-size: var(--font-normal);
+	transition: var(--transition);
+
+	&::placeholder {
+		color: var(--text-secondary);
+	}
+
+	&:focus {
+		outline: none;
+		border-color: var(--primary);
+		box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+	}
+
+	&:hover {
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+}
+
 .sort-label {
 	font-weight: 600;
 	color: var(--text-secondary);
@@ -400,4 +430,37 @@
 	.sort-button {
 		@include size(100%, auto);
 	}
+}
+
+// Smooth animations for search filtering
+.track-item {
+	animation: fadeInUp 0.3s ease-out;
+	animation-fill-mode: both;
+}
+
+// Stagger animation for each track
+.tracks-list {
+	.track-item {
+		@for $i from 1 through 50 {
+			&:nth-child(#{$i}) {
+				animation-delay: #{$i * 0.02}s;
+			}
+		}
+	}
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+// Smooth transition for list layout changes
+.tracks-list {
+	transition: all 0.3s ease-out;
 }

@@ -19,9 +19,9 @@ pub fn Callback() -> Element {
     });
 
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/callback.css") }
-        div { class: "callback-container",
-            p { "Processing authentication..." }
-        }
-    }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/callback.css") }
+		div { class: "callback-container",
+			p { "Processing authentication..." }
+		}
+	}
 }

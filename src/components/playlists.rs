@@ -265,262 +265,277 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
     let all_selected = selected_count == playlist_items.len() && !playlist_items.is_empty();
 
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/playlists.css") }
-        div {
-            class: "playlists component",
-            onmounted: move |event| {
-                spawn(async move {
-                    if let Ok(rect) = event.get_client_rect().await {
-                        position.set((rect.origin.x, rect.origin.y));
-                    }
-                });
-            },
-            style: "--position-x: {position().0}px; --position-y: {position().1}px;",
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/playlists.css") }
+		div {
+			class: "playlists component",
+			onmounted: move |event| {
+			    spawn(async move {
+			        if let Ok(rect) = event.get_client_rect().await {
+			            position.set((rect.origin.x, rect.origin.y));
+			        }
+			    });
+			},
+			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 
-            div { class: "playlists-header",
-                h2 { class: "section-title", "Your Playlists" }
+			div { class: "playlists-header",
+				h2 { class: "section-title", "Your Playlists" }
 
-                if !playlist_items.is_empty() {
-                    div { class: "playlists-actions",
-                        button {
-                            class: "select-all-button",
-                            onclick: toggle_select_all,
-                            if all_selected { "✓ Deselect All" } else { "Select All" }
-                        }
+				if !playlist_items.is_empty() {
+					div { class: "playlists-actions",
+						button {
+							class: "select-all-button",
+							onclick: toggle_select_all,
+							if all_selected {
+								"✓ Deselect All"
+							} else {
+								"Select All"
+							}
+						}
 
-                        if selected_count > 0 {
-                            span { class: "selected-count", "{selected_count} selected" }
+						if selected_count > 0 {
+							span { class: "selected-count", "{selected_count} selected" }
 
-                            button {
-                                class: "batch-download-button",
-                                onclick: download_selected,
-                                Icon {
-                                    icon: FaFileArrowDown,
-                                    width: 16,
-                                    height: 16,
-                                }
-                                "Download ({selected_count})"
-                            }
+							button {
+								class: "batch-download-button",
+								onclick: download_selected,
+								Icon {
+									icon: FaFileArrowDown,
+									width: 16,
+									height: 16,
+								}
+								"Download ({selected_count})"
+							}
 
-                            button {
-                                class: "batch-duplicates-button",
-                                onclick: find_duplicates,
-                                Icon {
-                                    icon: FaMagnifyingGlass,
-                                    width: 16,
-                                    height: 16,
-                                }
-                                "Find Duplicates"
-                            }
-                        }
-                    }
-                }
-            }
+							button {
+								class: "batch-duplicates-button",
+								onclick: find_duplicates,
+								Icon {
+									icon: FaMagnifyingGlass,
+									width: 16,
+									height: 16,
+								}
+								"Find Duplicates"
+							}
+						}
+					}
+				}
+			}
 
-            if playlist_items.is_empty() {
-                div { style: "padding: 40px; text-align: center; color: #b3b3b3;",
-                    p { "No playlists found" }
-                    p { style: "font-size: 0.9rem; margin-top: 10px;",
-                        "Create some playlists in Spotify to see them here!"
-                    }
-                }
-            } else {
-                // Search bar
-                div { class: "search-bar-container",
-                    input {
-                        class: "search-bar",
-                        r#type: "text",
-                        placeholder: "Search playlists...",
-                        value: "{search_query()}",
-                        oninput: move |e| search_query.set(e.value()),
-                    }
-                }
+			if playlist_items.is_empty() {
+				div { style: "padding: 40px; text-align: center; color: #b3b3b3;",
+					p { "No playlists found" }
+					p { style: "font-size: 0.9rem; margin-top: 10px;",
+						"Create some playlists in Spotify to see them here!"
+					}
+				}
+			} else {
+				// Search bar
+				div { class: "search-bar-container",
+					input {
+						class: "search-bar",
+						r#type: "text",
+						placeholder: "Search playlists...",
+						value: "{search_query()}",
+						oninput: move |e| search_query.set(e.value()),
+					}
+				}
 
-                div { class: "playlists-grid",
-                    {
-                        // Filter by search query
-                        let query = search_query().to_lowercase();
-                        let filtered_items: Vec<_> = if query.is_empty() {
-                            playlist_items.iter().collect()
-                        } else {
-                            playlist_items.iter()
-                                .filter(|p| {
-                                    p.name.to_lowercase().contains(&query) ||
-                                    p.description.as_ref()
-                                        .map(|d| d.to_lowercase().contains(&query))
-                                        .unwrap_or(false) ||
-                                    p.owner.display_name.as_ref()
-                                        .map(|o| o.to_lowercase().contains(&query))
-                                        .unwrap_or(false)
-                                })
-                                .collect()
-                        };
+				div { class: "playlists-grid",
+					{
+					    // Filter by search query
+					    let query = search_query().to_lowercase();
+					    let filtered_items: Vec<_> = if query.is_empty() {
+					        playlist_items.iter().collect()
+					    } else {
+					        playlist_items
 
-                        let items_to_show = if show_all() {
-                            filtered_items
-                        } else {
-                            // Show only first 12 playlists
-                            filtered_items.into_iter().take(12).collect::<Vec<_>>()
-                        };
+					            // Show only first 12 playlists
 
-                        items_to_show
-                            .into_iter()
-                            .map(|playlist| {
-                                let playlist_id = playlist.id.clone();
-                                let is_selected = selected_playlists().contains(&playlist_id);
-                                rsx! {
-                                    PlaylistCard {
-                                        key: "{playlist_id}",
-                                        playlist: playlist.clone(),
-                                        is_selected: is_selected,
-                                        on_toggle: move |_| toggle_selection(playlist_id.clone()),
-                                    }
-                                }
-                            })
-                    }
-                }
+					            .iter()
+					            .filter(|p| {
+					                p.name.to_lowercase().contains(&query)
+					                    || p
+					                        .description
+					                        .as_ref()
+					                        .map(|d| d.to_lowercase().contains(&query))
+					                        .unwrap_or(false)
+					                    || p
+					                        .owner
+					                        .display_name
+					                        .as_ref()
+					                        .map(|o| o.to_lowercase().contains(&query))
+					                        .unwrap_or(false)
+					            })
+					            .collect()
+					    };
+					    let items_to_show = if show_all() {
+					        filtered_items
+					    } else {
+					        filtered_items.into_iter().take(12).collect::<Vec<_>>()
+					    };
+					    items_to_show
+					        .into_iter()
+					        .map(|playlist| {
+					            let playlist_id = playlist.id.clone();
+					            let is_selected = selected_playlists().contains(&playlist_id);
+					            rsx! {
+						PlaylistCard {
+							key: "{playlist_id}",
+							playlist: playlist.clone(),
+							is_selected,
+							on_toggle: move |_| toggle_selection(playlist_id.clone()),
+						}
+					}
+					        })
+					}
+				}
 
-                // Show more/less button if there are more than 8 playlists
-                {
-                    let query = search_query().to_lowercase();
-                    let filtered_count = if query.is_empty() {
-                        playlist_items.len()
-                    } else {
-                        playlist_items.iter()
-                            .filter(|p| {
-                                p.name.to_lowercase().contains(&query) ||
-                                p.description.as_ref()
-                                    .map(|d| d.to_lowercase().contains(&query))
-                                    .unwrap_or(false) ||
-                                p.owner.display_name.as_ref()
-                                    .map(|o| o.to_lowercase().contains(&query))
-                                    .unwrap_or(false)
-                            })
-                            .count()
-                    };
+				// Show more/less button if there are more than 8 playlists
+				{
+				    let query = search_query().to_lowercase();
+				    let filtered_count = if query.is_empty() {
+				        playlist_items.len()
+				    } else {
+				        playlist_items
 
-                    if filtered_count > 8 {
-                        rsx! {
-                            div { class: "show-more-container",
-                                button {
-                                    class: "show-more-button",
-                                    onclick: move |_| show_all.set(!show_all()),
-                                    if show_all() {
-                                        "Show Less"
-                                    } else {
-                                        "Show More ({filtered_count - 8} more)"
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        rsx! {}
-                    }
-                }
-            }
-        }
+				            .iter()
+				            .filter(|p| {
+				                p.name.to_lowercase().contains(&query)
+				                    || p
+				                        .description
+				                        .as_ref()
+				                        .map(|d| d.to_lowercase().contains(&query))
+				                        .unwrap_or(false)
+				                    || p
+				                        .owner
+				                        .display_name
+				                        .as_ref()
+				                        .map(|o| o.to_lowercase().contains(&query))
+				                        .unwrap_or(false)
+				            })
+				            .count()
+				    };
+				    if filtered_count > 8 {
+				        rsx! {
+					div { class: "show-more-container",
+						button {
+							class: "show-more-button",
+							onclick: move |_| show_all.set(!show_all()),
+							if show_all() {
+								"Show Less"
+							} else {
+								"Show More ({filtered_count - 8} more)"
+							}
+						}
+					}
+				}
+				    } else {
+				        rsx! {}
+				    }
+				}
+			}
+		}
 
-        // Duplicates Modal
-        if show_duplicates_modal() {
-            div { class: "modal-overlay",
-                onclick: move |_| show_duplicates_modal.set(false),
-                div {
-                    class: "modal-content",
-                    onclick: move |e| e.stop_propagation(),
+		// Duplicates Modal
+		if show_duplicates_modal() {
+			div {
+				class: "modal-overlay",
+				onclick: move |_| show_duplicates_modal.set(false),
+				div {
+					class: "modal-content",
+					onclick: move |e| e.stop_propagation(),
 
-                    div { class: "modal-header",
-                        h2 { "Duplicate Tracks Found" }
-                        button {
-                            class: "modal-close",
-                            onclick: move |_| show_duplicates_modal.set(false),
-                            Icon {
-                                icon: FaXmark,
-                                width: 20,
-                                height: 20,
-                            }
-                        }
-                    }
+					div { class: "modal-header",
+						h2 { "Duplicate Tracks Found" }
+						button {
+							class: "modal-close",
+							onclick: move |_| show_duplicates_modal.set(false),
+							Icon { icon: FaXmark, width: 20, height: 20 }
+						}
+					}
 
-                    div { class: "modal-body",
-                        if duplicates_data().is_empty() {
-                            p { style: "text-align: center; padding: 20px;",
-                                "No duplicate tracks found in selected playlists!"
-                            }
-                        } else {
-                            p { style: "margin-bottom: 20px; color: var(--text-secondary);",
-                                "Found duplicates in {duplicates_data().len()} playlist(s). First occurrence of each track will be kept."
-                            }
+					div { class: "modal-body",
+						if duplicates_data().is_empty() {
+							p { style: "text-align: center; padding: 20px;",
+								"No duplicate tracks found in selected playlists!"
+							}
+						} else {
+							p { style: "margin-bottom: 20px; color: var(--text-secondary);",
+								"Found duplicates in {duplicates_data().len()} playlist(s). First occurrence of each track will be kept."
+							}
 
-                            for (playlist, dups) in duplicates_data().iter() {
-                                div { class: "playlist-section",
-                                    div { class: "playlist-section-header",
-                                        if let Some(image) = playlist.images.first() {
-                                            img {
-                                                class: "playlist-section-image",
-                                                src: "{image.url}",
-                                                alt: "{playlist.name}",
-                                            }
-                                        } else {
-                                            div { class: "playlist-section-placeholder", "♪" }
-                                        }
-                                        div { class: "playlist-section-info",
-                                            div { class: "playlist-section-name", "{playlist.name}" }
-                                            div { class: "playlist-section-meta",
-                                                "{dups.len()} duplicate track(s)"
-                                            }
-                                        }
-                                    }
+							for (playlist , dups) in duplicates_data().iter() {
+								div { class: "playlist-section",
+									div { class: "playlist-section-header",
+										if let Some(image) = playlist.images.first() {
+											img {
+												class: "playlist-section-image",
+												src: "{image.url}",
+												alt: "{playlist.name}",
+											}
+										} else {
+											div { class: "playlist-section-placeholder",
+												"♪"
+											}
+										}
+										div { class: "playlist-section-info",
+											div { class: "playlist-section-name", "{playlist.name}" }
+											div { class: "playlist-section-meta",
+												"{dups.len()} duplicate track(s)"
+											}
+										}
+									}
 
-                                    div { class: "duplicates-list",
-                                        for (track, count) in dups.iter() {
-                                            div { class: "duplicate-item",
-                                                if let Some(image) = track.album.images.first() {
-                                                    img {
-                                                        class: "duplicate-image",
-                                                        src: "{image.url}",
-                                                        alt: "{track.name}",
-                                                    }
-                                                }
-                                                div { class: "duplicate-info",
-                                                    div { class: "duplicate-name", "{track.name}" }
-                                                    div { class: "duplicate-artist",
-                                                        {track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
-                                                    }
-                                                    div { class: "duplicate-count",
-                                                        "Appears {count} times (will remove {count - 1})"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+									div { class: "duplicates-list",
+										for (track , count) in dups.iter() {
+											div { class: "duplicate-item",
+												if let Some(image) = track.album.images.first() {
+													img {
+														class: "duplicate-image",
+														src: "{image.url}",
+														alt: "{track.name}",
+													}
+												}
+												div { class: "duplicate-info",
+													div { class: "duplicate-name", "{track.name}" }
+													div { class: "duplicate-artist",
+														{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
+													}
+													div { class: "duplicate-count",
+														"Appears {count} times (will remove {count - 1})"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 
-                    div { class: "modal-footer",
-                        button {
-                            class: "modal-button cancel-button",
-                            onclick: move |_| show_duplicates_modal.set(false),
-                            "Cancel"
-                        }
-                        if !duplicates_data().is_empty() {
-                            button {
-                                class: "modal-button remove-button",
-                                onclick: remove_duplicates,
-                                disabled: removing_duplicates(),
-                                if removing_duplicates() {
-                                    "Removing..."
-                                } else {
-                                    "Remove All Duplicates"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+					div { class: "modal-footer",
+						button {
+							class: "modal-button cancel-button",
+							onclick: move |_| show_duplicates_modal.set(false),
+							"Cancel"
+						}
+						if !duplicates_data().is_empty() {
+							button {
+								class: "modal-button remove-button",
+								onclick: remove_duplicates,
+								disabled: removing_duplicates(),
+								if removing_duplicates() {
+									"Removing..."
+								} else {
+									"Remove All Duplicates"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 #[component]
@@ -538,58 +553,57 @@ fn PlaylistCard(
     let playlist_id = playlist.id.clone();
 
     rsx! {
-        div {
-            class: if is_selected { "playlist-card-wrapper selected" } else { "playlist-card-wrapper" },
+		div { class: if is_selected { "playlist-card-wrapper selected" } else { "playlist-card-wrapper" },
 
-            div {
-                class: "playlist-checkbox",
-                onclick: move |e| {
-                    e.stop_propagation();
-                    on_toggle.call(());
-                },
-                input {
-                    r#type: "checkbox",
-                    checked: is_selected,
-                    onchange: move |_| {},
-                }
-                Icon {
-                    icon: FaCheck,
-                    width: 24,
-                    height: 24,
-                    fill: "white"
-                }
-            }
+			div {
+				class: "playlist-checkbox",
+				onclick: move |e| {
+				    e.stop_propagation();
+				    on_toggle.call(());
+				},
+				input {
+					r#type: "checkbox",
+					checked: is_selected,
+					onchange: move |_| {},
+				}
+				Icon {
+					icon: FaCheck,
+					width: 24,
+					height: 24,
+					fill: "white",
+				}
+			}
 
-            Link {
-                to: Route::PlaylistDetail {
-                    id: playlist_id,
-                },
-                class: "playlist-card-link",
-                div { class: "playlist-card",
-                    if has_image {
-                        img {
-                            class: "playlist-image",
-                            src: "{image_url}",
-                            alt: "{playlist.name}",
-                        }
-                    } else {
-                        div { class: "playlist-placeholder", "♪" }
-                    }
-                    div { class: "playlist-info",
-                        div { class: "playlist-name", "{playlist.name}" }
-                        if !description.is_empty() {
-                            div { class: "playlist-description", "{description}" }
-                        }
-                        div { class: "playlist-meta",
-                            span { class: "playlist-tracks", "{playlist.tracks.total} tracks" }
-                            span { class: "playlist-visibility", " • {visibility_text}" }
-                        }
-                        if !owner_name.is_empty() {
-                            div { class: "playlist-owner", "By {owner_name}" }
-                        }
-                    }
-                }
-            }
-        }
-    }
+			Link {
+				to: Route::PlaylistDetail {
+				    id: playlist_id,
+				},
+				class: "playlist-card-link",
+				div { class: "playlist-card",
+					if has_image {
+						img {
+							class: "playlist-image",
+							src: "{image_url}",
+							alt: "{playlist.name}",
+						}
+					} else {
+						div { class: "playlist-placeholder", "♪" }
+					}
+					div { class: "playlist-info",
+						div { class: "playlist-name", "{playlist.name}" }
+						if !description.is_empty() {
+							div { class: "playlist-description", "{description}" }
+						}
+						div { class: "playlist-meta",
+							span { class: "playlist-tracks", "{playlist.tracks.total} tracks" }
+							span { class: "playlist-visibility", " • {visibility_text}" }
+						}
+						if !owner_name.is_empty() {
+							div { class: "playlist-owner", "By {owner_name}" }
+						}
+					}
+				}
+			}
+		}
+	}
 }

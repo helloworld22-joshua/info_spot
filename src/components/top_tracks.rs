@@ -27,8 +27,8 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 						class: "track-card",
 						key: "{track.id}",
 						onclick: {
-							let track = track.clone();
-							move |_| selected_track.set(Some(track.clone()))
+						    let track = track.clone();
+						    move |_| selected_track.set(Some(track.clone()))
 						},
 
 						// Rank badge
@@ -59,10 +59,7 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 
 		// Track detail modal
 		if let Some(track) = selected_track() {
-			TrackDetail {
-				track: track,
-				on_close: move |_| selected_track.set(None),
-			}
+			TrackDetail { track, on_close: move |_| selected_track.set(None) }
 		}
 	}
 }

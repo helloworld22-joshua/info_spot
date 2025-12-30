@@ -25,91 +25,84 @@ pub fn ArtistDetail(artist: Artist, on_close: EventHandler<()>) -> Element {
     let popularity = artist.popularity.unwrap_or(0);
 
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/artist_detail.css") }
-        div {
-            class: "artist-detail-overlay",
-            onclick: move |_| on_close.call(()),
+		document::Link {
+			rel: "stylesheet",
+			href: asset!("assets/compiled/artist_detail.css"),
+		}
+		div {
+			class: "artist-detail-overlay",
+			onclick: move |_| on_close.call(()),
 
-            div {
-                class: "artist-detail-modal",
-                onclick: move |e| e.stop_propagation(),
+			div {
+				class: "artist-detail-modal",
+				onclick: move |e| e.stop_propagation(),
 
-                // Close button
-                button {
-                    class: "artist-detail-close",
-                    onclick: move |_| on_close.call(()),
-                    Icon {
-                        icon: FaXmark,
-                        width: 20,
-                        height: 20,
-                    }
-                }
+				// Close button
+				button {
+					class: "artist-detail-close",
+					onclick: move |_| on_close.call(()),
+					Icon { icon: FaXmark, width: 20, height: 20 }
+				}
 
-                // Artist image
-                if let Some(images) = &artist.images {
-                    if let Some(image) = images.first() {
-                        img {
-                            class: "artist-detail-cover",
-                            src: "{image.url}",
-                            alt: "{artist.name}",
-                        }
-                    }
-                }
+				// Artist image
+				if let Some(images) = &artist.images {
+					if let Some(image) = images.first() {
+						img {
+							class: "artist-detail-cover",
+							src: "{image.url}",
+							alt: "{artist.name}",
+						}
+					}
+				}
 
-                // Artist info
-                div { class: "artist-detail-info",
-                    div { class: "artist-detail-header",
-                        h2 { class: "artist-detail-title",
-                            "{artist.name}"
-                        }
-                    }
+				// Artist info
+				div { class: "artist-detail-info",
+					div { class: "artist-detail-header",
+						h2 { class: "artist-detail-title", "{artist.name}" }
+					}
 
-                    div { class: "artist-detail-metadata",
-                        div { class: "metadata-item",
-                            span { class: "metadata-label", "Followers" }
-                            span { class: "metadata-value", "{followers}" }
-                        }
+					div { class: "artist-detail-metadata",
+						div { class: "metadata-item",
+							span { class: "metadata-label", "Followers" }
+							span { class: "metadata-value", "{followers}" }
+						}
 
-                        div { class: "metadata-item",
-                            span { class: "metadata-label", "Genres" }
-                            span { class: "metadata-value", "{genres}" }
-                        }
+						div { class: "metadata-item",
+							span { class: "metadata-label", "Genres" }
+							span { class: "metadata-value", "{genres}" }
+						}
 
-                        div { class: "metadata-item",
-                            span { class: "metadata-label", "Popularity" }
-                            span { class: "metadata-value",
-                                div { class: "popularity-bar-container",
-                                    div {
-                                        class: "popularity-bar",
-                                        style: "width: {popularity}%",
-                                    }
-                                }
-                                span { class: "popularity-text", "{popularity}%" }
-                            }
-                        }
+						div { class: "metadata-item",
+							span { class: "metadata-label", "Popularity" }
+							span { class: "metadata-value",
+								div { class: "popularity-bar-container",
+									div {
+										class: "popularity-bar",
+										style: "width: {popularity}%",
+									}
+								}
+								span { class: "popularity-text", "{popularity}%" }
+							}
+						}
 
-                        div { class: "metadata-item",
-                            span { class: "metadata-label", "Artist URI" }
-                            span { class: "metadata-value artist-uri", "{artist_uri}" }
-                        }
-                    }
+						div { class: "metadata-item",
+							span { class: "metadata-label", "Artist URI" }
+							span { class: "metadata-value artist-uri", "{artist_uri}" }
+						}
+					}
 
-                    // Spotify button
-                    a {
-                        class: "artist-detail-spotify-button",
-                        href: "{spotify_url}",
-                        target: "_blank",
-                        Icon {
-                            icon: FaSpotify,
-                            width: 20,
-                            height: 20,
-                        }
-                        "Open in Spotify"
-                    }
-                }
-            }
-        }
-    }
+					// Spotify button
+					a {
+						class: "artist-detail-spotify-button",
+						href: "{spotify_url}",
+						target: "_blank",
+						Icon { icon: FaSpotify, width: 20, height: 20 }
+						"Open in Spotify"
+					}
+				}
+			}
+		}
+	}
 }
 
 fn format_number(num: u32) -> String {

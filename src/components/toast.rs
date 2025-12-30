@@ -20,13 +20,13 @@ pub struct Toast {
 #[component]
 pub fn ToastContainer(toasts: Signal<Vec<Toast>>) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/toast.css") }
-        div { class: "toast-container",
-            for toast in toasts().iter() {
-                ToastItem { key: "{toast.id}", toast: toast.clone(), toasts: toasts }
-            }
-        }
-    }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/toast.css") }
+		div { class: "toast-container",
+			for toast in toasts().iter() {
+				ToastItem { key: "{toast.id}", toast: toast.clone(), toasts }
+			}
+		}
+	}
 }
 
 #[component]
@@ -74,19 +74,13 @@ fn ToastItem(toast: Toast, toasts: Signal<Vec<Toast>>) -> Element {
     };
 
     rsx! {
-        div { class: "{final_class}",
-            span { class: "toast-icon", "{icon}" }
-            span { class: "toast-message", "{toast.message}" }
-            button {
-                class: "toast-close",
-                onclick: remove_toast,
-                Icon {
-                    icon: FaXmark,
-                    width: 20,
-                    height: 20,
-                }
-            }
-            div { class: "toast-progress" }
-        }
-    }
+		div { class: "{final_class}",
+			span { class: "toast-icon", "{icon}" }
+			span { class: "toast-message", "{toast.message}" }
+			button { class: "toast-close", onclick: remove_toast,
+				Icon { icon: FaXmark, width: 20, height: 20 }
+			}
+			div { class: "toast-progress" }
+		}
+	}
 }

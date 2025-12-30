@@ -70,13 +70,15 @@ rsx! {
 					}
 				} else {
 					// Placeholder for users without profile image
-					div {
-						class: "profile-image-placeholder",
-						{user_data.display_name
-							.as_ref()
-							.and_then(|name| name.chars().next())
-							.map(|c| c.to_uppercase().to_string())
-							.unwrap_or_else(|| "?".to_string())}
+					div { class: "profile-image-placeholder",
+						{
+						    user_data
+						        .display_name
+						        .as_ref()
+						        .and_then(|name| name.chars().next())
+						        .map(|c| c.to_uppercase().to_string())
+						        .unwrap_or_else(|| "?".to_string())
+						}
 					}
 				}
 				div { class: "profile-info",
@@ -100,11 +102,7 @@ rsx! {
 					button {
 						class: "import-button button",
 						onclick: move |_| on_import.call(()),
-						Icon {
-							icon: FaFileArrowUp,
-							width: 18,
-							height: 18,
-						}
+						Icon { icon: FaFileArrowUp, width: 18, height: 18 }
 						"Import Playlist"
 					}
 					button {
@@ -134,11 +132,7 @@ rsx! {
 						        nav_clone.push(Route::Home {});
 						    }
 						},
-						Icon {
-							icon: FaRightFromBracket,
-							width: 18,
-							height: 18,
-						}
+						Icon { icon: FaRightFromBracket, width: 18, height: 18 }
 						"Logout"
 					}
 				}
@@ -152,10 +146,8 @@ rsx! {
 					div { class: "genres-loading", "Loading genres..." }
 				} else {
 					div { class: "genres-list",
-						for (index, genre) in top_genres().iter().enumerate() {
-							div {
-								class: "genre-tag",
-								key: "{genre}-{index}",
+						for (index , genre) in top_genres().iter().enumerate() {
+							div { class: "genre-tag", key: "{genre}-{index}",
 								span { class: "genre-rank", "#{index + 1}" }
 								span { class: "genre-name", "{genre}" }
 							}

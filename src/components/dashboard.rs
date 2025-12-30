@@ -369,7 +369,7 @@ pub fn Dashboard() -> Element {
     let mut mouse_pos = use_signal(|| (-500, -500)); // -500 so the effect doesn't appear initially
     let mut scroll_pos = use_signal(|| (0, 0));
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("assets/compiled/dashboard.css") }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/dashboard.css") }
 		div {
 			class: "dashboard-container",
 			onmousemove: move |event| {
@@ -402,13 +402,13 @@ pub fn Dashboard() -> Element {
 
 			header { class: "dashboard-header",
 				div { class: "header-row",
-                    img {
-                        class: "dashboard-logo",
-                        src: asset!("assets/media/logo.svg"),
-                        alt: "InfoSpot Logo"
-                    }
-                    h1 { class: "dashboard-title", "InfoSpot" }
-                }
+					img {
+						class: "dashboard-logo",
+						src: asset!("assets/media/logo.svg"),
+						alt: "InfoSpot Logo",
+					}
+					h1 { class: "dashboard-title", "InfoSpot" }
+				}
 				div { class: "time-range-selector",
 					button {
 						class: if time_range() == "short_term" { "active" } else { "" },
@@ -442,10 +442,10 @@ pub fn Dashboard() -> Element {
 			} else {
 				div { class: "dashboard-content",
 					UserProfile {
-					user,
-					on_import: on_import_playlist,
-					time_range: time_range,
-				}
+						user,
+						on_import: on_import_playlist,
+						time_range,
+					}
 					TopTracks { tracks: top_tracks }
 					TopArtists { artists: top_artists }
 					Playlists { playlists }
@@ -466,11 +466,7 @@ pub fn Dashboard() -> Element {
 							button {
 								class: "modal-close",
 								onclick: move |_| show_import_modal.set(false),
-								Icon {
-                                    icon: FaXmark,
-                                    width: 20,
-                                    height: 20,
-                                }
+								Icon { icon: FaXmark, width: 20, height: 20 }
 							}
 						}
 

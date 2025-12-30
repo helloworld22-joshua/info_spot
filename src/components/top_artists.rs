@@ -28,8 +28,8 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 						class: "artist-card clickable",
 						key: "{artist.id}",
 						onclick: {
-							let artist = artist.clone();
-							move |_| selected_artist.set(Some(artist.clone()))
+						    let artist = artist.clone();
+						    move |_| selected_artist.set(Some(artist.clone()))
 						},
 						if let Some(images) = &artist.images {
 							if let Some(image) = images.first() {
@@ -62,10 +62,7 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 
 		// Artist detail modal
 		if let Some(artist) = selected_artist() {
-			ArtistDetail {
-				artist: artist,
-				on_close: move |_| selected_artist.set(None),
-			}
+			ArtistDetail { artist, on_close: move |_| selected_artist.set(None) }
 		}
 	}
 }
