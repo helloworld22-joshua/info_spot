@@ -257,9 +257,15 @@ pub fn PlaylistDetail(id: String) -> Element {
         tracks_vec
     };
 
+    let cover_url = playlist_info()
+        .as_ref()
+        .and_then(|p| p.images.first())
+        .map(|img| img.url.clone())
+        .unwrap_or_default();
+
     rsx! {
 		document::Link { rel: "stylesheet", href: asset!("assets/compiled/playlist_detail.css") }
-		div { class: "playlist-detail-container",
+		div { class: "playlist-detail-container", style: "--playlist-cover-url: url('{cover_url}');",
 			header { class: "playlist-detail-header",
 				div { class: "header-actions",
 					button {

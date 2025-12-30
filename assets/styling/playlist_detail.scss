@@ -4,6 +4,36 @@
 .playlist-detail-container {
 	max-width: 1400px;
 	padding: var(--padding);
+	position: relative;
+	min-height: 100vh;
+
+	// Background image layer
+	&::before {
+		content: "";
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		filter: blur(50px);
+		z-index: -2;
+		background-image: var(--playlist-cover-url, none);
+	}
+
+	// Darkening overlay
+	&::after {
+		content: "";
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.7);
+		z-index: -1;
+	}
 }
 
 .playlist-detail-header {
