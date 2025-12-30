@@ -1,7 +1,7 @@
 @import "style.scss";
 
 // Horizontal scroll container
-.tracks-scroll-container {
+.top-scroll-container {
 	@include space(
 		calc(var(--padding) - var(--border-width-thick)),
 		calc(var(--padding) * -1 + var(--border-width-thick))
@@ -22,7 +22,7 @@
 }
 
 // Individual track card
-.track-card {
+.top-card {
 	@include default(relative, flex);
 	width: var(--card-width);
 	border-radius: var(--border-radius);
@@ -46,7 +46,7 @@
 }
 
 // Rank badge (top-right corner)
-.track-rank {
+.top-rank {
 	@include default(absolute, block);
 	bottom: var(--gap-small);
 	right: var(--gap-small);
@@ -60,23 +60,30 @@
 }
 
 // Album cover
-.track-card-image {
+.top-image {
 	width: 100%;
 	aspect-ratio: 1;
-	border-radius: var(--border-radius-mid);
 	object-fit: cover;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+	&.track {
+		border-radius: var(--border-radius-mid);
+	}
+
+	&.artist {
+		border-radius: 50%;
+	}
 }
 
 // Track info section
-.track-card-info {
+.top-info {
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap-tiny);
 	flex: 1;
 }
 
-.track-card-name {
+.top-name {
 	font-size: var(--font-normal);
 	font-weight: var(--font-bold);
 	color: var(--text-primary);
@@ -88,20 +95,34 @@
 	-webkit-box-orient: vertical;
 }
 
-.track-card-artists {
+.top-genres {
+	@include text-truncate;
+	font-size: var(--font-small);
+	color: var(--text-secondary);
+	text-transform: capitalize;
+}
+
+.top-followers {
+	font-size: var(--font-small);
+	color: var(--primary);
+	font-weight: var(--font-bold);
+	margin-top: auto;
+}
+
+.top-artists {
 	@include text-truncate;
 	font-size: var(--font-small);
 	color: var(--text-secondary);
 }
 
-.track-card-album {
+.top-album {
 	@include text-truncate;
 	font-size: var(--font-small);
 	color: var(--text-secondary);
 	font-style: italic;
 }
 
-.track-card-duration {
+.top-duration {
 	font-size: var(--font-small);
 	color: var(--primary);
 	font-weight: var(--font-bold);
@@ -110,24 +131,26 @@
 
 // Mobile responsive
 @media (max-width: 768px) {
-	.track-card {
+	.top-card {
 		width: var(--card-width-small);
 		padding: var(--padding-tiny);
 	}
 
-	.track-rank {
+	.top-rank {
 		bottom: var(--gap-tiny);
 		right: var(--gap-tiny);
 		font-size: var(--font-tiny);
 	}
 
-	.track-card-name {
+	.top-name {
 		font-size: var(--font-small);
 	}
 
-	.track-card-artists,
-	.track-card-album,
-	.track-card-duration {
+	.top-genres,
+	.top-followers,
+	.top-artists,
+	.top-album,
+	.top-duration {
 		font-size: var(--font-tiny);
 	}
 }

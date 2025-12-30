@@ -447,7 +447,7 @@
 // Show more/less button
 .show-more-container {
 	@include flex-center;
-	@include space(var(--gap), var(--gap) 0);
+	margin: var(--gap);
 }
 
 .show-more-button {

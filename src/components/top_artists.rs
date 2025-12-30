@@ -6,10 +6,11 @@ use dioxus::prelude::*;
 pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
     let mut position = use_signal(|| (0.0, 0.0));
     let mut selected_artist = use_signal(|| None::<Artist>);
+
     rsx! {
 		document::Link {
 			rel: "stylesheet",
-			href: asset!("assets/compiled/top_artists.css"),
+			href: asset!("assets/compiled/top.css"),
 		}
 		div {
 			class: "top-artists component",
@@ -22,35 +23,42 @@ pub fn TopArtists(artists: ReadSignal<Vec<Artist>>) -> Element {
 			},
 			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 			h2 { class: "section-title", "Top Artists" }
-			div { class: "artists",
-				for artist in artists().iter() {
+			div { class: "top-scroll-container",
+				for (index , artist) in artists().iter().enumerate() {
 					div {
-						class: "artist-card clickable",
+						class: "top-card",
 						key: "{artist.id}",
 						onclick: {
 						    let artist = artist.clone();
 						    move |_| selected_artist.set(Some(artist.clone()))
 						},
+
+						// Rank badge
+						span { class: "top-rank", "#{index + 1}" }
+
+						// Artist image
 						if let Some(images) = &artist.images {
 							if let Some(image) = images.first() {
 								img {
-									class: "artist-image",
+									class: "top-image artist",
 									src: "{image.url}",
 									alt: "{artist.name}",
 								}
 							}
 						}
-						div { class: "artist-info",
-							div { class: "artist-name", "{artist.name}" }
+
+						// Artist info
+						div { class: "top-info",
+							div { class: "top-name", "{artist.name}" }
 							if let Some(genres) = &artist.genres {
 								if !genres.is_empty() {
-									div { class: "artist-genres",
+									div { class: "top-genres",
 										{genres.iter().take(3).cloned().collect::<Vec<_>>().join(", ")}
 									}
 								}
 							}
 							if let Some(followers) = &artist.followers {
-								div { class: "artist-followers",
+								div { class: "top-followers",
 									"{format_number(followers.total)} Followers"
 								}
 							}

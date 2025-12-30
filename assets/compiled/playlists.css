@@ -461,8 +461,7 @@
   justify-content: center;
   align-items: center;
   gap: 0;
-  padding: var(--gap);
-  margin: var(--gap) 0;
+  margin: var(--gap);
 }
 
 .show-more-button {

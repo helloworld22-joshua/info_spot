@@ -9,7 +9,7 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
     let mut selected_track = use_signal(|| None::<Track>);
 
     rsx! {
-		document::Link { rel: "stylesheet", href: asset!("assets/compiled/top_tracks.css") }
+		document::Link { rel: "stylesheet", href: asset!("assets/compiled/top.css") }
 		div {
 			class: "top-tracks component",
 			onmounted: move |event| {
@@ -21,10 +21,10 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 			},
 			style: "--position-x: {position().0}px; --position-y: {position().1}px;",
 			h2 { class: "section-title", "Top Tracks" }
-			div { class: "tracks-scroll-container",
+			div { class: "top-scroll-container",
 				for (index , track) in tracks().iter().enumerate() {
 					div {
-						class: "track-card",
+						class: "top-card",
 						key: "{track.id}",
 						onclick: {
 						    let track = track.clone();
@@ -32,25 +32,25 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 						},
 
 						// Rank badge
-						span { class: "track-rank", "#{index + 1}" }
+						span { class: "top-rank", "#{index + 1}" }
 
 						// Album cover
 						if let Some(image) = track.album.images.first() {
 							img {
-								class: "track-card-image",
+								class: "top-image track",
 								src: "{image.url}",
 								alt: "{track.name}",
 							}
 						}
 
 						// Track info
-						div { class: "track-card-info",
-							div { class: "track-card-name", "{track.name}" }
-							div { class: "track-card-artists",
+						div { class: "top-info",
+							div { class: "top-name", "{track.name}" }
+							div { class: "top-artists",
 								{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
 							}
-							div { class: "track-card-album", "{track.album.name}" }
-							div { class: "track-card-duration", {format_duration(track.duration_ms)} }
+							div { class: "top-album", "{track.album.name}" }
+							div { class: "top-duration", {format_duration(track.duration_ms)} }
 						}
 					}
 				}
