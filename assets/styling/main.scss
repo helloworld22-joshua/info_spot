@@ -10,7 +10,8 @@
 	--highlight: hsla(0, 0%, 50%, 0.1);
 	--highlight2: hsla(0, 0%, 50%, 0.2);
 	--glow: 0 0 10px hsla(0, 0%, 70%, 0.1);
-	--box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+	--box-shadow: 0 8px 12px hsla(0, 0%, 0%, 0.4);
+	--box-shadow-strong: 0 25px 80px rgba(0, 0, 0, 0.6);
 	--box-shadow-primary: 0 8px 24px rgba(168, 85, 247, 0.3);
 	--padding: 40px;
 	--padding-small: 20px;
@@ -40,6 +41,7 @@
 	--hover-movement: 8px;
 	--card-width: 200px;
 	--card-width-small: 160px;
+	--overlay-bg: hsla(0, 0%, 0%, 0.7);
 
 	// Legacy variables (kept for backwards compatibility)
 	--light-gray: #535353;
@@ -57,21 +59,6 @@ body {
 	background-color: #121212;
 	color: var(--text-primary);
 	line-height: 1.6;
-}
-
-a {
-	color: var(--text-primary);
-	text-decoration: none;
-	transition: color 0.2s;
-
-	&:hover {
-		color: var(--primary);
-	}
-}
-
-button {
-	cursor: pointer;
-	border: none;
 }
 
 // Global Component Styles (used across multiple components)
@@ -120,6 +107,7 @@ button {
 	transition: scale var(--transition);
 	font-size: 1rem;
 	font-weight: 600;
+	cursor: pointer;
 
 	&:hover {
 		scale: 1.05;

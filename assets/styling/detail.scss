@@ -2,11 +2,11 @@
 
 .detail-overlay {
 	@include default(fixed, flex);
+	@include size(100%);
 	top: 0;
 	left: 0;
-	@include size(100%);
-	background: rgba(0, 0, 0, 0.85);
-	backdrop-filter: blur(8px);
+	background: var(--overlay-bg);
+	backdrop-filter: blur(10px);
 	justify-content: center;
 	align-items: center;
 	z-index: 2000;
@@ -15,12 +15,12 @@
 
 .detail-modal {
 	@include default(relative, flex);
+	max-width: 90%;
+	height: min(90vh, 650px);
+	overflow-y: auto;
 	background: var(--highlight);
 	border-radius: var(--border-radius);
-	max-width: 90%;
-	height: 90vh;
-	overflow-y: auto;
-	box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+	box-shadow: var(--box-shadow-strong);
 	animation: slideUp 0.3s ease;
 }
 
@@ -167,10 +167,9 @@
 }
 
 .detail-spotify-button {
-	@include size(100%, auto);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	@include flex-center;
+	width: 90%;
+	margin: auto;
 	gap: var(--gap-small);
 	padding: 15px 30px;
 	background: var(--primary);
