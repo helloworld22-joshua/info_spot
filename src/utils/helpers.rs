@@ -164,9 +164,9 @@ pub fn show_toast(context: &AppContext, message: String, toast_type: ToastType) 
     current_toasts.push(toast.clone());
     toasts.set(current_toasts);
 
-    // Auto-remove toast after 5 seconds
+    // Auto-remove toast after 3 seconds
     spawn(async move {
-        tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+        tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
         let mut current_toasts = toasts();
         current_toasts.retain(|t| t.id != id);
         toasts.set(current_toasts);

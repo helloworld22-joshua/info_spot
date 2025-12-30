@@ -11,6 +11,7 @@
 }
 
 .toast {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -23,6 +24,7 @@
   border-left: 4px solid;
   animation: slideIn 0.3s ease-out;
   min-width: 300px;
+  overflow: hidden;
 }
 .toast.toast-success {
   border-left-color: var(--secondary);
@@ -32,6 +34,9 @@
 }
 .toast.toast-info {
   border-left-color: var(--primary);
+}
+.toast.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
 }
 
 .toast-icon {
@@ -72,9 +77,41 @@
   cursor: pointer;
   flex-shrink: 0;
   transition: color 0.2s;
+  z-index: 1;
 }
 .toast-close:hover {
   color: var(--text-primary);
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: transparent;
+  z-index: 0;
+}
+.toast-progress::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  animation: progress 3s linear forwards;
+}
+
+.toast-success .toast-progress::after {
+  background: var(--secondary);
+}
+
+.toast-error .toast-progress::after {
+  background: #ff4444;
+}
+
+.toast-info .toast-progress::after {
+  background: var(--primary);
 }
 
 @keyframes slideIn {
@@ -85,5 +122,21 @@
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
   }
 }/*# sourceMappingURL=toast.css.map */

@@ -32,6 +32,7 @@ pub fn ToastContainer(toasts: Signal<Vec<Toast>>) -> Element {
 #[component]
 fn ToastItem(toast: Toast, toasts: Signal<Vec<Toast>>) -> Element {
     let toast_id = toast.id;
+    let mut is_fading = use_signal(|| false);
 
     let class_name = match toast.toast_type {
         ToastType::Success => "toast toast-success",
@@ -45,24 +46,47 @@ fn ToastItem(toast: Toast, toasts: Signal<Vec<Toast>>) -> Element {
         ToastType::Info => "ℹ",
     };
 
+    // Start fade out animation after 2.7 seconds (300ms before removal)
+    use_effect(move || {
+        spawn(async move {
+            tokio::time::sleep(tokio::time::Duration::from_millis(2700)).await;
+            is_fading.set(true);
+        });
+    });
+
     let remove_toast = move |_| {
-        let mut current_toasts = toasts.write();
-        *current_toasts = current_toasts
-            .iter()
-            .filter(|t| t.id != toast_id)
-            .cloned()
-            .collect();
+        is_fading.set(true);
+        spawn(async move {
+            tokio::time::sleep(tokio::time::Duration::from_millis(300)).await;
+            let mut current_toasts = toasts.write();
+            *current_toasts = current_toasts
+                .iter()
+                .filter(|t| t.id != toast_id)
+                .cloned()
+                .collect();
+        });
+    };
+
+    let final_class = if is_fading() {
+        format!("{} fade-out", class_name)
+    } else {
+        class_name.to_string()
     };
 
     rsx! {
-        div { class: "{class_name}",
+        div { class: "{final_class}",
             span { class: "toast-icon", "{icon}" }
             span { class: "toast-message", "{toast.message}" }
-            button { class: "toast-close", onclick: remove_toast, Icon {
-                        icon: FaXmark,
-                        width: 20,
-                        height: 20,
-                    } }
+            button {
+                class: "toast-close",
+                onclick: remove_toast,
+                Icon {
+                    icon: FaXmark,
+                    width: 20,
+                    height: 20,
+                }
+            }
+            div { class: "toast-progress" }
         }
     }
 }
