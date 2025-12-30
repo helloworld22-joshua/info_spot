@@ -56,7 +56,7 @@
 .time-range-selector {
   display: flex;
   gap: 10px;
-  background: var(--bg1-alpha);
+  background: var(--background40);
   -webkit-backdrop-filter: var(--blur);
           backdrop-filter: var(--blur);
   padding: 4px;

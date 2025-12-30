@@ -2,7 +2,7 @@ use crate::models::{Playlist, Track};
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowDown, FaMagnifyingGlass, FaCheck};
+use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowDown, FaMagnifyingGlass, FaCheck, FaXmark};
 use dioxus_free_icons::Icon;
 use std::collections::HashSet;
 
@@ -359,8 +359,8 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                         let items_to_show = if show_all() {
                             filtered_items
                         } else {
-                            // Show only first 2 rows (assuming ~4 cards per row = 8 cards)
-                            filtered_items.into_iter().take(8).collect::<Vec<_>>()
+                            // Show only first 12 playlists
+                            filtered_items.into_iter().take(12).collect::<Vec<_>>()
                         };
 
                         items_to_show
@@ -433,7 +433,11 @@ pub fn Playlists(playlists: ReadSignal<Vec<Playlist>>) -> Element {
                         button {
                             class: "modal-close",
                             onclick: move |_| show_duplicates_modal.set(false),
-                            "×"
+                            Icon {
+                                icon: FaXmark,
+                                width: 20,
+                                height: 20,
+                            }
                         }
                     }
 

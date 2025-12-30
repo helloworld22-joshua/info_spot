@@ -4,12 +4,12 @@
 	@include flex-center;
 	min-height: 100vh;
 	padding: 20px;
+	background-color: var(--background);
 }
 
 .login-card {
 	@include text-center(500px);
-	background: var(--bg1-alpha);
-	backdrop-filter: var(--blur);
+	background-color: var(--background40);
 	padding: 60px 40px;
 	border-radius: var(--border-radius);
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);

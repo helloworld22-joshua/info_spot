@@ -3,6 +3,8 @@ use crate::models::*;
 use crate::{Route, AppContext};
 use crate::utils::*;
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaXmark;
+use dioxus_free_icons::Icon;
 
 #[component]
 pub fn Dashboard() -> Element {
@@ -464,7 +466,11 @@ pub fn Dashboard() -> Element {
 							button {
 								class: "modal-close",
 								onclick: move |_| show_import_modal.set(false),
-								"×"
+								Icon {
+                                    icon: FaXmark,
+                                    width: 20,
+                                    height: 20,
+                                }
 							}
 						}
 

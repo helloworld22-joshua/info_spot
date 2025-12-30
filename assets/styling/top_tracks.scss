@@ -13,8 +13,7 @@
 	@include default(relative, flex);
 	min-width: 200px;
 	width: 200px;
-	background: var(--bg1-alpha);
-	backdrop-filter: var(--blur);
+	background: var(--highlight);
 	border-radius: var(--border-radius);
 	padding: var(--padding-small);
 	cursor: pointer;

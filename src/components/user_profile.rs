@@ -2,9 +2,7 @@ use crate::models::User;
 use crate::utils::format_country;
 use crate::{Route, AppContext};
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::fa_solid_icons::FaFileArrowUp;
-use dioxus_free_icons::icons::fa_solid_icons::FaRightFromBracket;
-use dioxus_free_icons::icons::fa_solid_icons::FaArrowUpRightFromSquare;
+use dioxus_free_icons::icons::fa_solid_icons::{FaFileArrowUp, FaRightFromBracket, FaArrowUpRightFromSquare};
 use dioxus_free_icons::Icon;
 
 #[component]

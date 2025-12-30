@@ -1,7 +1,6 @@
 .playlist-detail-container {
   max-width: 1400px;
-  padding: 40px 20px;
-  margin: 0 auto;
+  padding: var(--padding);
 }
 
 .playlist-detail-header {
@@ -62,7 +61,7 @@
 
 .remove-duplicates-button {
   background: var(--secondary);
-  color: var(--dark);
+  color: var(--text-primary);
   border: none;
   padding: 10px 20px;
   border-radius: 500px;
@@ -82,9 +81,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding: 20px;
-  background: var(--bg1-alpha);
-  -webkit-backdrop-filter: var(--blur);
-          backdrop-filter: var(--blur);
+  background: var(--highlight);
   border-radius: var(--border-radius);
 }
 
@@ -117,14 +114,14 @@
 .tracks-list {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-small);
+  gap: var(--gap-tiny);
 }
 
 .track-item {
   display: flex;
   align-items: center;
   gap: var(--gap);
-  padding: var(--padding-small);
+  padding: var(--padding-tiny);
   background-color: var(--highlight);
   border-radius: var(--border-radius);
   transition: scale var(--transition), background-color var(--transition);
@@ -143,8 +140,8 @@
 }
 
 .track-image {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   border-radius: var(--border-radius-small);
   -o-object-fit: cover;
      object-fit: cover;
@@ -159,8 +156,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0;
-  margin: 0 0 var(--gap-tiny) 0;
   font-size: var(--font-normal);
   font-weight: var(--font-bold);
   display: block;
@@ -207,7 +202,7 @@
 }
 
 .modal-content {
-  background: var(--gray);
+  background: var(--highlight);
   border-radius: var(--border-radius);
   max-width: 700px;
   width: 100%;
@@ -279,7 +274,7 @@
 }
 .modal-button.remove-button {
   background: var(--secondary);
-  color: var(--dark);
+  color: var(--text-primary);
   border: none;
 }
 .modal-button.remove-button:hover:not(:disabled) {

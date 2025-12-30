@@ -3,7 +3,8 @@
 .toast-container {
 	@include default(fixed, flex);
 	top: 20px;
-	right: 20px;
+	left: 50%;
+	translate: -50% 0;
 	z-index: 10000;
 	flex-direction: column;
 	gap: 10px;
@@ -15,7 +16,8 @@
 	align-items: center;
 	gap: 12px;
 	padding: 16px 20px;
-	background: var(--gray);
+	background: var(--highlight);
+	backdrop-filter: var(--blur);
 	border-radius: var(--border-radius);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	border-left: 4px solid;

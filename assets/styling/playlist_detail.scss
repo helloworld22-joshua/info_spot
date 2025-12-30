@@ -3,7 +3,7 @@
 // Container
 .playlist-detail-container {
 	max-width: 1400px;
-	@include space(40px 20px, 0 auto);
+	padding: var(--padding);
 }
 
 .playlist-detail-header {
@@ -65,7 +65,7 @@
 
 .remove-duplicates-button {
 	background: var(--secondary);
-	color: var(--dark);
+	color: var(--text-primary);
 	border: none;
 	padding: 10px 20px;
 	border-radius: 500px;
@@ -87,8 +87,7 @@
 	align-items: center;
 	margin-bottom: 30px;
 	padding: 20px;
-	background: var(--bg1-alpha);
-	backdrop-filter: var(--blur);
+	background: var(--highlight);
 	border-radius: var(--border-radius);
 }
 
@@ -124,14 +123,14 @@
 .tracks-list {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap-small);
+	gap: var(--gap-tiny);
 }
 
 .track-item {
 	display: flex;
 	align-items: center;
 	gap: var(--gap);
-	padding: var(--padding-small);
+	padding: var(--padding-tiny);
 	background-color: var(--highlight);
 	border-radius: var(--border-radius);
 	transition:
@@ -153,7 +152,7 @@
 }
 
 .track-image {
-	@include size(70px);
+	@include size(50px);
 	border-radius: var(--border-radius-small);
 	object-fit: cover;
 }
@@ -165,7 +164,6 @@
 
 .track-name {
 	@include text-truncate;
-	@include space(0, 0 0 var(--gap-tiny) 0);
 	font-size: var(--font-normal);
 	font-weight: var(--font-bold);
 	display: block;
@@ -210,7 +208,7 @@
 }
 
 .modal-content {
-	background: var(--gray);
+	background: var(--highlight);
 	border-radius: var(--border-radius);
 	max-width: 700px;
 	width: 100%;
@@ -283,7 +281,7 @@
 
 	&.remove-button {
 		background: var(--secondary);
-		color: var(--dark);
+		color: var(--text-primary);
 		border: none;
 
 		&:hover:not(:disabled) {

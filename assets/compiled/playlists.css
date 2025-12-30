@@ -467,9 +467,7 @@
 
 .show-more-button {
   padding: 12px 32px;
-  background: var(--bg1-alpha);
-  -webkit-backdrop-filter: var(--blur);
-          backdrop-filter: var(--blur);
+  background: var(--highlight);
   color: var(--text-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 500px;
@@ -501,9 +499,7 @@
   width: 100%;
   height: auto;
   padding: 12px 20px;
-  background: var(--bg1-alpha);
-  -webkit-backdrop-filter: var(--blur);
-          backdrop-filter: var(--blur);
+  background: var(--highlight);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 500px;
   color: var(--text-primary);

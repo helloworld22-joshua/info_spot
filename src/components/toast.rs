@@ -1,4 +1,6 @@
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_solid_icons::FaXmark;
+use dioxus_free_icons::Icon;
 
 // Toast notification type
 #[derive(Clone, PartialEq)]
@@ -56,7 +58,11 @@ fn ToastItem(toast: Toast, toasts: Signal<Vec<Toast>>) -> Element {
         div { class: "{class_name}",
             span { class: "toast-icon", "{icon}" }
             span { class: "toast-message", "{toast.message}" }
-            button { class: "toast-close", onclick: remove_toast, "×" }
+            button { class: "toast-close", onclick: remove_toast, Icon {
+                        icon: FaXmark,
+                        width: 20,
+                        height: 20,
+                    } }
         }
     }
 }
