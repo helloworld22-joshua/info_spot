@@ -257,12 +257,14 @@ pub fn PlaylistDetail(id: String) -> Element {
         tracks_vec
     };
 
+    // Wallpaper
     let cover_url = playlist_info()
         .as_ref()
         .and_then(|p| p.images.first())
         .map(|img| img.url.clone())
         .unwrap_or_default();
 
+    // Search
     let mut search_query = use_signal(|| String::new());
 
     // Filter and sort tracks based on search query and sort order
