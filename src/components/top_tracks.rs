@@ -46,7 +46,7 @@ pub fn TopTracks(tracks: ReadSignal<Vec<Track>>) -> Element {
 						// Track info
 						div { class: "top-info",
 							div { class: "top-name", "{track.name}" }
-							div { class: "top-artists",
+							div { class: "top-artist",
 								{track.artists.iter().map(|a| a.name.clone()).collect::<Vec<_>>().join(", ")}
 							}
 							div { class: "top-album", "{track.album.name}" }

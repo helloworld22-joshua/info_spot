@@ -25,16 +25,49 @@
   border-color: var(--primary);
   box-shadow: var(--box-shadow-primary);
 }
+.top-card:hover:nth-child(-n+3) .top-rank::after {
+  left: 100%;
+}
+.top-card:nth-child(-n+3) .top-rank {
+  overflow: hidden;
+  color: var(--background);
+}
+.top-card:nth-child(-n+3) .top-rank::after {
+  content: "";
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  transform: rotate(120deg);
+  transition: 0.5s;
+  top: -50%;
+  left: -200%;
+  background: linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+}
+.top-card:nth-child(1) .top-rank {
+  background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+}
+.top-card:nth-child(2) .top-rank {
+  background: linear-gradient(45deg, #9c9c9c, #f0f0f0, #a1a1a1, #d9d9d9, #7a7a7a);
+}
+.top-card:nth-child(3) .top-rank {
+  background: linear-gradient(45deg, #804a00, #ed8e49, #a0522d, #ff9966, #704214);
+}
 
 .top-rank {
   position: absolute;
   display: block;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
   bottom: var(--gap-small);
   right: var(--gap-small);
-  padding: var(--padding-mini) var(--padding-tiny);
   font-size: var(--font-small);
   font-weight: var(--font-bold);
-  background: var(--primary);
+  background-color: var(--primary);
   color: var(--text-primary);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -89,7 +122,7 @@
   margin-top: auto;
 }
 
-.top-artists {
+.top-artist {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
