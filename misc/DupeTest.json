@@ -1,0 +1,14 @@
+{
+  "info": {
+    "author": "Boing",
+    "description": "Testing deletion",
+    "id": "1vMB0SgKhpFGtYPZEBrIsJ",
+    "name": "Dupe Test"
+  },
+  "tracks": [
+    "spotify:track:3uhJllxR54wXP82uVAJbcg",
+    "spotify:track:3uhJllxR54wXP82uVAJbcg",
+    "spotify:track:3uhJllxR54wXP82uVAJbcg",
+    "spotify:track:42qNWdLKCI41S4uzfamhFM"
+  ]
+}
